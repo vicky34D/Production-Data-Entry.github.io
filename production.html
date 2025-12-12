@@ -409,7 +409,7 @@
 
                 <div class="form-group">
                     <label>Machine ID</label>
-                    <select id="machineId">
+                    <select id="machineId" onchange="updateNextTray()">
                         <option value="M1">Machine 1</option>
                         <option value="M2">Machine 2</option>
                         <option value="M3">Machine 3</option>
@@ -420,8 +420,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Tray ID</label>
-                    <input type="text" id="trayId" placeholder="e.g. T1">
+                    <label>Tray ID (Auto)</label>
+                    <input type="text" id="trayId" placeholder="Auto-generated" readonly
+                        style="background-color: var(--bg-color); cursor: not-allowed; color: var(--text-secondary);">
                 </div>
 
                 <div class="form-group">
@@ -537,6 +538,30 @@
 
         let productionData = JSON.parse(localStorage.getItem('agarbattiDataWet')) || [];
 
+        // Auto-calculate next Tray ID
+        function updateNextTray() {
+            const date = document.getElementById('entryDate').value;
+            const machine = document.getElementById('machineId').value;
+
+            // Get entries for this machine on this date
+            const existingEntries = productionData.filter(item => item.date === date && item.machine === machine);
+
+            let maxTray = 0;
+            existingEntries.forEach(item => {
+                // Extract number from "T1", "T2", etc.
+                const match = item.tray.match(/T(\d+)/);
+                if (match && match[1]) {
+                    const num = parseInt(match[1]);
+                    if (num > maxTray) maxTray = num;
+                }
+            });
+
+            document.getElementById('trayId').value = "T" + (maxTray + 1);
+        }
+
+        // Initial call
+        updateNextTray();
+
         function addEntry() {
             const date = document.getElementById('entryDate').value;
             const operator = document.getElementById('operatorName').value.trim();
@@ -569,9 +594,11 @@
             productionData.push(entry);
             saveAndRender();
 
-            document.getElementById('trayId').value = "";
+            // document.getElementById('trayId').value = ""; // No longer needed, auto-updated
             document.getElementById('wetWeight').value = "";
-            document.getElementById('trayId').focus();
+            updateNextTray(); // Recalculate for next entry
+            // document.getElementById('trayId').focus(); // Focus weight instead
+            document.getElementById('wetWeight').focus();
         }
 
         function saveAndRender() {
@@ -589,6 +616,7 @@
             if (confirm("Delete this entry?")) {
                 productionData = productionData.filter(item => item.id !== id);
                 saveAndRender();
+                updateNextTray(); // Recalculate in case we deleted the last tray
             }
         }
 
@@ -604,12 +632,13 @@
             const filteredData = productionData.filter(item => item.date === viewDate);
 
             // Enable/Disable entry form based on viewDate
-            const entryFormElements = document.querySelectorAll('#operatorName, #machineId, #trayId, #wetWeight, .btn-primary');
+            // Enable/Disable entry form based on viewDate
+            const entryFormElements = document.querySelectorAll('#operatorName, #machineId, #wetWeight, .btn-primary');
             const isToday = viewDate === currentToday;
             entryFormElements.forEach(el => {
-                if (el.tagName === 'BUTTON') {
+                if (el.tagName === 'BUTTON' || el.tagName === 'SELECT') {
                     el.disabled = !isToday;
-                    el.style.opacity = isToday ? '1' : '0.5';
+                    el.style.opacity = isToday ? '1' : '0.6';
                     el.style.cursor = isToday ? 'pointer' : 'not-allowed';
                 } else {
                     el.readOnly = !isToday;
