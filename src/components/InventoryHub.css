@@ -1,0 +1,107 @@
+.inventory-hub-container {
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.hub-header {
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.hub-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 2rem;
+    overflow: hidden;
+}
+
+.cycle-container {
+    position: relative;
+    width: 900px;
+    height: 600px;
+    /* border: 1px dashed #ccc; */
+    /* Debugging */
+}
+
+.cycle-item {
+    position: absolute;
+    font-family: 'Kalam', cursive;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: transform 0.3s, color 0.3s;
+    text-align: center;
+    z-index: 2;
+    padding: 10px 20px;
+    border-radius: 12px;
+}
+
+.cycle-item:hover {
+    transform: scale(1.1);
+    color: var(--primary-orange);
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Positioning items based on the image roughly */
+.item-grn {
+    top: 15%;
+    left: 5%;
+}
+
+.item-dsu {
+    top: 5%;
+    left: 40%;
+}
+
+.item-spp {
+    top: 25%;
+    right: 5%;
+}
+
+.item-spu {
+    top: 50%;
+    right: 20%;
+}
+
+.item-fgi {
+    top: 45%;
+    left: 15%;
+}
+
+.item-gdn {
+    bottom: 15%;
+    left: 35%;
+}
+
+/* Arrows */
+.arrow-path {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.arrow-path path {
+    stroke: var(--primary-orange);
+    stroke-width: 3;
+    fill: none;
+    stroke-linecap: round;
+}
+
+.arrow-path polygon {
+    fill: var(--primary-orange);
+}

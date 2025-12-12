@@ -42,7 +42,7 @@ const LandingPage = () => {
 
       {/* Hero Section */}
       <header className="hero">
-        <motion.h1 
+        <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
@@ -54,7 +54,7 @@ const LandingPage = () => {
           </span>
         </motion.h1>
 
-        <motion.div 
+        <motion.div
           className="subtitle"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -67,7 +67,7 @@ const LandingPage = () => {
           </span>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           className="cta-group"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -96,7 +96,7 @@ const LandingPage = () => {
         <main className="main-content">
           {/* Banner */}
           <div className="banner-container">
-            <motion.div 
+            <motion.div
               className="banner"
               initial={{ y: 20, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -111,7 +111,7 @@ const LandingPage = () => {
           </div>
 
           {/* App Grid */}
-          <motion.div 
+          <motion.div
             className="app-grid"
             variants={containerVariants}
             initial="hidden"
@@ -120,7 +120,7 @@ const LandingPage = () => {
           >
             <AppItem to="/dashboard" icon={<Package size={40} />} label="Production" color="icon-production" />
             <AppItem onClick={() => alert('Coming soon!')} icon={<Hammer size={40} />} label="Manufacturing" color="icon-manufacturing" />
-            <AppItem onClick={() => alert('Coming soon!')} icon={<ClipboardList size={40} />} label="Inventory" color="icon-inventory" />
+            <AppItem to="/inventory" icon={<ClipboardList size={40} />} label="Inventory" color="icon-inventory" />
             <AppItem onClick={() => alert('Coming soon!')} icon={<TrendingUp size={40} />} label="Sales" color="icon-sales" />
             <AppItem onClick={() => alert('Coming soon!')} icon={<Calculator size={40} />} label="Accounting" color="icon-accounting" />
             <AppItem onClick={() => alert('Coming soon!')} icon={<Users size={40} />} label="HR" color="icon-hr" />
@@ -131,40 +131,40 @@ const LandingPage = () => {
           {/* Unleash Section */}
           <section className="unleash-section">
             <div className="unleash-container">
-               <motion.div 
-                 initial={{ scale: 0.8, opacity: 0 }}
-                 whileInView={{ scale: 1, opacity: 1 }}
-                 transition={{ duration: 0.5 }}
-                 viewport={{ once: true }}
-                 style={{ position: 'relative', display: 'inline-block' }}
-               >
-                  {/* Decorative Bursts */}
-                  <svg style={{ position: 'absolute', top: '-60px', left: '50%', transform: 'translateX(-50%)', width: '300px', height: '100px', overflow: 'visible' }} viewBox="0 0 300 100">
-                      <path d="M150,80 Q160,40 170,10" stroke="#FDBA74" strokeWidth="4" fill="none" strokeLinecap="round" />
-                      <path d="M150,80 Q155,90 165,10" stroke="none" fill="#FDBA74" />
-                      <path d="M100,90 Q80,50 60,30" stroke="#FDBA74" strokeWidth="4" fill="none" strokeLinecap="round" />
-                      <path d="M120,80 Q100,40 90,20" stroke="#FDBA74" strokeWidth="4" fill="none" strokeLinecap="round" />
-                      <path d="M200,90 Q220,50 240,30" stroke="#FDBA74" strokeWidth="4" fill="none" strokeLinecap="round" />
-                      <path d="M180,80 Q200,40 210,20" stroke="#FDBA74" strokeWidth="4" fill="none" strokeLinecap="round" />
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                viewport={{ once: true }}
+                style={{ position: 'relative', display: 'inline-block' }}
+              >
+                {/* Decorative Bursts */}
+                <svg style={{ position: 'absolute', top: '-60px', left: '50%', transform: 'translateX(-50%)', width: '300px', height: '100px', overflow: 'visible' }} viewBox="0 0 300 100">
+                  <path d="M150,80 Q160,40 170,10" stroke="#FDBA74" strokeWidth="4" fill="none" strokeLinecap="round" />
+                  <path d="M150,80 Q155,90 165,10" stroke="none" fill="#FDBA74" />
+                  <path d="M100,90 Q80,50 60,30" stroke="#FDBA74" strokeWidth="4" fill="none" strokeLinecap="round" />
+                  <path d="M120,80 Q100,40 90,20" stroke="#FDBA74" strokeWidth="4" fill="none" strokeLinecap="round" />
+                  <path d="M200,90 Q220,50 240,30" stroke="#FDBA74" strokeWidth="4" fill="none" strokeLinecap="round" />
+                  <path d="M180,80 Q200,40 210,20" stroke="#FDBA74" strokeWidth="4" fill="none" strokeLinecap="round" />
+                </svg>
+
+                <h2 className="unleash-title">
+                  <span style={{ color: '#1F2937' }}>Unleash</span><br />
+                  <span style={{ color: '#1F2937' }}>your</span> <span className="text-teal">growth potential</span>
+                </h2>
+              </motion.div>
+
+              <div style={{ marginTop: '2rem' }}>
+                <Link to="/dashboard" className="btn-unleash">Click here! - For Dashboard</Link>
+
+                <div className="unleash-footer">
+                  <svg className="arrow-up" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: '24px', height: '24px' }}>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 10l7-7m0 0l7 7m-7-7v18" />
                   </svg>
-
-                  <h2 className="unleash-title">
-                      <span style={{ color: '#1F2937' }}>Unleash</span><br />
-                      <span style={{ color: '#1F2937' }}>your</span> <span className="text-teal">growth potential</span>
-                  </h2>
-               </motion.div>
-
-               <div style={{ marginTop: '2rem' }}>
-                  <Link to="/dashboard" className="btn-unleash">Click here! - For Dashboard</Link>
-                  
-                  <div className="unleash-footer">
-                      <svg className="arrow-up" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: '24px', height: '24px' }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                      </svg>
-                      <span>I hope you will like it</span>
-                      <span>Demo Page - Subhankar dhar</span>
-                  </div>
-               </div>
+                  <span>I hope you will like it</span>
+                  <span>Demo Page - Subhankar dhar</span>
+                </div>
+              </div>
             </div>
           </section>
         </main>
