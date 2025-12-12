@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Dashboard | Premium</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --accent-primary: #3b82f6;
+            /* Blue */
+            --accent-success: #10b981;
+            /* Emerald */
+            --accent-danger: #ef4444;
+            /* Red */
+            --accent-warning: #f59e0b;
+            /* Amber */
+            --border-color: #e2e8f0;
+            --input-bg: #ffffff;
+            --glass-border: rgba(0, 0, 0, 0.05);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-primary), #8b5cf6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            letter-spacing: -0.025em;
+        }
+
+        /* Layout */
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        input,
+        select {
+            width: 100%;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), #2563eb);
+            color: white;
+            width: 100%;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 8px -1px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-danger {
+            color: var(--accent-danger);
+            background: rgba(239, 68, 68, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Custom Badges & Tags */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-machine {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+        }
+
+        .badge-weight {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+        }
+
+        .tray-tag {
+            display: inline-flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin: 2px;
+            font-size: 0.85rem;
+        }
+
+        .tray-id {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-right: 4px;
+        }
+
+        .tray-val {
+            color: var(--text-secondary);
+        }
+
+        .tray-op {
+            color: #f472b6;
+            font-size: 0.75em;
+            margin-left: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.25rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-trend {
+            font-size: 0.8rem;
+            color: var(--accent-success);
+            margin-top: auto;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="brand">
+            <a href="index.html"
+                style="text-decoration: none; color: inherit; display: flex; align-items: center; margin-right: 15px; opacity: 0.7; transition: opacity 0.2s;"
+                title="Back to Apps">
+                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                </svg>
+            </a>
+            <div class="brand-icon">AJ</div>
+            <h1>Production Dashboard</h1>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn btn-secondary" onclick="clearData()">Reset System</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+
+        <!-- Left Column: Input -->
+        <aside>
+            <div class="card animate-fade" style="animation-delay: 0.1s;">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        New Entry
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="entryDate">
+                </div>
+
+                <div class="form-group">
+                    <label>Operator Name</label>
+                    <input type="text" id="operatorName" placeholder="e.g. Ramesh">
+                </div>
+
+                <div class="form-group">
+                    <label>Machine ID</label>
+                    <select id="machineId">
+                        <option value="M1">Machine 1</option>
+                        <option value="M2">Machine 2</option>
+                        <option value="M3">Machine 3</option>
+                        <option value="M4">Machine 4</option>
+                        <option value="M5">Machine 5</option>
+                        <option value="M6">Machine 6</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Tray ID</label>
+                    <input type="text" id="trayId" placeholder="e.g. T1">
+                </div>
+
+                <div class="form-group">
+                    <label>Wet Weight (KG)</label>
+                    <input type="number" step="0.01" id="wetWeight" placeholder="0.00">
+                </div>
+
+                <button class="btn btn-primary" onclick="addEntry()">
+                    <span>Save Entry</span>
+                </button>
+            </div>
+
+            <!-- Mini Recent Log for quick view -->
+            <div class="card animate-fade" style="animation-delay: 0.2s;">
+                <div class="card-header">
+                    <div class="card-title">Recent Activity</div>
+                </div>
+                <div class="table-container">
+                    <table id="rawTable">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Details</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rawBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Column: Data -->
+        <main>
+
+            <!-- Summary Cards (Dynamic) -->
+            <div id="summaryCards" class="stats-grid animate-fade" style="animation-delay: 0.1s;">
+                <!-- Populated by JS -->
+            </div>
+
+            <!-- Machine Details -->
+            <div class="card animate-fade" style="animation-delay: 0.3s;">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        Machine Insights
+                    </div>
+                    <button class="btn btn-secondary"
+                        onclick="exportTableToCSV('machineTable', 'machine_details.csv')">Export CSV</button>
+                </div>
+                <div class="table-container">
+                    <table id="machineTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Machine</th>
+                                <th>Tray Breakdown</th>
+                                <th>Total Weight</th>
+                            </tr>
+                        </thead>
+                        <tbody id="machineBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Overall Summary -->
+            <div class="card animate-fade" style="animation-delay: 0.4s;">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Daily Performance
+                    </div>
+                    <button class="btn btn-secondary"
+                        onclick="exportTableToCSV('summaryTable', 'daily_summary.csv')">Export CSV</button>
+                </div>
+                <div class="table-container">
+                    <table id="summaryTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Total Wet (KG)</th>
+                                <th>Trays</th>
+                                <th>Active Machines</th>
+                                <th>Avg/Mach</th>
+                                <th>Top Operator</th>
+                                <th>Op. Weight</th>
+                            </tr>
+                        </thead>
+                        <tbody id="summaryBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('entryDate').valueAsDate = new Date();
+        let productionData = JSON.parse(localStorage.getItem('agarbattiDataWet')) || [];
+
+        function addEntry() {
+            const date = document.getElementById('entryDate').value;
+            const operator = document.getElementById('operatorName').value.trim();
+            const machine = document.getElementById('machineId').value;
+            const tray = document.getElementById('trayId').value.trim();
+            const weight = parseFloat(document.getElementById('wetWeight').value);
+
+            if (!date || !operator || !tray || isNaN(weight)) {
+                alert("Please fill all fields.");
+                return;
+            }
+
+            const entry = {
+                id: Date.now(),
+                date: date,
+                operator: operator,
+                machine: machine,
+                tray: tray,
+                weight: weight,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+
+            productionData.push(entry);
+            saveAndRender();
+
+            document.getElementById('trayId').value = "";
+            document.getElementById('wetWeight').value = "";
+            document.getElementById('trayId').focus();
+        }
+
+        function saveAndRender() {
+            localStorage.setItem('agarbattiDataWet', JSON.stringify(productionData));
+            renderTables();
+        }
+
+        function deleteEntry(id) {
+            if (confirm("Delete this entry?")) {
+                productionData = productionData.filter(item => item.id !== id);
+                saveAndRender();
+            }
+        }
+
+        function renderTables() {
+            const rawBody = document.getElementById('rawBody');
+            const summaryBody = document.getElementById('summaryBody');
+            const machineBody = document.getElementById('machineBody');
+            const summaryCards = document.getElementById('summaryCards');
+
+            // 1. RAW LOG (Simplified for Sidebar)
+            rawBody.innerHTML = '';
+            productionData.slice().reverse().slice(0, 8).forEach(item => {
+                rawBody.innerHTML += `
+                    <tr>
+                        <td style="font-size:0.8em; color:var(--text-secondary);">${item.timestamp}</td>
+                        <td>
+                            <div style="font-weight:500;">${item.operator}</div>
+                            <div style="font-size:0.8em; color:var(--text-secondary);">${item.machine} • ${item.tray} • ${item.weight}kg</div>
+                        </td>
+                        <td><button class="btn-danger" onclick="deleteEntry(${item.id})">✕</button></td>
+                    </tr>
+                `;
+            });
+
+            // GROUP BY DATE
+            const groupedByDate = productionData.reduce((acc, curr) => {
+                if (!acc[curr.date]) acc[curr.date] = [];
+                acc[curr.date].push(curr);
+                return acc;
+            }, {});
+
+            summaryBody.innerHTML = '';
+            machineBody.innerHTML = '';
+
+            const sortedDates = Object.keys(groupedByDate).sort().reverse();
+
+            // Calculate Today's Stats for Cards
+            const today = new Date().toISOString().split('T')[0];
+            const todayEntries = groupedByDate[today] || [];
+            const todayWeight = todayEntries.reduce((sum, i) => sum + i.weight, 0);
+            const todayTrays = todayEntries.length;
+
+            summaryCards.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-label">Total Weight (Today)</div>
+                    <div class="stat-value">${todayWeight.toFixed(2)} <span style="font-size:1rem;color:var(--text-secondary);">kg</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Trays Produced (Today)</div>
+                    <div class="stat-value">${todayTrays}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Active Operators</div>
+                    <div class="stat-value">${new Set(todayEntries.map(e => e.operator)).size}</div>
+                </div>
+            `;
+
+            sortedDates.forEach(date => {
+                const dayEntries = groupedByDate[date];
+
+                // --- A. MACHINE DETAILS ---
+                const machineGroups = {};
+                dayEntries.forEach(item => {
+                    if (!machineGroups[item.machine]) {
+                        machineGroups[item.machine] = {
+                            weight: 0,
+                            trays: []
+                        };
+                    }
+                    machineGroups[item.machine].weight += item.weight;
+                    machineGroups[item.machine].trays.push({
+                        id: item.tray,
+                        w: item.weight,
+                        op: item.operator
+                    });
+                });
+
+                // Render Machine Rows
+                Object.keys(machineGroups).sort().forEach(mach => {
+                    const data = machineGroups[mach];
+
+                    const trayString = data.trays.map(t =>
+                        `<span class="tray-tag">
+                            <span class="tray-id">${t.id}</span>
+                            <span class="tray-val">${t.w}kg</span>
+                            <span class="tray-op">${t.op}</span>
+                        </span>`
+                    ).join(" ");
+
+                    machineBody.innerHTML += `
+                        <tr>
+                            <td style="color:var(--text-secondary); font-size:0.85rem;">${date}</td>
+                            <td><span class="badge badge-machine">${mach}</span></td>
+                            <td><div style="display:flex; flex-wrap:wrap;">${trayString}</div></td>
+                            <td style="font-weight:bold; color:var(--accent-success);">${data.weight.toFixed(2)}</td>
+                        </tr>
+                    `;
+                });
+
+                // --- B. DAILY SUMMARY ---
+                const totalWet = dayEntries.reduce((sum, item) => sum + item.weight, 0);
+                const totalTrays = dayEntries.length;
+                const totalMachines = Object.keys(machineGroups).length;
+                const avgWet = totalMachines > 0 ? (totalWet / totalMachines).toFixed(2) : 0;
+
+                const opStats = {};
+                dayEntries.forEach(item => {
+                    opStats[item.operator] = (opStats[item.operator] || 0) + item.weight;
+                });
+                let bestOp = "-", bestWt = 0;
+                for (let [op, wt] of Object.entries(opStats)) {
+                    if (wt > bestWt) { bestWt = wt; bestOp = op; }
+                }
+
+                summaryBody.innerHTML += `
+                    <tr>
+                        <td style="font-weight:500;">${date}</td>
+                        <td style="color:var(--accent-primary); font-weight:700;">${totalWet.toFixed(2)}</td>
+                        <td>${totalTrays}</td>
+                        <td>${totalMachines}</td>
+                        <td>${avgWet}</td>
+                        <td><span class="badge" style="background:rgba(245, 158, 11, 0.15); color:#fbbf24;">${bestOp}</span></td>
+                        <td>${bestWt.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function exportTableToCSV(tableId, filename) {
+            let csv = [];
+            let rows = document.querySelectorAll(`#${tableId} tr`);
+            for (let i = 0; i < rows.length; i++) {
+                let row = [], cols = rows[i].querySelectorAll("td, th");
+                for (let j = 0; j < cols.length; j++) row.push(cols[j].innerText.replace(/\n/g, ' '));
+                csv.push(row.join(","));
+            }
+            let csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+            let link = document.createElement("a");
+            link.download = filename;
+            link.href = window.URL.createObjectURL(csvFile);
+            link.style.display = "none";
+            document.body.appendChild(link);
+            link.click();
+        }
+
+        function clearData() {
+            if (confirm("Delete ALL history? This cannot be undone.")) {
+                localStorage.removeItem('agarbattiDataWet');
+                productionData = [];
+                renderTables();
+            }
+        }
+
+        renderTables();
+    </script>
+
+</body>
+
+</html>
