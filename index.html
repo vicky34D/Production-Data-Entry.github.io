@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agarbatti Production Monitor (Wet Stick Only)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        /* Sections */
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h2 { margin-top: 0; color: #333; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+        
+        /* Form Grid */
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .form-group { display: flex; flex-direction: column; }
+        label { margin-bottom: 5px; font-weight: bold; color: #555; }
+        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        
+        /* Buttons */
+        button { cursor: pointer; padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; }
+        .btn-save { background-color: #28a745; color: white; margin-top: 10px; width: 100%; }
+        .btn-clear { background-color: #dc3545; color: white; }
+        .btn-export { background-color: #007bff; color: white; float: right; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background-color: #343a40; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+
+        .highlight { color: #28a745; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div class="card">
+        <h2>🏭 Production Data Entry (Wet Stick)</h2>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="entryDate">
+            </div>
+            <div class="form-group">
+                <label>Operator Name</label>
+                <input type="text" id="operatorName" placeholder="e.g. Ramesh">
+            </div>
+            <div class="form-group">
+                <label>Machine ID</label>
+                <select id="machineId">
+                    <option value="M1">Machine 1</option>
+                    <option value="M2">Machine 2</option>
+                    <option value="M3">Machine 3</option>
+                    <option value="M4">Machine 4</option>
+                    <option value="M5">Machine 5</option>
+                    <option value="M6">Machine 6</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Tray ID</label>
+                <input type="text" id="trayId" placeholder="e.g. T1">
+            </div>
+            <div class="form-group">
+                <label>Wet Weight (KG)</label>
+                <input type="number" step="0.01" id="wetWeight" placeholder="0.00">
+            </div>
+        </div>
+        <button class="btn-save" onclick="addEntry()">➕ Add Entry</button>
+    </div>
+
+    <div class="card">
+        <h2>📊 Daily Production Monitor Sheet <button class="btn-export" onclick="exportTableToCSV()">Download Excel</button></h2>
+        <table id="summaryTable">
+            <thead>
+                <tr>
+                    <th>Sl No</th>
+                    <th>Date</th>
+                    <th>Total Wet Sticks (KG)</th>
+                    <th>Total Trays</th>
+                    <th>Run. Machines</th>
+                    <th>Avg Wet Prod / Machine</th>
+                    <th>Highest Prod. Operator</th>
+                    <th>Op. Wet (KG)</th>
+                    <th>Operator List</th>
+                </tr>
+            </thead>
+            <tbody id="summaryBody">
+                </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>Recent Raw Entries <button class="btn-clear" onclick="clearData()" style="float:right; font-size:0.8rem;">Reset All Data</button></h3>
+        <table id="rawTable">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Operator</th>
+                    <th>Machine</th>
+                    <th>Tray</th>
+                    <th>Wet Weight (KG)</th>
+                </tr>
+            </thead>
+            <tbody id="rawBody"></tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    // Initialize standard date to today
+    document.getElementById('entryDate').valueAsDate = new Date();
+
+    // Main Data Array (Stored in LocalStorage)
+    let productionData = JSON.parse(localStorage.getItem('agarbattiDataWet')) || [];
+
+    // 1. Function to Add Data
+    function addEntry() {
+        const date = document.getElementById('entryDate').value;
+        const operator = document.getElementById('operatorName').value.trim();
+        const machine = document.getElementById('machineId').value;
+        const tray = document.getElementById('trayId').value.trim();
+        const weight = parseFloat(document.getElementById('wetWeight').value);
+
+        if(!date || !operator || !tray || isNaN(weight)) {
+            alert("Please fill all fields correctly.");
+            return;
+        }
+
+        const entry = {
+            id: Date.now(),
+            date: date,
+            operator: operator,
+            machine: machine,
+            tray: tray,
+            weight: weight,
+            timestamp: new Date().toLocaleTimeString()
+        };
+
+        productionData.push(entry);
+        localStorage.setItem('agarbattiDataWet', JSON.stringify(productionData));
+        
+        // Reset specific fields for faster entry
+        document.getElementById('trayId').value = "";
+        document.getElementById('wetWeight').value = "";
+        document.getElementById('trayId').focus();
+        
+        renderTables();
+    }
+
+    // 2. Calculation Logic for the Summary Sheet
+    function renderTables() {
+        const rawBody = document.getElementById('rawBody');
+        const summaryBody = document.getElementById('summaryBody');
+
+        // Render Raw Log (Last 10 entries)
+        rawBody.innerHTML = '';
+        productionData.slice().reverse().slice(0, 10).forEach(item => {
+            rawBody.innerHTML += `
+                <tr>
+                    <td>${item.date} ${item.timestamp}</td>
+                    <td>${item.operator}</td>
+                    <td>${item.machine}</td>
+                    <td>${item.tray}</td>
+                    <td>${item.weight.toFixed(2)}</td>
+                </tr>
+            `;
+        });
+
+        // --- CORE LOGIC: GROUP BY DATE ---
+        const groupedByDate = productionData.reduce((acc, curr) => {
+            if (!acc[curr.date]) acc[curr.date] = [];
+            acc[curr.date].push(curr);
+            return acc;
+        }, {});
+
+        summaryBody.innerHTML = '';
+        let slNo = 1;
+
+        // Sort dates (newest first)
+        const sortedDates = Object.keys(groupedByDate).sort().reverse();
+
+        sortedDates.forEach(date => {
+            const dayEntries = groupedByDate[date];
+            
+            // a. Total Wet Sticks
+            const totalWet = dayEntries.reduce((sum, item) => sum + item.weight, 0);
+            
+            // b. Total Trays
+            const totalTrays = dayEntries.length;
+            
+            // c. Total Running Machines (Unique Count)
+            const machines = new Set(dayEntries.map(item => item.machine));
+            const totalMachines = machines.size;
+
+            // d. Average Wet Stick Production / Machine
+            // Formula: Total Wet / Total Machines
+            const avgWetPerMachine = totalMachines > 0 ? (totalWet / totalMachines).toFixed(2) : 0;
+
+            // e. Highest Production Operator & List
+            const operatorStats = {};
+            const allOperators = new Set();
+            
+            dayEntries.forEach(item => {
+                allOperators.add(item.operator);
+                if (!operatorStats[item.operator]) operatorStats[item.operator] = 0;
+                operatorStats[item.operator] += item.weight;
+            });
+
+            // Find max operator
+            let bestOpName = "-";
+            let bestOpWeight = 0;
+            
+            for (const [name, weight] of Object.entries(operatorStats)) {
+                if (weight > bestOpWeight) {
+                    bestOpWeight = weight;
+                    bestOpName = name;
+                }
+            }
+
+            // f. Operator List
+            const opList = Array.from(allOperators).join(", ");
+
+            // Render Row
+            summaryBody.innerHTML += `
+                <tr>
+                    <td>${slNo++}</td>
+                    <td>${date}</td>
+                    <td class="highlight">${totalWet.toFixed(2)}</td>
+                    <td>${totalTrays}</td>
+                    <td>${totalMachines}</td>
+                    <td>${avgWetPerMachine}</td>
+                    <td><strong>${bestOpName}</strong></td>
+                    <td>${bestOpWeight.toFixed(2)}</td>
+                    <td style="font-size:0.8rem; color:#666;">${opList}</td>
+                </tr>
+            `;
+        });
+    }
+
+    // 3. CSV Export Logic
+    function exportTableToCSV() {
+        let csv = [];
+        let rows = document.querySelectorAll("#summaryTable tr");
+        
+        for (let i = 0; i < rows.length; i++) {
+            let row = [], cols = rows[i].querySelectorAll("td, th");
+            for (let j = 0; j < cols.length; j++) 
+                row.push(cols[j].innerText);
+            csv.push(row.join(","));        
+        }
+
+        downloadCSV(csv.join("\n"), "agarbatti_wet_report.csv");
+    }
+
+    function downloadCSV(csv, filename) {
+        let csvFile;
+        let downloadLink;
+        csvFile = new Blob([csv], {type: "text/csv"});
+        downloadLink = document.createElement("a");
+        downloadLink.download = filename;
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+    }
+
+    function clearData() {
+        if(confirm("Are you sure? This will delete all history.")) {
+            localStorage.removeItem('agarbattiDataWet');
+            productionData = [];
+            renderTables();
+        }
+    }
+
+    // Initial Render
+    renderTables();
+</script>
+
+</body>
+</html>
