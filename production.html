@@ -371,7 +371,14 @@
             <div class="brand-icon">AJ</div>
             <h1>Production Dashboard</h1>
         </div>
-        <div style="display: flex; gap: 10px;">
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <div
+                style="display: flex; align-items: center; background: rgba(255,255,255,0.5); padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border-color);">
+                <span style="font-size: 0.85rem; color: var(--text-secondary); margin-right: 8px;">View Date:</span>
+                <input type="date" id="viewDate"
+                    style="border: none; background: transparent; padding: 4px; font-size: 0.9rem; width: auto;"
+                    onchange="renderTables()">
+            </div>
             <button class="btn btn-secondary" onclick="clearData()">Reset System</button>
         </div>
     </header>
@@ -518,7 +525,16 @@
     </div>
 
     <script>
-        document.getElementById('entryDate').valueAsDate = new Date();
+        // Initialize dates
+        const todayStr = new Date().toISOString().split('T')[0];
+        document.getElementById('entryDate').value = todayStr;
+        document.getElementById('viewDate').value = todayStr;
+
+        // Lock entry date to today (read-only) to prevent back-dating entries
+        document.getElementById('entryDate').setAttribute('readonly', true);
+        document.getElementById('entryDate').style.backgroundColor = "var(--bg-color)";
+        document.getElementById('entryDate').style.cursor = "not-allowed";
+
         let productionData = JSON.parse(localStorage.getItem('agarbattiDataWet')) || [];
 
         function addEntry() {
@@ -527,6 +543,13 @@
             const machine = document.getElementById('machineId').value;
             const tray = document.getElementById('trayId').value.trim();
             const weight = parseFloat(document.getElementById('wetWeight').value);
+
+            // Strict check: Entry date must be today
+            const currentToday = new Date().toISOString().split('T')[0];
+            if (date !== currentToday) {
+                alert("Error: You can only add entries for the current date (" + currentToday + ").");
+                return;
+            }
 
             if (!date || !operator || !tray || isNaN(weight)) {
                 alert("Please fill all fields.");
@@ -556,7 +579,13 @@
             renderTables();
         }
 
-        function deleteEntry(id) {
+        function deleteEntry(id, date) {
+            const currentToday = new Date().toISOString().split('T')[0];
+            if (date !== currentToday) {
+                alert("Restricted: You cannot delete records from previous days.");
+                return;
+            }
+
             if (confirm("Delete this entry?")) {
                 productionData = productionData.filter(item => item.id !== id);
                 saveAndRender();
@@ -564,14 +593,41 @@
         }
 
         function renderTables() {
+            const viewDate = document.getElementById('viewDate').value;
             const rawBody = document.getElementById('rawBody');
             const summaryBody = document.getElementById('summaryBody');
             const machineBody = document.getElementById('machineBody');
             const summaryCards = document.getElementById('summaryCards');
+            const currentToday = new Date().toISOString().split('T')[0];
 
-            // 1. RAW LOG (Simplified for Sidebar)
+            // Filter data for the selected View Date
+            const filteredData = productionData.filter(item => item.date === viewDate);
+
+            // Enable/Disable entry form based on viewDate
+            const entryFormElements = document.querySelectorAll('#operatorName, #machineId, #trayId, #wetWeight, .btn-primary');
+            const isToday = viewDate === currentToday;
+            entryFormElements.forEach(el => {
+                if (el.tagName === 'BUTTON') {
+                    el.disabled = !isToday;
+                    el.style.opacity = isToday ? '1' : '0.5';
+                    el.style.cursor = isToday ? 'pointer' : 'not-allowed';
+                } else {
+                    el.readOnly = !isToday;
+                    el.style.backgroundColor = isToday ? '' : 'var(--bg-color)';
+                    el.style.cursor = isToday ? '' : 'not-allowed';
+                }
+            });
+
+
+            // 1. RAW LOG (Show only for selected date)
             rawBody.innerHTML = '';
-            productionData.slice().reverse().slice(0, 8).forEach(item => {
+            // Show recent entries for the selected date
+            filteredData.slice().reverse().forEach(item => {
+                const canDelete = item.date === currentToday;
+                const deleteBtn = canDelete
+                    ? `<button class="btn-danger" onclick="deleteEntry(${item.id}, '${item.date}')">✕</button>`
+                    : `<span style="color:#ccc; font-size:0.8em;">🔒</span>`;
+
                 rawBody.innerHTML += `
                     <tr>
                         <td style="font-size:0.8em; color:var(--text-secondary);">${item.timestamp}</td>
@@ -579,13 +635,13 @@
                             <div style="font-weight:500;">${item.operator}</div>
                             <div style="font-size:0.8em; color:var(--text-secondary);">${item.machine} • ${item.tray} • ${item.weight}kg</div>
                         </td>
-                        <td><button class="btn-danger" onclick="deleteEntry(${item.id})">✕</button></td>
+                        <td>${deleteBtn}</td>
                     </tr>
                 `;
             });
 
-            // GROUP BY DATE
-            const groupedByDate = productionData.reduce((acc, curr) => {
+            // GROUP BY DATE (Actually we only have one date now, but keeping structure for robustness)
+            const groupedByDate = filteredData.reduce((acc, curr) => {
                 if (!acc[curr.date]) acc[curr.date] = [];
                 acc[curr.date].push(curr);
                 return acc;
@@ -594,28 +650,34 @@
             summaryBody.innerHTML = '';
             machineBody.innerHTML = '';
 
-            const sortedDates = Object.keys(groupedByDate).sort().reverse();
-
-            // Calculate Today's Stats for Cards
-            const today = new Date().toISOString().split('T')[0];
-            const todayEntries = groupedByDate[today] || [];
-            const todayWeight = todayEntries.reduce((sum, i) => sum + i.weight, 0);
-            const todayTrays = todayEntries.length;
+            // Calculate Stats for Cards (Based on VIEW DATE)
+            const viewDateEntries = groupedByDate[viewDate] || [];
+            const viewWeight = viewDateEntries.reduce((sum, i) => sum + i.weight, 0);
+            const viewTrays = viewDateEntries.length;
 
             summaryCards.innerHTML = `
                 <div class="stat-card">
-                    <div class="stat-label">Total Weight (Today)</div>
-                    <div class="stat-value">${todayWeight.toFixed(2)} <span style="font-size:1rem;color:var(--text-secondary);">kg</span></div>
+                    <div class="stat-label">Total Weight (${viewDate === currentToday ? 'Today' : viewDate})</div>
+                    <div class="stat-value">${viewWeight.toFixed(2)} <span style="font-size:1rem;color:var(--text-secondary);">kg</span></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Trays Produced (Today)</div>
-                    <div class="stat-value">${todayTrays}</div>
+                    <div class="stat-label">Trays Produced</div>
+                    <div class="stat-value">${viewTrays}</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Active Operators</div>
-                    <div class="stat-value">${new Set(todayEntries.map(e => e.operator)).size}</div>
+                    <div class="stat-value">${new Set(viewDateEntries.map(e => e.operator)).size}</div>
                 </div>
             `;
+
+            // If no data for this date
+            if (Object.keys(groupedByDate).length === 0) {
+                machineBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 2rem; color: var(--text-secondary);">No production data found for ${viewDate}</td></tr>`;
+                summaryBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 2rem; color: var(--text-secondary);">No summary available</td></tr>`;
+                return;
+            }
+
+            const sortedDates = Object.keys(groupedByDate).sort().reverse();
 
             sortedDates.forEach(date => {
                 const dayEntries = groupedByDate[date];
