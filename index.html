@@ -10,10 +10,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
             --accent-primary: #3b82f6;
             /* Blue */
             --accent-success: #10b981;
@@ -22,9 +22,9 @@
             /* Red */
             --accent-warning: #f59e0b;
             /* Amber */
-            --border-color: #334155;
-            --input-bg: #0f172a;
-            --glass-border: rgba(255, 255, 255, 0.05);
+            --border-color: #e2e8f0;
+            --input-bg: #ffffff;
+            --glass-border: rgba(0, 0, 0, 0.05);
             --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -48,7 +48,7 @@
 
         /* Header */
         header {
-            background-color: rgba(15, 23, 42, 0.8);
+            background-color: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-color);
             padding: 1rem 2rem;
@@ -360,7 +360,7 @@
 
     <header>
         <div class="brand">
-            <div class="brand-icon">AP</div>
+            <div class="brand-icon">AJ</div>
             <h1>Production Dashboard</h1>
         </div>
         <div style="display: flex; gap: 10px;">
@@ -637,7 +637,7 @@
                         `<span class="tray-tag">
                             <span class="tray-id">${t.id}</span>
                             <span class="tray-val">${t.w}kg</span>
-                            <span class="tray-op">${t.op.substring(0, 3)}</span>
+                            <span class="tray-op">${t.op}</span>
                         </span>`
                     ).join(" ");
 
