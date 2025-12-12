@@ -75,11 +75,11 @@
 
 .item-spu {
     top: 50%;
-    right: 20%;
+    right: 12%;
 }
 
 .item-fgi {
-    top: 45%;
+    top: 38%;
     left: 15%;
 }
 
@@ -89,19 +89,20 @@
 }
 
 /* Arrows */
-.arrow-path {
+.cycle-svg {
     position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
     z-index: 1;
 }
 
-.arrow-path path {
+.cycle-svg path {
     stroke: var(--primary-orange);
     stroke-width: 3;
     fill: none;
     stroke-linecap: round;
-}
-
-.arrow-path polygon {
-    fill: var(--primary-orange);
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.1));
 }
