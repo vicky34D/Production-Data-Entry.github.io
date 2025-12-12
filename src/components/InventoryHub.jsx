@@ -45,10 +45,10 @@ const InventoryHub = () => {
                         <path d="M 600 70 Q 630 70 640 120" markerEnd="url(#arrowhead)" />
 
                         {/* SPP -> SPU */}
-                        <path d="M 750 220 Q 780 280 790 290" markerEnd="url(#arrowhead)" />
+                        <path d="M 750 220 Q 750 280 720 290" markerEnd="url(#arrowhead)" />
 
                         {/* SPU -> FGI */}
-                        <path d="M 550 320 Q 450 320 390 290" markerEnd="url(#arrowhead)" />
+                        <path d="M 480 320 Q 420 320 390 290" markerEnd="url(#arrowhead)" />
 
                         {/* FGI -> GDN */}
                         <path d="M 240 280 Q 200 400 300 500" markerEnd="url(#arrowhead)" />
