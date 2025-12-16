@@ -74,7 +74,7 @@ const InventoryHub = () => {
                     {/* 3. Spare Parts Purchase */}
                     <motion.div
                         className="cycle-item item-spp"
-                        onClick={() => handleItemClick()}
+                        onClick={() => handleItemClick('/inventory/spp')}
                     >
                         Spare Parts Purchase
                     </motion.div>
@@ -82,7 +82,7 @@ const InventoryHub = () => {
                     {/* 4. Spare Parts Update */}
                     <motion.div
                         className="cycle-item item-spu"
-                        onClick={() => handleItemClick()}
+                        onClick={() => handleItemClick('/inventory/spu')}
                     >
                         Spare Parts Update
                     </motion.div>
@@ -90,7 +90,7 @@ const InventoryHub = () => {
                     {/* 5. Finished Goods Inventory */}
                     <motion.div
                         className="cycle-item item-fgi"
-                        onClick={() => handleItemClick()}
+                        onClick={() => handleItemClick('/inventory/fgi')}
                     >
                         Finished Goods Inventory
                     </motion.div>
@@ -98,7 +98,7 @@ const InventoryHub = () => {
                     {/* 6. Goods Dispatched Note */}
                     <motion.div
                         className="cycle-item item-gdn"
-                        onClick={() => handleItemClick()}
+                        onClick={() => handleItemClick('/inventory/gdn')}
                     >
                         Goods Dispatched Note
                     </motion.div>
