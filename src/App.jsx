@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard';
 import TodoList from './components/TodoList';
 import InventoryHub from './components/InventoryHub';
 import GoodsReceivedNote from './components/GoodsReceivedNote';
+import DailyStoreUpdate from './components/DailyStoreUpdate';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/todo" element={<TodoList />} />
         <Route path="/inventory" element={<InventoryHub />} />
         <Route path="/inventory/grn" element={<GoodsReceivedNote />} />
+        <Route path="/inventory/dsu" element={<DailyStoreUpdate />} />
       </Routes>
     </Router>
   );

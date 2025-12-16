@@ -66,7 +66,7 @@ const InventoryHub = () => {
                     {/* 2. Daily Store Update */}
                     <motion.div
                         className="cycle-item item-dsu"
-                        onClick={() => handleItemClick()}
+                        onClick={() => handleItemClick('/inventory/dsu')}
                     >
                         Daily Store Update
                     </motion.div>
