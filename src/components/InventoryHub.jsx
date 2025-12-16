@@ -52,7 +52,22 @@ const InventoryHub = () => {
 
                         {/* FGI -> GDN */}
                         <path d="M 240 280 Q 200 400 300 500" markerEnd="url(#arrowhead)" />
+
+                        {/* GDN -> Summary */}
                     </svg>
+
+                    {/* Stock Summary Button */}
+                    <motion.div
+                        className="cycle-item item-summary"
+                        style={{
+                            bottom: '15%', left: '76%',
+                            width: 'auto'
+                        }}
+                        whileHover={{ scale: 1.1 }}
+                        onClick={() => handleItemClick('/inventory/summary')}
+                    >
+                        Stock Summary
+                    </motion.div>
 
                     {/* 1. Goods Received Note */}
                     <motion.div
