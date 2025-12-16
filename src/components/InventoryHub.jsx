@@ -1,18 +1,24 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Package, ClipboardCheck, ShoppingCart, Truck, Factory, FileText, BarChart3 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import './InventoryHub.css';
 
 const InventoryHub = () => {
     const navigate = useNavigate();
 
+    const steps = [
+        { id: '1', label: 'Goods Received Note', path: '/inventory/grn', icon: <Package size={24} />, color: 'var(--accent-info)' },
+        { id: '2', label: 'Daily Store Update', path: '/inventory/dsu', icon: <ClipboardCheck size={24} />, color: 'var(--primary-color)' },
+        { id: '3', label: 'Spare Parts Purchase', path: '/inventory/spp', icon: <ShoppingCart size={24} />, color: 'var(--accent-success)' },
+        { id: '4', label: 'Spare Parts Update', path: '/inventory/spu', icon: <Factory size={24} />, color: '#8b5cf6' },
+        { id: '5', label: 'Finished Goods Inv', path: '/inventory/fgi', icon: <Package size={24} />, color: '#ec4899' },
+        { id: '6', label: 'Goods Dispatch Note', path: '/inventory/gdn', icon: <Truck size={24} />, color: 'var(--accent-info)' },
+        { id: '7', label: 'Stock Summary', path: '/inventory/summary', icon: <BarChart3 size={24} />, color: 'var(--accent-warning)', isFinal: true }
+    ];
+
     const handleItemClick = (path) => {
-        if (path) {
-            navigate(path);
-        } else {
-            alert("This module will be created later!");
-        }
+        if (path) navigate(path);
     };
 
     return (
@@ -23,100 +29,33 @@ const InventoryHub = () => {
                 </Link>
                 <div className="brand-icon" style={{
                     width: '32px', height: '32px',
-                    background: 'linear-gradient(135deg, var(--accent-warning), #f97316)',
+                    background: 'linear-gradient(135deg, var(--primary-color), var(--primary-hover))',
                     borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontWeight: 'bold', color: 'white'
                 }}>INV</div>
-                <h1 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Inventory Management</h1>
+                <h1 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Inventory Workflow</h1>
             </header>
 
             <div className="hub-content">
-                <div className="cycle-container">
-                    <svg className="cycle-svg" viewBox="0 0 900 600">
-                        <defs>
-                            <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
-                                <polygon points="0 0, 6 2, 0 4" fill="var(--primary-orange)" />
-                            </marker>
-                        </defs>
-                        {/* GRN -> DSU */}
-                        <path d="M 260 120 Q 300 60 350 60" markerEnd="url(#arrowhead)" />
-
-                        {/* DSU -> SPP */}
-                        <path d="M 600 70 Q 630 70 640 120" markerEnd="url(#arrowhead)" />
-
-                        {/* SPP -> SPU */}
-                        <path d="M 750 220 Q 750 280 720 290" markerEnd="url(#arrowhead)" />
-
-                        {/* SPU -> FGI */}
-                        <path d="M 480 320 Q 420 320 390 290" markerEnd="url(#arrowhead)" />
-
-                        {/* FGI -> GDN */}
-                        <path d="M 240 280 Q 200 400 300 500" markerEnd="url(#arrowhead)" />
-
-                        {/* GDN -> Summary */}
-                    </svg>
-
-                    {/* Stock Summary Button */}
-                    <motion.div
-                        className="cycle-item item-summary"
-                        style={{
-                            bottom: '15%', left: '76%',
-                            width: 'auto'
-                        }}
-                        whileHover={{ scale: 1.1 }}
-                        onClick={() => handleItemClick('/inventory/summary')}
-                    >
-                        Stock Summary
-                    </motion.div>
-
-                    {/* 1. Goods Received Note */}
-                    <motion.div
-                        className="cycle-item item-grn"
-                        whileHover={{ scale: 1.1 }}
-                        onClick={() => handleItemClick('/inventory/grn')}
-                    >
-                        Goods Received Note
-                    </motion.div>
-
-                    {/* 2. Daily Store Update */}
-                    <motion.div
-                        className="cycle-item item-dsu"
-                        onClick={() => handleItemClick('/inventory/dsu')}
-                    >
-                        Daily Store Update
-                    </motion.div>
-
-                    {/* 3. Spare Parts Purchase */}
-                    <motion.div
-                        className="cycle-item item-spp"
-                        onClick={() => handleItemClick('/inventory/spp')}
-                    >
-                        Spare Parts Purchase
-                    </motion.div>
-
-                    {/* 4. Spare Parts Update */}
-                    <motion.div
-                        className="cycle-item item-spu"
-                        onClick={() => handleItemClick('/inventory/spu')}
-                    >
-                        Spare Parts Update
-                    </motion.div>
-
-                    {/* 5. Finished Goods Inventory */}
-                    <motion.div
-                        className="cycle-item item-fgi"
-                        onClick={() => handleItemClick('/inventory/fgi')}
-                    >
-                        Finished Goods Inventory
-                    </motion.div>
-
-                    {/* 6. Goods Dispatched Note */}
-                    <motion.div
-                        className="cycle-item item-gdn"
-                        onClick={() => handleItemClick('/inventory/gdn')}
-                    >
-                        Goods Dispatched Note
-                    </motion.div>
+                <div className="process-flow-container">
+                    {steps.map((step, index) => (
+                        <div key={step.id} className="process-step-wrapper">
+                            <motion.div
+                                className="process-card"
+                                whileHover={{ y: -5, boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}
+                                onClick={() => handleItemClick(step.path)}
+                                style={{ borderTop: `4px solid ${step.color}` }}
+                            >
+                                <div className="step-number" style={{ background: step.color }}>{step.id}</div>
+                                <div className="step-icon" style={{ color: step.color }}>
+                                    {step.icon}
+                                </div>
+                                <div className="step-label">{step.label}</div>
+                            </motion.div>
+                            {/* Connector Line (Managed by CSS for wrapping) */}
+                            <div className="step-connector"></div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

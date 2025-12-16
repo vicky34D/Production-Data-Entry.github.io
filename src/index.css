@@ -1,36 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&display=swap');
+
 :root {
-    --primary-orange: #F97316;
-    --highlight-yellow: #FDBA74;
-    --highlight-blue: #00B8D9;
-    --text-dark: #1F2937;
-    --text-light: #6B7280;
-    --bg-light: #F9FAFB;
-    
-    /* Dashboard Variables */
-    --bg-color: #f8fafc;
-    --card-bg: #ffffff;
-    --text-primary: #1e293b;
-    --text-secondary: #64748b;
-    --border-color: #e2e8f0;
-    --accent-primary: #3b82f6;
-    --accent-success: #10b981;
-    --accent-danger: #ef4444;
-    --accent-warning: #f59e0b;
-    --input-bg: #ffffff;
-    
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    /* Brand Colors - Deep Teal & Charcoal (Professional/Industrial) */
+    --primary-color: #0f766e;
+    /* Teal 700 */
+    --primary-hover: #0d9488;
+    /* Teal 600 */
+    --secondary-color: #1e293b;
+    /* Slate 800 */
+
+    /* Functional Colors */
+    --accent-success: #059669;
+    /* Emerald 600 */
+    --accent-warning: #d97706;
+    /* Amber 600 */
+    --accent-danger: #dc2626;
+    /* Red 600 */
+    --accent-info: #0284c7;
+    /* Sky 600 */
+
+    /* Neutral Scale (Crisp White/Grey) */
+    --bg-page: #f1f5f9;
+    /* Slate 100 */
+    --bg-surface: #ffffff;
+    --bg-surface-subtle: #f8fafc;
+    /* Slate 50 */
+
+    --text-primary: #111827;
+    /* Gray 900 */
+    --text-secondary: #4b5563;
+    /* Gray 600 */
+    --text-tertiary: #9ca3af;
+    /* Gray 400 */
+
+    --border-light: #e5e7eb;
+    /* Gray 200 */
+    --border-medium: #cbd5e1;
+    /* Slate 300 */
+
+    /* Shadows (Clean, subtle) */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-normal: 300ms ease;
+
+    /* Legacy Mappings */
+    --primary-orange: var(--primary-color);
+    --highlight-yellow: var(--accent-warning);
+    --highlight-blue: var(--accent-info);
+    --text-dark: var(--text-primary);
+    --text-light: var(--text-secondary);
+    --bg-light: var(--bg-page);
+    --bg-color: var(--bg-page);
+    --card-bg: var(--bg-surface);
+    --border-color: var(--border-medium);
+    --input-bg: var(--bg-surface);
+    --accent-primary: var(--primary-color);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
 
 body {
     font-family: 'Inter', sans-serif;
-    color: var(--text-dark);
-    background-color: var(--bg-light);
+    color: var(--text-primary);
+    background-color: var(--bg-page);
     min-height: 100vh;
+    line-height: 1.5;
 }
 
-a { text-decoration: none; color: inherit; }
-button { cursor: pointer; font-family: inherit; }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Outfit', sans-serif;
+    color: var(--secondary-color);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: color var(--transition-fast);
+}
+
+button {
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    border: none;
+}
+
+/* Scrolbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}

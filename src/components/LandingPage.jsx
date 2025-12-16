@@ -47,127 +47,82 @@ const LandingPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          hi! AJ your businesses are on<br />
-          <span className="highlight-container">
-            one platform
-            <div className="highlight-bg"></div>
-          </span>
+          All your business logic on<br />
+          one streamlined platform
         </motion.h1>
 
         <motion.div
           className="subtitle"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
+          transition={{ delay: 0.3, duration: 0.8 }}
         >
-          just, scroll down, a
-          <span style={{ position: 'relative', display: 'inline-block', marginLeft: '8px' }}>
-            littlebit!
-            <div className="underline-blue"></div>
-          </span>
+          Manage production, inventory, and workflows with precision.
+          <br />The industrial standard for modern enterprises.
         </motion.div>
 
         <motion.div
           className="cta-group"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
         >
-          <Link to="/dashboard" className="btn-hero-primary">Start now - Production</Link>
-          <Link to="/todo" className="btn-hero-secondary">Schedule your day! ▼</Link>
-
-          <div className="handwritten-note">
-            <svg className="arrow-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-            </svg>
-            Scroll down <br /> for ALL apps
-          </div>
+          <Link to="/dashboard" className="btn-hero-primary">Launch Production</Link>
+          <Link to="/inventory" className="btn-hero-secondary">View Inventory</Link>
         </motion.div>
       </header>
 
-      {/* Curved Transition & Main Content */}
-      <div className="content-wrapper">
-        <div className="curve-bg">
-          <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" className="shape-fill"></path>
-          </svg>
+      {/* Main Content Area */}
+      <div className="main-content">
+
+        {/* Banner */}
+        <div className="banner-container">
+          <motion.div
+            className="banner"
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+          >
+            <span className="flag-icon">⚡</span>
+            <span><strong>New Module:</strong> Advanced Inventory Tracking is now live.</span>
+          </motion.div>
         </div>
 
-        <main className="main-content">
-          {/* Banner */}
-          <div className="banner-container">
+        {/* App Grid */}
+        <motion.div
+          className="app-grid"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+        >
+          <AppItem to="/dashboard" icon={<Package size={48} strokeWidth={1.5} />} label="Production Hub" color="icon-production" />
+          <AppItem to="/inventory" icon={<ClipboardList size={48} strokeWidth={1.5} />} label="Inventory" color="icon-inventory" />
+          <AppItem onClick={() => { }} icon={<Hammer size={48} strokeWidth={1.5} />} label="Manufacturing" color="icon-manufacturing" />
+          <AppItem onClick={() => { }} icon={<TrendingUp size={48} strokeWidth={1.5} />} label="Sales" color="icon-sales" />
+          <AppItem onClick={() => { }} icon={<Calculator size={48} strokeWidth={1.5} />} label="Accounting" color="icon-accounting" />
+          <AppItem onClick={() => { }} icon={<Users size={48} strokeWidth={1.5} />} label="HR" color="icon-hr" />
+        </motion.div>
+
+        {/* Unleash Section */}
+        <section className="unleash-section">
+          <div className="unleash-container">
             <motion.div
-              className="banner"
-              initial={{ y: 20, opacity: 0 }}
+              initial={{ y: 30, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <span className="flag-icon">🇮🇳</span>
-              <span><strong>Business Show:</strong> RAIPUR (India) • Dec 17, 2025</span>
-              <a href="#" className="banner-link" style={{ marginLeft: '10px', display: 'flex', alignItems: 'center' }}>
-                Register <ArrowRight size={16} style={{ marginLeft: '4px' }} />
-              </a>
+              <h2 className="unleash-title">
+                Optimize your potential.
+              </h2>
+              <p style={{ marginBottom: '2rem', color: 'var(--text-secondary)', fontSize: '1.2rem' }}>
+                Seamless integration for maximum efficiency.
+              </p>
+              <Link to="/dashboard" className="btn-unleash">Open Dashboard</Link>
             </motion.div>
           </div>
-
-          {/* App Grid */}
-          <motion.div
-            className="app-grid"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <AppItem to="/dashboard" icon={<Package size={40} />} label="Production" color="icon-production" />
-            <AppItem onClick={() => alert('Coming soon!')} icon={<Hammer size={40} />} label="Manufacturing" color="icon-manufacturing" />
-            <AppItem to="/inventory" icon={<ClipboardList size={40} />} label="Inventory" color="icon-inventory" />
-            <AppItem onClick={() => alert('Coming soon!')} icon={<TrendingUp size={40} />} label="Sales" color="icon-sales" />
-            <AppItem onClick={() => alert('Coming soon!')} icon={<Calculator size={40} />} label="Accounting" color="icon-accounting" />
-            <AppItem onClick={() => alert('Coming soon!')} icon={<Users size={40} />} label="HR" color="icon-hr" />
-            <AppItem onClick={() => alert('Coming soon!')} icon={<PenTool size={40} style={{ color: '#0ea5e9' }} />} label="Studio" />
-            <AppItem onClick={() => alert('Coming soon!')} icon={<RefreshCw size={40} style={{ color: '#14b8a6' }} />} label="Subscriptions" />
-          </motion.div>
-
-          {/* Unleash Section */}
-          <section className="unleash-section">
-            <div className="unleash-container">
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                viewport={{ once: true }}
-                style={{ position: 'relative', display: 'inline-block' }}
-              >
-                {/* Decorative Bursts */}
-                <svg style={{ position: 'absolute', top: '-60px', left: '50%', transform: 'translateX(-50%)', width: '300px', height: '100px', overflow: 'visible' }} viewBox="0 0 300 100">
-                  <path d="M150,80 Q160,40 170,10" stroke="#FDBA74" strokeWidth="4" fill="none" strokeLinecap="round" />
-                  <path d="M150,80 Q155,90 165,10" stroke="none" fill="#FDBA74" />
-                  <path d="M100,90 Q80,50 60,30" stroke="#FDBA74" strokeWidth="4" fill="none" strokeLinecap="round" />
-                  <path d="M120,80 Q100,40 90,20" stroke="#FDBA74" strokeWidth="4" fill="none" strokeLinecap="round" />
-                  <path d="M200,90 Q220,50 240,30" stroke="#FDBA74" strokeWidth="4" fill="none" strokeLinecap="round" />
-                  <path d="M180,80 Q200,40 210,20" stroke="#FDBA74" strokeWidth="4" fill="none" strokeLinecap="round" />
-                </svg>
-
-                <h2 className="unleash-title">
-                  <span style={{ color: '#1F2937' }}>Unleash</span><br />
-                  <span style={{ color: '#1F2937' }}>your</span> <span className="text-teal">growth potential</span>
-                </h2>
-              </motion.div>
-
-              <div style={{ marginTop: '2rem' }}>
-                <Link to="/dashboard" className="btn-unleash">Click here! - For Dashboard</Link>
-
-                <div className="unleash-footer">
-                  <svg className="arrow-up" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: '24px', height: '24px' }}>
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                  </svg>
-                  <span>I hope you will like it</span>
-                  <span>Demo Page - Subhankar dhar</span>
-                </div>
-              </div>
-            </div>
-          </section>
-        </main>
+        </section>
       </div>
     </div>
   );
