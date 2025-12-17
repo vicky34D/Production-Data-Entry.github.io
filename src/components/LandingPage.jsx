@@ -21,13 +21,35 @@ import {
     Twitter,
     Linkedin,
     Mail,
-    ChevronDown
+    ChevronDown,
+    X
 } from 'lucide-react';
 import './LandingPage.css';
 
 const LandingPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [isConnected, setIsConnected] = useState(false);
+    const [showAuthModal, setShowAuthModal] = useState(false);
     const navigate = useNavigate();
+
+    // Use environment variable for API URL or default to localhost
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
+    // Check Backend Connection
+    React.useEffect(() => {
+        const checkConnection = async () => {
+            try {
+                const response = await fetch(`${API_URL}/api/health`);
+                if (response.ok) {
+                    setIsConnected(true);
+                }
+            } catch (error) {
+                console.log('Backend not connected yet');
+                setIsConnected(false);
+            }
+        };
+        checkConnection();
+    }, [API_URL]);
 
     const modules = [
         { id: 'prod', title: 'Production', path: '/dashboard', icon: <Package />, color: '#3b82f6' },
@@ -71,7 +93,7 @@ const LandingPage = () => {
                         <span className="nav-item">System Status</span>
                     </div>
                     <div className="nav-auth">
-                        <button className="btn-signin">Admin Access</button>
+                        <button className="btn-signin" onClick={() => setShowAuthModal(true)}>Admin Access</button>
                     </div>
                 </nav>
 
@@ -249,10 +271,28 @@ const LandingPage = () => {
                             <div className="copyright">
                                 © 2025 AJ Aromatics IND Inc.
                             </div>
+
+                            {/* DB Status Indicator */}
+                            <div style={{ marginTop: '1rem', fontSize: '0.8rem', opacity: 0.6, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <div style={{
+                                    width: '8px',
+                                    height: '8px',
+                                    borderRadius: '50%',
+                                    background: isConnected ? '#10b981' : '#ef4444'
+                                }}></div>
+                                System: {isConnected ? 'Online (PostgreSQL)' : 'Offline'}
+                            </div>
                         </div>
                     </div>
                 </footer>
             </div>
+
+            {/* Auth Modal */}
+            <AnimatePresence>
+                {showAuthModal && (
+                    <AuthModal onClose={() => setShowAuthModal(false)} />
+                )}
+            </AnimatePresence>
         </div>
     );
 };
@@ -313,5 +353,121 @@ const faqData = [
     { question: "Can I monitor daily worker output?", answer: "Absolutely. The 'Daily Store Update' and production modules allow for tracking daily quotas and efficiency per team or machine." },
     { question: "Is the system secure?", answer: "Yes, all formulation secrets and production data are stored securely with role-based access control for administrators and staff." }
 ];
+
+const AuthModal = ({ onClose }) => {
+    const [email, setEmail] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
+
+    // Use environment variable
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+
+        try {
+            const res = await fetch(`${API_URL}/api/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                setSuccess(true);
+                // Optional: Close modal after delay
+                setTimeout(() => {
+                    onClose();
+                }, 1500);
+            }
+        } catch (err) {
+            console.error('Login failed', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="auth-overlay"
+            onClick={onClose}
+        >
+            <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="auth-modal"
+                onClick={e => e.stopPropagation()}
+            >
+                <div className="auth-left">
+                    {/* Background image is handled by CSS */}
+                </div>
+
+                <button className="close-modal-btn" onClick={onClose}><X size={24} /></button>
+
+                <div className="auth-right">
+                    <div className="auth-header">
+                        <h2>Sign in / Sign up</h2>
+                        <p>We'll sign you in or create an account if you don't have one yet</p>
+                    </div>
+
+                    {!success ? (
+                        <>
+                            <div className="auth-form">
+                                <button className="btn-google">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M23.52 12.2727C23.52 11.4264 23.4473 10.6691 23.3164 9.94092H12V14.4964H18.4727C18.1882 15.9873 17.3155 17.2609 16.0364 18.1118V21.1036H19.9055C22.1727 19.0327 23.52 15.9527 23.52 12.2727Z" fill="#4285F4" />
+                                        <path d="M12 24C15.24 24 17.9564 22.9364 19.9127 21.1036L16.0436 18.1118C14.9673 18.8327 13.5927 19.2618 12 19.2618C8.87273 19.2618 6.22364 17.1527 5.27636 14.3073H1.27637V17.3873C3.25091 21.2873 7.34545 24 12 24Z" fill="#34A853" />
+                                        <path d="M5.27636 14.3073C5.02909 13.5655 4.89818 12.7818 4.89818 11.9727C4.89818 11.1636 5.02909 10.38 5.27636 9.63818V6.55817H1.27637C0.467273 8.15817 0.0109091 9.99092 0.0109091 11.9727C0.0109091 13.9545 0.467273 15.7873 1.27637 17.3873L5.27636 14.3073Z" fill="#FBBC05" />
+                                        <path d="M12 4.73818C13.76 4.73818 15.3382 5.34182 16.5818 6.52182L20.0145 3.08909C17.9509 1.17091 15.2327 0 12 0C7.34545 0 3.25091 2.71273 1.27637 6.61273L5.27636 9.69273C6.22364 6.84727 8.87273 4.73818 12 4.73818Z" fill="#EA4335" />
+                                    </svg>
+                                    Continue with Google
+                                </button>
+
+                                <div className="auth-divider">
+                                    <span>OR</span>
+                                </div>
+
+                                <form onSubmit={handleSubmit} className="input-group">
+                                    <input
+                                        type="email"
+                                        className="auth-input"
+                                        placeholder="Enter your work or personal email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                    />
+                                    <button
+                                        type="submit"
+                                        className="btn-continue"
+                                        disabled={loading}
+                                    >
+                                        {loading ? 'Continuing...' : 'Continue'}
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div className="auth-footer">
+                                By signing up or signing in, you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
+                            </div>
+                        </>
+                    ) : (
+                        <div className="auth-success" style={{ textAlign: 'center' }}>
+                            <div style={{ background: '#dcfce7', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto' }}>
+                                <ClipboardList size={30} color="#166534" />
+                            </div>
+                            <h3 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '0.5rem', color: '#0f172a' }}>Welcome to AJ Aromatics</h3>
+                            <p style={{ color: '#64748b' }}>Logging you into the dashboard...</p>
+                        </div>
+                    )}
+                </div>
+            </motion.div>
+        </motion.div>
+    );
+};
 
 export default LandingPage;

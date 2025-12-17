@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # Database Service (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    container_name: aj_aromatics_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: securepassword123
+      POSTGRES_DB: aj_aromatics_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  # Backend API Service
+  backend:
+    build: ./server
+    container_name: aj_aromatics_backend
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: postgresql://admin:securepassword123@db:5432/aj_aromatics_db
+      PORT: 3001
+    depends_on:
+      - db
+
+  # Frontend Web Service
+  frontend:
+    build: .
+    container_name: aj_aromatics_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
