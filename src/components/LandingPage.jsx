@@ -83,8 +83,8 @@ const LandingPage = () => {
                         transition={{ duration: 0.8 }}
                         className="hero-text"
                     >
-                        <h1>Launch your <span className="highlight-blue">production</span> efficiency.</h1>
-                        <p>Streamline data entry, track inventory, and manage formulations in one place.</p>
+                        <h1>Elevate your <span className="highlight-blue">Incense</span> Production.</h1>
+                        <p>Streamline formulation, track raw materials, and optimize manufacturing flow from mixing to packaging.</p>
                     </motion.div>
 
                     {/* Central Input Box */}
@@ -98,7 +98,7 @@ const LandingPage = () => {
                             <Search className="search-icon" size={20} />
                             <input
                                 type="text"
-                                placeholder="What are you looking for? (e.g., Inventory, Production...)"
+                                placeholder="Search formulations, raw materials, or batch numbers..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 autoFocus
@@ -148,7 +148,7 @@ const LandingPage = () => {
 
                 {/* Brand Scrolling Section */}
                 <div className="brand-marquee-section">
-                    <p className="marquee-title">Twisted by 653K+ users in 180+ countries</p>
+                    <p className="marquee-title">Trusted by 50+ Global Distributors & Retail Partners</p>
                     <div className="marquee-container">
                         <div className="marquee-track">
                             {/* First Set */}
@@ -176,8 +176,8 @@ const LandingPage = () => {
                 {/* Reviews Section */}
                 <div className="reviews-section">
                     <div className="reviews-header">
-                        <h2>Happiness speaks</h2>
-                        <p>What some of our 400K+ creators and developers in 180+ countries<br />building everything from side projects to enterprise apps have to say.</p>
+                        <h2>The Scent of Success</h2>
+                        <p>Hear from production managers, distributors, and supply chain partners <br />who trust AJ Aromatics for quality and consistency.</p>
                     </div>
 
                     <div className="reviews-marquee-container">
@@ -185,10 +185,10 @@ const LandingPage = () => {
                         <div className="marquee-track slow-scroll">
                             {[...Array(2)].map((_, i) => (
                                 <div key={`r1-${i}`} className="review-group">
-                                    <ReviewCard name="CaptainDev" handle="Discord" text="Rocket saved me more time in 10 minutes than my last 3 frameworks combined. Big respect for what you built!" icon="discord" color="#5865F2" />
-                                    <ReviewCard name="Mia Williams" handle="@miatravls" text="I just one shotted a prompt using @rocketdotnew and I can't put into words how astronomically better it is." icon="twitter" color="#1DA1F2" />
-                                    <ReviewCard name="T-Bot 🙌" handle="Discord" text="Simply magical, beautiful and definitely the best experience I had so far compared to the competitors!!!" icon="discord" color="#5865F2" />
-                                    <ReviewCard name="Alex Chen" handle="@alexc" text="The inventory tracking module is a lifesaver. Reduced our waste by 40% in just two weeks. Incredible." icon="linkedin" color="#0A66C2" />
+                                    <ReviewCard name="Rajesh Kumar" handle="Distributor" text="The consistency in fragrance notes for every batch is remarkable. AJ Aromatics never disappoints." icon="linkedin" color="#0A66C2" />
+                                    <ReviewCard name="Elena S." handle="@FragranceHub" text="Their new automated inventory system ensures we never run out of stock during festival seasons." icon="twitter" color="#1DA1F2" />
+                                    <ReviewCard name="Global Exports" handle="Partner" text="Premium packaging and on-time delivery. Best incense stick manufacturer we have worked with." icon="mail" color="#EA4335" />
+                                    <ReviewCard name="Amit Patel" handle="@Organics" text="The raw material tracking is precise. We know exactly what goes into our premium Flora sticks." icon="linkedin" color="#0A66C2" />
                                 </div>
                             ))}
                         </div>
@@ -197,10 +197,10 @@ const LandingPage = () => {
                         <div className="marquee-track reverse-scroll">
                             {[...Array(2)].map((_, i) => (
                                 <div key={`r2-${i}`} className="review-group">
-                                    <ReviewCard name="Dan Western" handle="@westerns1978" text="@rocketdotnew is one of the best vibe coding apps I've used. Pure elegant efficiency." icon="twitter" color="#1DA1F2" />
-                                    <ReviewCard name="Lisandro VB" handle="Email" text="It's exciting to use Rocket, because for the first time a startup has understood how to really apply logic from a prompt." icon="mail" color="#EA4335" />
-                                    <ReviewCard name="Eban Emmanuel" handle="@Eebann" text="I've built apps with Rocket.new, and let me tell you it's a game-changer. Its leagues ahead for turning ideas into reality." icon="linkedin" color="#0A66C2" />
-                                    <ReviewCard name="Sarah J." handle="@sara_dev" text="Finally a dashboard that doesn't look like a spreadsheet from 1999. Beautiful work on the UX!" icon="twitter" color="#1DA1F2" />
+                                    <ReviewCard name="Sarah Jenkins" handle="@ZenLiving" text="The Sandalwood Supreme is a best-seller in our stores. Customers love the long-lasting scent." icon="twitter" color="#1DA1F2" />
+                                    <ReviewCard name="Production Team" handle="Internal" text="The new dashboard makes tracking daily dipping and packing targets so much easier." icon="discord" color="#5865F2" />
+                                    <ReviewCard name="Aarav Singh" handle="@VedaScents" text="Custom formulations are handled with great secrecy and precision. Truly professional service." icon="linkedin" color="#0A66C2" />
+                                    <ReviewCard name="Quality Control" handle="Report" text="Zero defects in the last 10,000 packets. The automated checks are working perfectly." icon="mail" color="#EA4335" />
                                 </div>
                             ))}
                         </div>
@@ -210,8 +210,8 @@ const LandingPage = () => {
                 {/* FAQ Section */}
                 <div className="faq-section">
                     <div className="faq-header">
-                        <h2>FAQs</h2>
-                        <p>Rocket is super easy to navigate for anyone.<br />Here are some of our most common questions and answers.</p>
+                        <h2>Frequently Asked Questions</h2>
+                        <p>Understanding our manufacturing process and platform.<br />Here are answers to common queries.</p>
                     </div>
                     <div className="faq-list">
                         {faqData.map((item, index) => (
@@ -306,12 +306,12 @@ const FAQItem = ({ question, answer }) => {
 };
 
 const faqData = [
-    { question: "What is Rocket?", answer: "Rocket is an advanced production and formulation management system designed for modern manufacturing enterprises." },
-    { question: "How's Rocket different from other vibe coding platforms?", answer: "Rocket combines inventory, production, and sales into a single, seamless 'vibe coding' experience that puts user experience first." },
-    { question: "What can I do with Rocket?", answer: "You can track raw materials, manage formulations, generate production reports, and monitor global sales in real-time." },
-    { question: "What tech stacks does Rocket know?", answer: "Rocket is built on a modern React stack with Node.js, capable of integrating with various ERPs and SQL databases." },
-    { question: "Who owns the IP and the code?", answer: "You own 100% of the data and customizations you build within your Rocket instance." },
-    { question: "Do you offer free plans?", answer: "Yes, we offer a generous tracking-only free tier for small startups." }
+    { question: "What is the AJ Aromatics Production System?", answer: "It is an end-to-end management platform for tracking incense stick manufacturing, from raw material procurement to final finished goods packaging." },
+    { question: "Can we handle custom formulations?", answer: "Yes, the system allows for detailed 'Formulation' entries, securing unique recipes for different incense varieties like Flora, Masala, and Dipped sticks." },
+    { question: "How is inventory tracked?", answer: "We track inventory in real-time across multiple stages: Raw Materials (Bamboo, Charcoal, Jigat), Work-in-Progress (Raw Sticks), and Finished Goods." },
+    { question: "Does it support export documentation?", answer: "The system generates essential data for Goods Dispatch Notes (GDN), facilitating smooth creation of export and shipping documents." },
+    { question: "Can I monitor daily worker output?", answer: "Absolutely. The 'Daily Store Update' and production modules allow for tracking daily quotas and efficiency per team or machine." },
+    { question: "Is the system secure?", answer: "Yes, all formulation secrets and production data are stored securely with role-based access control for administrators and staff." }
 ];
 
 export default LandingPage;
