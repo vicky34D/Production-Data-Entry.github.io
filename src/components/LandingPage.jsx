@@ -232,7 +232,7 @@ const LandingPage = () => {
                             >
                                 <LayoutGrid size={80} color="#fff" strokeWidth={1.5} />
                             </motion.div>
-                            <span className="footer-brand-text">rocket</span>
+                            <span className="footer-brand-text">AJ Aromatics</span>
                         </div>
 
                         <div className="footer-bottom">
@@ -247,7 +247,7 @@ const LandingPage = () => {
                                 <a href="#">Privacy</a>
                             </div>
                             <div className="copyright">
-                                © 2025 Rocket USA Inc.
+                                © 2025 AJ Aromatics IND Inc.
                             </div>
                         </div>
                     </div>
