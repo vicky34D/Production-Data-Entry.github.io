@@ -1,177 +1,141 @@
-
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { motion, useSpring, useTransform, useMotionValue } from 'framer-motion';
-import { Package, ClipboardList, Hammer, TrendingUp, Calculator, Users, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+    Package,
+    ClipboardList,
+    Hammer,
+    TrendingUp,
+    Calculator,
+    Users,
+    Search,
+    ArrowRight,
+    LayoutGrid,
+    Settings
+} from 'lucide-react';
 import './LandingPage.css';
 
 const LandingPage = () => {
-    // Mouse tracking for parallax
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
+    const [searchQuery, setSearchQuery] = useState('');
+    const navigate = useNavigate();
 
-    const handleMouseMove = (e) => {
-        const { clientX, clientY } = e;
-        const { innerWidth, innerHeight } = window;
-        mouseX.set(clientX / innerWidth - 0.5);
-        mouseY.set(clientY / innerHeight - 0.5);
+    const modules = [
+        { id: 'prod', title: 'Production', path: '/dashboard', icon: <Package />, color: '#3b82f6' },
+        { id: 'inv', title: 'Inventory', path: '/inventory', icon: <ClipboardList />, color: '#10b981' },
+        { id: 'form', title: 'Formulation', path: '#', icon: <Hammer />, color: '#8b5cf6' },
+        { id: 'sales', title: 'Sales', path: '#', icon: <TrendingUp />, color: '#f59e0b' },
+        { id: 'fin', title: 'Finance', path: '#', icon: <Calculator />, color: '#ef4444' },
+        { id: 'team', title: 'Team', path: '#', icon: <Users />, color: '#06b6d4' },
+    ];
+
+    const filteredModules = modules.filter(m =>
+        m.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        if (filteredModules.length > 0) {
+            if (filteredModules[0].path !== '#') {
+                navigate(filteredModules[0].path);
+            }
+        }
     };
 
     return (
-        <div className="spline-container" onMouseMove={handleMouseMove}>
+        <div className="rocket-landing">
+            {/* Background Elements */}
+            <div className="stars"></div>
+            <div className="clouds"></div>
+            <div className="mountains"></div>
 
-            {/* --- 3D Background Scene (Incense Theme) --- */}
-            <div className="spline-backdrop">
-                {/* Main 3D Incense Stick */}
-                <IncenseStick
-                    mouseX={mouseX}
-                    mouseY={mouseY}
-                />
-
-                {/* Ambient Smoke Particles */}
-                <SmokeParticle size={300} top="20%" left="20%" duration={15} delay={0} />
-                <SmokeParticle size={400} top="50%" left="60%" duration={18} delay={2} />
-                <SmokeParticle size={250} top="70%" left="30%" duration={12} delay={5} />
-
-                {/* Grid Overlay for texture */}
-                <div className="grid-texture" style={{ opacity: 0.2 }}></div>
-            </div>
-
-            {/* --- Content Layer --- */}
-            <main className="content-layer">
-                <header className="spline-header">
-                    <motion.div
-                        initial={{ opacity: 0, x: -50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8, ease: "easeOut" }}
-                    >
-                        <h1 className="spline-title">
-                            AJ <span className="gradient-text">Aromatics</span>
-                        </h1>
-                        <p className="spline-desc">
-                            Crafting the Atmosphere of Tomorrow. <br />
-                            Premium Incense Production System.
-                        </p>
-                    </motion.div>
-                </header>
-
-                <div className="glass-deck">
-                    <GlassCard to="/dashboard" title="Production" icon={<Package />} />
-                    <GlassCard to="/inventory" title="Inventory" icon={<ClipboardList />} />
-                    <GlassCard title="Formulation" icon={<Hammer />} />
-                    <GlassCard title="Global Sales" icon={<TrendingUp />} />
-                    <GlassCard title="Finance" icon={<Calculator />} />
-                    <GlassCard title="Team" icon={<Users />} />
+            {/* Navigation Header */}
+            <nav className="rocket-nav">
+                <div className="nav-logo">
+                    <LayoutGrid size={24} color="#fff" />
+                    <span>AJ Aromatics</span>
                 </div>
+                <div className="nav-links">
+                    <span className="nav-item">Documentation</span>
+                    <span className="nav-item">Support</span>
+                    <span className="nav-item">System Status</span>
+                </div>
+                <div className="nav-auth">
+                    <button className="btn-signin">Admin Access</button>
+                </div>
+            </nav>
+
+            {/* Main Content */}
+            <main className="rocket-hero">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8 }}
+                    className="hero-text"
+                >
+                    <h1>Launch your <span className="highlight-blue">production</span> efficiency.</h1>
+                    <p>Streamline data entry, track inventory, and manage formulations in one place.</p>
+                </motion.div>
+
+                {/* Central Input Box */}
+                <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.2, duration: 0.6 }}
+                    className="search-wrapper"
+                >
+                    <form onSubmit={handleSearchSubmit} className="rocket-search-box">
+                        <Search className="search-icon" size={20} />
+                        <input
+                            type="text"
+                            placeholder="What are you looking for? (e.g., Inventory, Production...)"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            autoFocus
+                        />
+                        <div className="search-actions">
+                            <button type="button" className="action-btn text-btn">
+                                <Settings size={16} /> Import
+                            </button>
+                            <button type="submit" className="action-btn primary-btn">
+                                <ArrowRight size={18} />
+                            </button>
+                        </div>
+                    </form>
+                </motion.div>
+
+                {/* Dock / Frameworks Bar */}
+                <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4, duration: 0.8 }}
+                    className="modules-dock-container"
+                >
+                    <div className="dock-label">System Modules</div>
+                    <div className="modules-dock">
+                        <AnimatePresence>
+                            {filteredModules.map((mod) => (
+                                <motion.div
+                                    key={mod.id}
+                                    layout
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.8 }}
+                                    whileHover={{ y: -5, scale: 1.1 }}
+                                    className="dock-item"
+                                >
+                                    <Link to={mod.path} className="dock-link" title={mod.title}>
+                                        <div className="dock-icon" style={{ '--hover-color': mod.color }}>
+                                            {mod.icon}
+                                        </div>
+                                    </Link>
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    </div>
+                </motion.div>
             </main>
         </div>
     );
 };
 
-// 3D Incense Stick Component
-const IncenseStick = ({ mouseX, mouseY }) => {
-    const rotateX = useTransform(mouseY, [-0.5, 0.5], [10, -10]);
-    const rotateY = useTransform(mouseX, [-0.5, 0.5], [-10, 10]);
-
-    return (
-        <motion.div
-            style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                x: '-50%',
-                y: '-50%',
-                rotateX,
-                rotateY,
-                perspective: 1000
-            }}
-        >
-            <div className="incense-stick-3d">
-                <div className="incense-glow-tip"></div>
-                {/* Emitting Smoke from Tip */}
-                <RisingSmoke />
-            </div>
-        </motion.div>
-    );
-};
-
-// Procedural Smoke Component
-const RisingSmoke = () => {
-    return (
-        <div style={{ position: 'absolute', top: -10, left: '50%', transform: 'translateX(-50%)' }}>
-            {[...Array(5)].map((_, i) => (
-                <motion.div
-                    key={i}
-                    style={{
-                        position: 'absolute',
-                        width: 20,
-                        height: 20,
-                        background: 'rgba(200, 200, 200, 0.2)',
-                        borderRadius: '50%',
-                        filter: 'blur(8px)',
-                    }}
-                    animate={{
-                        y: [-10, -150 - (i * 30)],
-                        x: [0, Math.sin(i) * 30, Math.cos(i) * -30],
-                        opacity: [0.6, 0],
-                        scale: [1, 2 + i],
-                    }}
-                    transition={{
-                        duration: 3 + i,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: i * 0.5
-                    }}
-                />
-            ))}
-        </div>
-    )
-}
-
-// Background Ambient Smoke
-const SmokeParticle = ({ size, top, left, duration, delay }) => {
-    return (
-        <motion.div
-            className="smoke-particle"
-            style={{ width: size, height: size, top, left }}
-            animate={{
-                y: [0, -50, 0],
-                x: [0, 30, 0],
-                opacity: [0.3, 0.5, 0.3],
-                scale: [1, 1.1, 1],
-            }}
-            transition={{
-                duration: duration,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut",
-                delay: delay
-            }}
-        />
-    );
-};
-
-const GlassCard = ({ to, title, icon }) => {
-    const CardContent = () => (
-        <div className="glass-content">
-            <div className="icon-bubble">
-                {icon}
-            </div>
-            <span className="card-label">{title}</span>
-            <div className="card-shine"></div>
-        </div>
-    );
-
-    return (
-        <motion.div
-            className="glass-card-wrapper"
-            whileHover={{ y: -5 }}
-            transition={{ type: "spring", stiffness: 300 }}
-        >
-            {to ? <Link to={to} className="glass-link"><CardContent /></Link> : <CardContent />}
-        </motion.div>
-    );
-};
-
 export default LandingPage;
-

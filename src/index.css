@@ -2,44 +2,45 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&display=swap');
 
 :root {
-    /* Brand Colors - Deep Teal & Charcoal (Professional/Industrial) */
-    --primary-color: #0f766e;
-    /* Teal 700 */
-    --primary-hover: #0d9488;
-    /* Teal 600 */
-    --secondary-color: #1e293b;
-    /* Slate 800 */
+    /* Brand Colors - Clean Blue Theme */
+    --primary-color: #2563eb;
+    /* Royal Blue */
+    --primary-hover: #1d4ed8;
+    /* Darker Blue */
+    --secondary-color: #475569;
+    /* Slate 600 */
 
     /* Functional Colors */
-    --accent-success: #059669;
-    /* Emerald 600 */
-    --accent-warning: #d97706;
-    /* Amber 600 */
+    --accent-success: #16a34a;
+    /* Green 600 */
+    --accent-warning: #ea580c;
+    /* Orange 600 */
     --accent-danger: #dc2626;
     /* Red 600 */
     --accent-info: #0284c7;
     /* Sky 600 */
 
-    /* Neutral Scale (Crisp White/Grey) */
-    --bg-page: #f1f5f9;
-    /* Slate 100 */
+    /* Neutral Scale (Light & Clean) */
+    --bg-page: #f8fafc;
+    /* Slate 50 - Main Background */
     --bg-surface: #ffffff;
-    --bg-surface-subtle: #f8fafc;
-    /* Slate 50 */
+    /* White - Cards/Surfaces */
+    --bg-surface-subtle: #f1f5f9;
+    /* Slate 100 */
 
-    --text-primary: #111827;
-    /* Gray 900 */
-    --text-secondary: #4b5563;
-    /* Gray 600 */
-    --text-tertiary: #9ca3af;
-    /* Gray 400 */
+    --text-primary: #0f172a;
+    /* Slate 900 - High Contrast Text */
+    --text-secondary: #334155;
+    /* Slate 700 */
+    --text-tertiary: #64748b;
+    /* Slate 500 */
 
-    --border-light: #e5e7eb;
-    /* Gray 200 */
+    --border-light: #e2e8f0;
+    /* Slate 200 */
     --border-medium: #cbd5e1;
     /* Slate 300 */
 
-    /* Shadows (Clean, subtle) */
+    /* Shadows (Soft & Modern) */
     --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
@@ -87,15 +88,19 @@ h4,
 h5,
 h6 {
     font-family: 'Outfit', sans-serif;
-    color: var(--secondary-color);
+    color: var(--text-primary);
     font-weight: 700;
     letter-spacing: -0.025em;
 }
 
 a {
     text-decoration: none;
-    color: inherit;
+    color: var(--primary-color);
     transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--primary-hover);
 }
 
 button {
@@ -104,7 +109,7 @@ button {
     border: none;
 }
 
-/* Scrolbar Styling */
+/* Scrollbar Styling */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
