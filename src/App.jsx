@@ -11,6 +11,8 @@ import SparePartsUpdate from './components/SparePartsUpdate';
 import FinishedGoodsInventory from './components/FinishedGoodsInventory';
 import GoodsDispatchNote from './components/GoodsDispatchNote';
 import InventorySummary from './components/InventorySummary';
+import ItemsPage from './components/ItemsPage';
+
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
         <Route path="/inventory/fgi" element={<FinishedGoodsInventory />} />
         <Route path="/inventory/gdn" element={<GoodsDispatchNote />} />
         <Route path="/inventory/summary" element={<InventorySummary />} />
+        <Route path="/items" element={<ItemsPage />} />
+
       </Routes>
     </Router>
   );

@@ -52,6 +52,7 @@ const LandingPage = () => {
     }, [API_URL]);
 
     const modules = [
+        { id: 'items', title: 'Items', path: '/items', icon: <LayoutGrid />, color: '#ec4899' },
         { id: 'prod', title: 'Production', path: '/dashboard', icon: <Package />, color: '#3b82f6' },
         { id: 'inv', title: 'Inventory', path: '/inventory', icon: <ClipboardList />, color: '#10b981' },
         { id: 'form', title: 'Formulation', path: '#', icon: <Hammer />, color: '#8b5cf6' },

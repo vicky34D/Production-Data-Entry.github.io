@@ -20,6 +20,16 @@ const SparePartsUpdate = () => {
     const [quantity, setQuantity] = useState('');
     const [machineNumber, setMachineNumber] = useState('');
 
+    const [itemsList, setItemsList] = useState([]);
+
+    // Load Master Items
+    useEffect(() => {
+        const savedItems = localStorage.getItem('productItems');
+        if (savedItems) {
+            setItemsList(JSON.parse(savedItems));
+        }
+    }, []);
+
     // Persist Data
     useEffect(() => {
         localStorage.setItem('sparePartsUpdateData', JSON.stringify(sparePartsUpdateData));
@@ -149,15 +159,20 @@ const SparePartsUpdate = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Item</label>
-                            <input
-                                type="text"
-                                placeholder="Item Name"
+                            <label>Item Selection (from Master List)</label>
+                            <select
                                 value={item}
                                 onChange={(e) => setItem(e.target.value)}
-                                readOnly={!isToday}
-                                style={!isToday ? { backgroundColor: 'var(--bg-color)', cursor: 'not-allowed' } : {}}
-                            />
+                                disabled={!isToday}
+                                style={!isToday ? { backgroundColor: 'var(--bg-color)', cursor: 'not-allowed', opacity: 0.7 } : {}}
+                            >
+                                <option value="">-- Select Item --</option>
+                                {itemsList.map((product) => (
+                                    <option key={product.id} value={product.name}>
+                                        {product.name} ({product.category})
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
                         <div className="form-group">
