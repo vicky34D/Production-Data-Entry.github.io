@@ -176,6 +176,29 @@
     background: rgba(239, 68, 68, 0.15);
 }
 
+.btn-upload {
+    background-color: var(--bg-surface-subtle);
+    border: 1px solid var(--border-medium);
+    color: var(--text-secondary);
+}
+
+.btn-upload:hover {
+    background-color: var(--border-light);
+    color: var(--text-primary);
+}
+
+.btn-upload.has-file {
+    background-color: rgba(16, 185, 129, 0.1);
+    border-color: #10b981;
+    color: #10b981;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 1rem;
+}
+
 /* Table Styles */
 .table-container {
     overflow-x: auto;

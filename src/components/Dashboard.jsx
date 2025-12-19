@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Plus, Activity, TrendingUp, Lock } from 'lucide-react';
+import { ArrowLeft, Plus, Activity, TrendingUp, Lock, Upload } from 'lucide-react';
 import './Dashboard.css';
 
 const Dashboard = () => {
+    const fileInputRef = useRef(null);
+
     // State
     const [productionData, setProductionData] = useState(() => {
         const saved = localStorage.getItem('agarbattiDataWet');
@@ -20,6 +22,7 @@ const Dashboard = () => {
     const [machineId, setMachineId] = useState('M1');
     const [trayId, setTrayId] = useState('');
     const [wetWeight, setWetWeight] = useState('');
+    const [selectedFileName, setSelectedFileName] = useState('');
 
     // Persist Data
     useEffect(() => {
@@ -57,11 +60,13 @@ const Dashboard = () => {
             machine: machineId,
             tray: trayId,
             weight: parseFloat(wetWeight),
+            document: selectedFileName,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
 
         setProductionData([...productionData, entry]);
         setWetWeight('');
+        setSelectedFileName('');
     };
 
     const handleDeleteEntry = (id, date) => {
@@ -199,13 +204,32 @@ const Dashboard = () => {
                             />
                         </div>
 
-                        <button
-                            className="btn btn-primary"
-                            onClick={handleAddEntry}
-                            disabled={!isToday}
-                        >
-                            Save Entry
-                        </button>
+                        <div className="button-group">
+                            <button
+                                className="btn btn-primary"
+                                onClick={handleAddEntry}
+                                disabled={!isToday}
+                            >
+                                <Plus size={18} /> Save Entry
+                            </button>
+                            <button
+                                className={`btn btn-upload ${selectedFileName ? 'has-file' : ''}`}
+                                title={selectedFileName ? `Selected: ${selectedFileName}` : "Upload supportive documents"}
+                                onClick={() => fileInputRef.current.click()}
+                            >
+                                <Upload size={18} /> {selectedFileName ? 'File Selected' : 'Upload Docs'}
+                            </button>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                style={{ display: 'none' }}
+                                onChange={(e) => {
+                                    if (e.target.files.length > 0) {
+                                        setSelectedFileName(e.target.files[0].name);
+                                    }
+                                }}
+                            />
+                        </div>
                     </motion.div>
 
                     <motion.div
@@ -235,6 +259,11 @@ const Dashboard = () => {
                                                 <div style={{ fontSize: '0.8em', color: 'var(--text-secondary)' }}>
                                                     {item.machine} • {item.tray} • {item.weight}kg
                                                 </div>
+                                                {item.document && (
+                                                    <span className="file-badge" style={{ marginTop: '4px' }} title={item.document}>
+                                                        {item.document.length > 15 ? item.document.substring(0, 12) + '...' : item.document}
+                                                    </span>
+                                                )}
                                             </td>
                                             <td>
                                                 {item.date === todayStr ? (

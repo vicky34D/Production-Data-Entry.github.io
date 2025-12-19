@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -22,11 +22,13 @@ import {
     Linkedin,
     Mail,
     ChevronDown,
-    X
+    X,
+    Upload
 } from 'lucide-react';
 import './LandingPage.css';
 
 const LandingPage = () => {
+    const fileInputRef = useRef(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [isConnected, setIsConnected] = useState(false);
     const [showAuthModal, setShowAuthModal] = useState(false);
@@ -130,6 +132,19 @@ const LandingPage = () => {
                                 <button type="button" className="action-btn text-btn">
                                     <Settings size={16} /> Import
                                 </button>
+                                <button type="button" className="action-btn text-btn" title="Upload supportive documents" onClick={() => fileInputRef.current.click()}>
+                                    <Upload size={16} /> Upload Docs
+                                </button>
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    style={{ display: 'none' }}
+                                    onChange={(e) => {
+                                        if (e.target.files.length > 0) {
+                                            alert(`File "${e.target.files[0].name}" selected for upload.`);
+                                        }
+                                    }}
+                                />
                                 <button type="submit" className="action-btn primary-btn">
                                     <ArrowRight size={18} />
                                 </button>

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Plus, Trash2, Search, Package, Tag, Info, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Search, Package, Tag, Info, AlertCircle, Upload } from 'lucide-react';
 import './ItemsPage.css';
 
 const ItemsPage = () => {
+    const fileInputRef = useRef(null);
+
     const [items, setItems] = useState(() => {
         const saved = localStorage.getItem('productItems');
         return saved ? JSON.parse(saved) : [
@@ -116,9 +118,36 @@ const ItemsPage = () => {
                                         </select>
                                     </div>
                                 </div>
-                                <div className="form-actions">
+                                <div className="form-actions" style={{ display: 'flex', gap: '10px' }}>
                                     <button type="button" className="cancel-btn" onClick={() => setShowAddForm(false)}>Cancel</button>
-                                    <button type="submit" className="submit-btn">Save Item</button>
+                                    <button type="submit" className="submit-btn" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <Plus size={18} /> Save Item
+                                    </button>
+                                    <button type="button" className="btn-upload" style={{
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        padding: '0.75rem 1.5rem',
+                                        borderRadius: '10px',
+                                        fontWeight: '600',
+                                        gap: '8px',
+                                        cursor: 'pointer',
+                                        border: '1px solid var(--items-border)',
+                                        background: 'var(--items-card)',
+                                        color: 'var(--items-text-muted)'
+                                    }} title="Upload supportive documents" onClick={() => fileInputRef.current.click()}>
+                                        <Upload size={18} /> Upload Docs
+                                    </button>
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        style={{ display: 'none' }}
+                                        onChange={(e) => {
+                                            if (e.target.files.length > 0) {
+                                                alert(`File "${e.target.files[0].name}" selected for upload.`);
+                                            }
+                                        }}
+                                    />
                                 </div>
                             </form>
                         </motion.div>

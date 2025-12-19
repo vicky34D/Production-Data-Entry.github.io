@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Plus, ClipboardList, Trash2, Download, Lock } from 'lucide-react';
+import { ArrowLeft, Plus, ClipboardList, Trash2, Download, Lock, Upload } from 'lucide-react';
 import './SparePartsPurchase.css';
 
 const SparePartsPurchase = () => {
+    const fileInputRef = useRef(null);
+
     // State
     const [sparePartsData, setSparePartsData] = useState(() => {
         const saved = localStorage.getItem('sparePartsPurchaseData');
@@ -19,6 +21,7 @@ const SparePartsPurchase = () => {
     const [supplierName, setSupplierName] = useState('');
     const [item, setItem] = useState('');
     const [quantity, setQuantity] = useState('');
+    const [selectedFileName, setSelectedFileName] = useState('');
 
     const [itemsList, setItemsList] = useState([]);
 
@@ -53,6 +56,7 @@ const SparePartsPurchase = () => {
             supplierName,
             item,
             quantity: parseFloat(quantity),
+            document: selectedFileName,
             timestamp: new Date().toLocaleTimeString()
         };
 
@@ -62,6 +66,7 @@ const SparePartsPurchase = () => {
         setSupplierName('');
         setItem('');
         setQuantity('');
+        setSelectedFileName('');
     };
 
     const handleDeleteEntry = (id, entryDate) => {
@@ -199,14 +204,33 @@ const SparePartsPurchase = () => {
                             />
                         </div>
 
-                        <button
-                            className="btn btn-primary"
-                            onClick={handleAddEntry}
-                            disabled={!isToday}
-                            style={!isToday ? { opacity: 0.6, cursor: 'not-allowed' } : {}}
-                        >
-                            Add Purchase Entry
-                        </button>
+                        <div className="button-group">
+                            <button
+                                className="btn btn-primary"
+                                onClick={handleAddEntry}
+                                disabled={!isToday}
+                                style={!isToday ? { opacity: 0.6, cursor: 'not-allowed' } : {}}
+                            >
+                                <Plus size={18} /> Add Purchase Entry
+                            </button>
+                            <button
+                                className={`btn btn-upload ${selectedFileName ? 'has-file' : ''}`}
+                                title={selectedFileName ? `Selected: ${selectedFileName}` : "Upload supportive documents"}
+                                onClick={() => fileInputRef.current.click()}
+                            >
+                                <Upload size={18} /> {selectedFileName ? 'File Selected' : 'Upload Docs'}
+                            </button>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                style={{ display: 'none' }}
+                                onChange={(e) => {
+                                    if (e.target.files.length > 0) {
+                                        setSelectedFileName(e.target.files[0].name);
+                                    }
+                                }}
+                            />
+                        </div>
                     </motion.div>
                 </aside>
 
@@ -235,6 +259,7 @@ const SparePartsPurchase = () => {
                                         <th>Supplier Name</th>
                                         <th>Item</th>
                                         <th>Quantity</th>
+                                        <th>Doc</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -246,6 +271,13 @@ const SparePartsPurchase = () => {
                                             <td>{entry.supplierName}</td>
                                             <td>{entry.item}</td>
                                             <td style={{ fontWeight: 'bold', color: 'var(--accent-primary)' }}>{entry.quantity}</td>
+                                            <td>
+                                                {entry.document && (
+                                                    <span className="file-badge" title={entry.document}>
+                                                        {entry.document.length > 15 ? entry.document.substring(0, 12) + '...' : entry.document}
+                                                    </span>
+                                                )}
+                                            </td>
                                             <td>
                                                 {entry.date === todayStr ? (
                                                     <button className="btn-danger" onClick={() => handleDeleteEntry(entry.id, entry.date)}>

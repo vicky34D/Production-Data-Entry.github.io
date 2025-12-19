@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, RefreshCw, Download, Search, Package, TrendingUp, TrendingDown, Box } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Download, Search, Package, TrendingUp, TrendingDown, Box, Upload } from 'lucide-react';
 import './InventorySummary.css';
 
 const InventorySummary = () => {
+    const fileInputRef = useRef(null);
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [itemsList, setItemsList] = useState([]);
@@ -116,6 +117,32 @@ const InventorySummary = () => {
                     <button className="action-btn btn-primary" onClick={exportCSV}>
                         <Download size={18} /> Export CSV
                     </button>
+                    <button className="btn btn-upload" style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '0.5rem 1rem',
+                        borderRadius: '6px',
+                        fontWeight: '600',
+                        fontSize: '0.85rem',
+                        gap: '8px',
+                        cursor: 'pointer',
+                        border: '1px solid var(--border-medium)',
+                        background: 'var(--bg-surface)',
+                        color: 'var(--text-secondary)'
+                    }} title="Upload supportive documents" onClick={() => fileInputRef.current.click()}>
+                        <Upload size={18} /> Upload Docs
+                    </button>
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        style={{ display: 'none' }}
+                        onChange={(e) => {
+                            if (e.target.files.length > 0) {
+                                alert(`File "${e.target.files[0].name}" selected for upload.`);
+                            }
+                        }}
+                    />
                 </div>
             </header>
 

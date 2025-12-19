@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Plus, ClipboardList, Trash2, Download, Lock } from 'lucide-react';
+import { ArrowLeft, Plus, ClipboardList, Trash2, Download, Lock, Upload } from 'lucide-react';
 import './GoodsReceivedNote.css';
 
 const GoodsReceivedNote = () => {
+    const fileInputRef = useRef(null);
+
     // State
     const [inventoryData, setInventoryData] = useState(() => {
         const saved = localStorage.getItem('inventoryData');
@@ -23,6 +25,7 @@ const GoodsReceivedNote = () => {
     const [totalBags, setTotalBags] = useState('');
     const [qtyPerBag, setQtyPerBag] = useState('');
     const [unloadingCost, setUnloadingCost] = useState('');
+    const [selectedFileName, setSelectedFileName] = useState('');
 
     const [itemsList, setItemsList] = useState([]);
 
@@ -65,6 +68,7 @@ const GoodsReceivedNote = () => {
             qtyPerBag: parseFloat(qtyPerBag),
             totalKg,
             unloadingCost: parseFloat(unloadingCost) || 0,
+            document: selectedFileName,
             timestamp: new Date().toLocaleTimeString()
         };
 
@@ -78,6 +82,7 @@ const GoodsReceivedNote = () => {
         setTotalBags('');
         setQtyPerBag('');
         setUnloadingCost('');
+        setSelectedFileName('');
     };
 
     const handleDeleteEntry = (id, entryDate) => {
@@ -275,14 +280,33 @@ const GoodsReceivedNote = () => {
                             />
                         </div>
 
-                        <button
-                            className="btn btn-primary"
-                            onClick={handleAddEntry}
-                            disabled={!isToday}
-                            style={!isToday ? { opacity: 0.6, cursor: 'not-allowed' } : {}}
-                        >
-                            Add to Inventory
-                        </button>
+                        <div className="button-group">
+                            <button
+                                className="btn btn-primary"
+                                onClick={handleAddEntry}
+                                disabled={!isToday}
+                                style={!isToday ? { opacity: 0.6, cursor: 'not-allowed' } : {}}
+                            >
+                                <Plus size={18} /> Add to Inventory
+                            </button>
+                            <button
+                                className={`btn btn-upload ${selectedFileName ? 'has-file' : ''}`}
+                                title={selectedFileName ? `Selected: ${selectedFileName}` : "Upload supportive documents"}
+                                onClick={() => fileInputRef.current.click()}
+                            >
+                                <Upload size={18} /> {selectedFileName ? 'File Selected' : 'Upload Docs'}
+                            </button>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                style={{ display: 'none' }}
+                                onChange={(e) => {
+                                    if (e.target.files.length > 0) {
+                                        setSelectedFileName(e.target.files[0].name);
+                                    }
+                                }}
+                            />
+                        </div>
                     </motion.div>
                 </aside>
 
@@ -315,6 +339,7 @@ const GoodsReceivedNote = () => {
                                         <th>Qty/Bag</th>
                                         <th>Total Kg</th>
                                         <th>Unloading</th>
+                                        <th>Doc</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -333,6 +358,13 @@ const GoodsReceivedNote = () => {
                                             <td>{entry.qtyPerBag}</td>
                                             <td style={{ fontWeight: 'bold', color: 'var(--accent-primary)' }}>{entry.totalKg.toFixed(2)}</td>
                                             <td>{entry.unloadingCost.toFixed(2)}</td>
+                                            <td>
+                                                {entry.document && (
+                                                    <span className="file-badge" title={entry.document}>
+                                                        {entry.document.length > 15 ? entry.document.substring(0, 12) + '...' : entry.document}
+                                                    </span>
+                                                )}
+                                            </td>
                                             <td>
                                                 {entry.date === todayStr ? (
                                                     <button className="btn-danger" onClick={() => handleDeleteEntry(entry.id)}>

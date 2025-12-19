@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Plus, ClipboardList, Trash2, Download, Lock } from 'lucide-react';
+import { ArrowLeft, Plus, ClipboardList, Trash2, Download, Lock, Upload } from 'lucide-react';
 import './FinishedGoodsInventory.css';
 
 const FinishedGoodsInventory = () => {
+    const fileInputRef = useRef(null);
+
     // State
     const [finishedGoodsData, setFinishedGoodsData] = useState(() => {
         const saved = localStorage.getItem('finishedGoodsData');
@@ -20,6 +22,7 @@ const FinishedGoodsInventory = () => {
     const [item, setItem] = useState('');
     const [totalBags, setTotalBags] = useState('');
     const [kgPerBag, setKgPerBag] = useState('');
+    const [selectedFileName, setSelectedFileName] = useState('');
 
     const [itemsList, setItemsList] = useState([]);
 
@@ -59,6 +62,7 @@ const FinishedGoodsInventory = () => {
             totalBags: parseFloat(totalBags),
             kgPerBag: parseFloat(kgPerBag),
             totalPackedKg,
+            document: selectedFileName,
             timestamp: new Date().toLocaleTimeString()
         };
 
@@ -69,6 +73,7 @@ const FinishedGoodsInventory = () => {
         setItem('');
         setTotalBags('');
         setKgPerBag('');
+        setSelectedFileName('');
     };
 
     const handleDeleteEntry = (id, entryDate) => {
@@ -227,14 +232,33 @@ const FinishedGoodsInventory = () => {
                             <input type="number" value={totalPackedKg} readOnly style={{ backgroundColor: 'var(--bg-color)', cursor: 'not-allowed' }} />
                         </div>
 
-                        <button
-                            className="btn btn-primary"
-                            onClick={handleAddEntry}
-                            disabled={!isToday}
-                            style={!isToday ? { opacity: 0.6, cursor: 'not-allowed' } : {}}
-                        >
-                            Add Production Entry
-                        </button>
+                        <div className="button-group">
+                            <button
+                                className="btn btn-primary"
+                                onClick={handleAddEntry}
+                                disabled={!isToday}
+                                style={!isToday ? { opacity: 0.6, cursor: 'not-allowed' } : {}}
+                            >
+                                <Plus size={18} /> Add Production Entry
+                            </button>
+                            <button
+                                className={`btn btn-upload ${selectedFileName ? 'has-file' : ''}`}
+                                title={selectedFileName ? `Selected: ${selectedFileName}` : "Upload supportive documents"}
+                                onClick={() => fileInputRef.current.click()}
+                            >
+                                <Upload size={18} /> {selectedFileName ? 'File Selected' : 'Upload Docs'}
+                            </button>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                style={{ display: 'none' }}
+                                onChange={(e) => {
+                                    if (e.target.files.length > 0) {
+                                        setSelectedFileName(e.target.files[0].name);
+                                    }
+                                }}
+                            />
+                        </div>
                     </motion.div>
                 </aside>
 
@@ -265,6 +289,7 @@ const FinishedGoodsInventory = () => {
                                         <th>Bags</th>
                                         <th>Kg/Bag</th>
                                         <th>Total Packed (Kg)</th>
+                                        <th>Doc</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -278,6 +303,13 @@ const FinishedGoodsInventory = () => {
                                             <td>{entry.totalBags}</td>
                                             <td>{entry.kgPerBag}</td>
                                             <td style={{ fontWeight: 'bold', color: 'var(--accent-primary)' }}>{entry.totalPackedKg.toFixed(2)}</td>
+                                            <td>
+                                                {entry.document && (
+                                                    <span className="file-badge" title={entry.document}>
+                                                        {entry.document.length > 15 ? entry.document.substring(0, 12) + '...' : entry.document}
+                                                    </span>
+                                                )}
+                                            </td>
                                             <td>
                                                 {entry.date === todayStr ? (
                                                     <button className="btn-danger" onClick={() => handleDeleteEntry(entry.id, entry.date)}>
