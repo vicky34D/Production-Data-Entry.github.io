@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Plus, Activity, TrendingUp, Lock, Upload } from 'lucide-react';
+import { ArrowLeft, Plus, Activity, TrendingUp, Lock, Upload, Factory } from 'lucide-react';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -13,6 +13,10 @@ const Dashboard = () => {
         return saved ? JSON.parse(saved) : [];
     });
 
+    // Batch State
+    const [batches, setBatches] = useState([]);
+    const [selectedBatchId, setSelectedBatchId] = useState('');
+
     const todayStr = new Date().toISOString().split('T')[0];
     const [viewDate, setViewDate] = useState(todayStr);
 
@@ -23,6 +27,15 @@ const Dashboard = () => {
     const [trayId, setTrayId] = useState('');
     const [wetWeight, setWetWeight] = useState('');
     const [selectedFileName, setSelectedFileName] = useState('');
+
+    // Load Batches
+    useEffect(() => {
+        const savedBatches = JSON.parse(localStorage.getItem('productionBatches') || '[]');
+        setBatches(savedBatches);
+        // Default to first active batch if any
+        const active = savedBatches.find(b => b.status === 'In Production');
+        if (active) setSelectedBatchId(active.id);
+    }, []);
 
     // Persist Data
     useEffect(() => {
@@ -52,6 +65,10 @@ const Dashboard = () => {
             alert("Please fill all fields.");
             return;
         }
+        if (batches.length > 0 && !selectedBatchId) {
+            alert("Please select a Production Batch to link this entry to.");
+            return;
+        }
 
         const entry = {
             id: Date.now(),
@@ -60,6 +77,7 @@ const Dashboard = () => {
             machine: machineId,
             tray: trayId,
             weight: parseFloat(wetWeight),
+            batchId: selectedBatchId || 'Unassigned',
             document: selectedFileName,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
@@ -109,37 +127,43 @@ const Dashboard = () => {
     });
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-color)' }}>
-            <header className="dashboard-header">
-                <div className="brand" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Link to="/" style={{ opacity: 0.7, transition: 'opacity 0.2s' }} title="Back to Apps">
-                        <ArrowLeft size={24} />
-                    </Link>
-                    <div className="brand-icon" style={{
-                        width: '32px', height: '32px',
-                        background: 'linear-gradient(135deg, var(--accent-primary), #8b5cf6)',
-                        borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontWeight: 'bold', color: 'white'
-                    }}>AJ</div>
-                    <h1>Production Dashboard</h1>
+        <div className="dashboard-content">
+            <div className="dashboard-controls">
+                <div className="date-filter">
+                    <span className="label">View Date:</span>
+                    <input
+                        type="date"
+                        value={viewDate}
+                        onChange={(e) => setViewDate(e.target.value)}
+                        className="date-input"
+                    />
                 </div>
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.5)', padding: '4px 8px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                        <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginRight: '8px' }}>View Date:</span>
-                        <input
-                            type="date"
-                            value={viewDate}
-                            onChange={(e) => setViewDate(e.target.value)}
-                            style={{ border: 'none', background: 'transparent', padding: '4px', fontSize: '0.9rem', width: 'auto' }}
-                        />
-                    </div>
-                    <button className="btn btn-secondary" onClick={handleClearData}>Reset System</button>
-                </div>
-            </header>
 
-            <div className="dashboard-container">
-                {/* Left Column */}
-                <aside>
+                {/* Batch Selector if active batches exist */}
+                {batches.length > 0 && (
+                    <div className="batch-selector" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'white', padding: '4px 8px', borderRadius: '8px', border: '1px solid var(--border-medium)' }}>
+                        <Factory size={16} color="var(--primary-color)" />
+                        <select
+                            value={selectedBatchId}
+                            onChange={e => setSelectedBatchId(e.target.value)}
+                            style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}
+                        >
+                            <option value="">-- No Active Batch --</option>
+                            {batches.filter(b => b.status === "In Production").map(b => (
+                                <option key={b.id} value={b.id}>{b.id} - {b.formulationName}</option>
+                            ))}
+                        </select>
+                    </div>
+                )}
+
+                <button className="btn-reset" onClick={handleClearData}>
+                    <Lock size={14} style={{ marginRight: '6px' }} /> Reset System
+                </button>
+            </div>
+
+            <div className="dashboard-grid">
+                {/* Left Column - Data Entry */}
+                <div className="grid-column-left">
                     <motion.div
                         className="card"
                         initial={{ opacity: 0, y: 20 }}
@@ -148,7 +172,7 @@ const Dashboard = () => {
                     >
                         <div className="card-header">
                             <div className="card-title">
-                                <Plus size={20} /> New Entry
+                                <Plus size={20} /> New Entry {selectedBatchId && <span style={{ fontSize: '0.8em', color: 'var(--text-tertiary)', marginLeft: '8px' }}>to {selectedBatchId}</span>}
                             </div>
                         </div>
 
@@ -257,7 +281,8 @@ const Dashboard = () => {
                                             <td>
                                                 <div style={{ fontWeight: 500 }}>{item.operator}</div>
                                                 <div style={{ fontSize: '0.8em', color: 'var(--text-secondary)' }}>
-                                                    {item.machine} • {item.tray} • {item.weight}kg
+                                                    {item.machine} • {item.tray} • {item.weight}kg <br />
+                                                    {item.batchId && <span style={{ fontSize: '0.9em', color: 'var(--primary-color)' }}>{item.batchId}</span>}
                                                 </div>
                                                 {item.document && (
                                                     <span className="file-badge" style={{ marginTop: '4px' }} title={item.document}>
@@ -281,10 +306,10 @@ const Dashboard = () => {
                             </table>
                         </div>
                     </motion.div>
-                </aside>
+                </div>
 
                 {/* Right Column */}
-                <main>
+                <div className="grid-column-right">
                     <motion.div
                         className="stats-grid"
                         initial={{ opacity: 0, y: 20 }}
@@ -414,7 +439,7 @@ const Dashboard = () => {
                             </table>
                         </div>
                     </motion.div>
-                </main>
+                </div>
             </div>
         </div>
     );

@@ -1,23 +1,30 @@
+/* Formulation Manager - Premium Style */
 .formulation-container {
     display: flex;
-    height: 100%;
+    height: calc(100vh - 120px);
+    /* Fit within layout */
     gap: 1.5rem;
 }
 
 .formulation-list {
-    width: 300px;
-    background: white;
-    border-radius: 8px;
+    width: 320px;
+    background: var(--bg-surface);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
     border: 1px solid var(--border-light);
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    box-shadow: var(--shadow-sm);
 }
 
 .formulation-list h3 {
-    padding: 1rem;
+    padding: 1.25rem 1.5rem;
     border-bottom: 1px solid var(--border-light);
-    background: var(--bg-surface-subtle);
+    background: rgba(255, 255, 255, 0.4);
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    font-weight: 700;
 }
 
 .list-content {
@@ -26,84 +33,105 @@
 }
 
 .list-item {
-    padding: 0.75rem 1rem;
+    padding: 1rem 1.5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
     border-bottom: 1px solid var(--border-light);
-    transition: background 0.2s;
+    transition: all 0.2s ease;
 }
 
 .list-item:hover {
-    background: var(--bg-surface-subtle);
+    background: var(--bg-surface-hover);
+    padding-left: 1.75rem;
 }
 
 .list-item.active {
-    background: var(--bg-surface-subtle);
-    border-left: 3px solid var(--primary-color);
+    background: linear-gradient(to right, rgba(99, 102, 241, 0.1), rgba(14, 165, 233, 0.05));
+    border-left: 4px solid var(--primary-color);
+}
+
+.list-item.active .item-name {
+    color: var(--primary-color);
+    font-weight: 600;
 }
 
 .item-name {
     font-weight: 500;
+    color: var(--text-secondary);
 }
 
 .item-type {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-tertiary);
-    background: var(--bg-page);
-    padding: 2px 6px;
-    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.03);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
 .arrow {
     color: var(--text-tertiary);
     opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.list-item:hover .arrow {
+    opacity: 0.5;
+    transform: translateX(2px);
 }
 
 .list-item.active .arrow {
     opacity: 1;
+    color: var(--primary-color);
 }
 
 .add-form {
-    padding: 0.75rem;
+    padding: 1rem;
     border-top: 1px solid var(--border-light);
     display: flex;
-    gap: 0.5rem;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.4);
 }
 
-.add-form input {
-    flex: 1;
-    padding: 0.5rem;
-    border: 1px solid var(--border-medium);
-    border-radius: 4px;
-}
-
+.add-form input,
 .add-form select {
-    padding: 0.5rem;
+    flex: 1;
+    padding: 0.6rem;
     border: 1px solid var(--border-medium);
-    border-radius: 4px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: var(--input-bg);
 }
 
 .add-form button {
     background: var(--primary-color);
     color: white;
-    border-radius: 4px;
-    width: 32px;
+    border-radius: 6px;
+    width: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: background 0.2s;
+}
+
+.add-form button:hover {
+    background: var(--primary-hover);
 }
 
 /* Editor Area */
 .formulation-editor {
     flex: 1;
-    background: white;
-    border-radius: 8px;
+    background: var(--bg-surface);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
     border: 1px solid var(--border-light);
     display: flex;
     flex-direction: column;
-    padding: 1.5rem;
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
 }
 
 .empty-state {
@@ -113,6 +141,7 @@
     justify-content: center;
     color: var(--text-tertiary);
     font-size: 1.1rem;
+    font-weight: 500;
 }
 
 .editor-header {
@@ -120,23 +149,38 @@
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.editor-header h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
 }
 
 .subtitle {
-    font-size: 0.875rem;
-    color: var(--text-tertiary);
-    margin-top: 0.25rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
 }
 
 .save-btn {
     display: flex;
     gap: 0.5rem;
     align-items: center;
-    background: var(--accent-success);
+    background: var(--primary-color);
     color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-weight: 500;
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+    transition: all 0.2s;
+}
+
+.save-btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(99, 102, 241, 0.3);
 }
 
 .ingredients-table-wrapper {
@@ -146,51 +190,66 @@
 
 .ingredients-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
 .ingredients-table th {
     text-align: left;
-    padding: 0.75rem;
+    padding: 1rem;
     border-bottom: 2px solid var(--border-light);
     color: var(--text-secondary);
-    font-size: 0.875rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
 }
 
 .ingredients-table td {
-    padding: 0.5rem;
+    padding: 0.75rem 1rem;
     border-bottom: 1px solid var(--border-light);
+    background: transparent;
+}
+
+.ingredients-table tr:hover td {
+    background: rgba(0, 0, 0, 0.01);
 }
 
 .ingredients-table select,
 .ingredients-table input {
     width: 100%;
-    padding: 0.5rem;
+    padding: 0.6rem;
     border: 1px solid var(--border-medium);
-    border-radius: 4px;
+    border-radius: 6px;
+    background: var(--input-bg);
 }
 
 .remove-btn {
     background: transparent;
     color: var(--text-tertiary);
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s;
 }
 
 .remove-btn:hover {
     color: var(--accent-danger);
+    background: rgba(239, 68, 68, 0.1);
 }
 
 .add-row-btn {
-    margin-top: 1rem;
+    margin-top: 1.5rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem;
+    padding: 0.75rem 1.5rem;
     border: 1px dashed var(--border-medium);
     background: transparent;
     color: var(--primary-color);
-    border-radius: 6px;
+    border-radius: 8px;
     width: 100%;
     justify-content: center;
+    font-weight: 500;
+    transition: all 0.2s;
 }
 
 .add-row-btn:hover {

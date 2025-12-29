@@ -23,7 +23,9 @@ function App() {
     <Router>
       <Routes>
         {/* Landing Page separate from App Layout */}
-        <Route path="/" element={<LandingPage />} />
+        {/* Redirect root to dashboard, users can go to /landing if they want */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/landing" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
 
         {/* App Layout Routes */}

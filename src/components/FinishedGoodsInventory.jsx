@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Plus, ClipboardList, Trash2, Download, Lock, Upload } from 'lucide-react';
+import { ArrowLeft, Plus, ClipboardList, Trash2, Download, Lock, Upload, Factory } from 'lucide-react';
 import './FinishedGoodsInventory.css';
 
 const FinishedGoodsInventory = () => {
@@ -12,6 +12,10 @@ const FinishedGoodsInventory = () => {
         const saved = localStorage.getItem('finishedGoodsData');
         return saved ? JSON.parse(saved) : [];
     });
+
+    // Batch State
+    const [batches, setBatches] = useState([]);
+    const [selectedBatchId, setSelectedBatchId] = useState('');
 
     const todayStr = new Date().toISOString().split('T')[0];
     const [viewDate, setViewDate] = useState(todayStr);
@@ -26,12 +30,18 @@ const FinishedGoodsInventory = () => {
 
     const [itemsList, setItemsList] = useState([]);
 
-    // Load Master Items
+    // Load Master Items & Batches
     useEffect(() => {
         const savedItems = localStorage.getItem('productItems');
         if (savedItems) {
             setItemsList(JSON.parse(savedItems));
         }
+
+        const savedBatches = JSON.parse(localStorage.getItem('productionBatches') || '[]');
+        setBatches(savedBatches);
+        // Default to first active batch if any
+        const active = savedBatches.find(b => b.status === 'In Production');
+        if (active) setSelectedBatchId(active.id);
     }, []);
 
     // Derived State
@@ -53,6 +63,11 @@ const FinishedGoodsInventory = () => {
             return;
         }
 
+        if (batches.length > 0 && !selectedBatchId) {
+            const confirmNoBatch = window.confirm("No Production Batch selected. Continue as General Stock?");
+            if (!confirmNoBatch) return;
+        }
+
         const entry = {
             id: Date.now(),
             sNo: finishedGoodsData.length + 1,
@@ -62,6 +77,7 @@ const FinishedGoodsInventory = () => {
             totalBags: parseFloat(totalBags),
             kgPerBag: parseFloat(kgPerBag),
             totalPackedKg,
+            batchId: selectedBatchId || 'General Stock',
             document: selectedFileName,
             timestamp: new Date().toLocaleTimeString()
         };
@@ -96,7 +112,7 @@ const FinishedGoodsInventory = () => {
     };
 
     const exportCSV = () => {
-        const headers = ["S. No.", "Date", "Customer Name", "Item", "Total Bags", "Kg/Bag", "Total Packed (Kg)"];
+        const headers = ["S. No.", "Date", "Customer Name", "Item", "Total Bags", "Kg/Bag", "Total Packed (Kg)", "Batch ID"];
         const rows = finishedGoodsData.map(item => [
             item.sNo,
             item.date,
@@ -104,7 +120,8 @@ const FinishedGoodsInventory = () => {
             item.item,
             item.totalBags,
             item.kgPerBag,
-            item.totalPackedKg
+            item.totalPackedKg,
+            item.batchId
         ]);
 
         let csvContent = "data:text/csv;charset=utf-8,"
@@ -140,6 +157,22 @@ const FinishedGoodsInventory = () => {
                     <h1>Finished Goods Inventory</h1>
                 </div>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    {batches.length > 0 && (
+                        <div className="batch-selector" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.5)', padding: '4px 8px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                            <Factory size={16} color="var(--text-secondary)" />
+                            <select
+                                value={selectedBatchId}
+                                onChange={e => setSelectedBatchId(e.target.value)}
+                                style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}
+                            >
+                                <option value="">-- General Stock --</option>
+                                {batches.filter(b => b.status === "In Production").map(b => (
+                                    <option key={b.id} value={b.id}>{b.id}</option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+
                     <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.5)', padding: '4px 8px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
                         <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginRight: '8px' }}>View Date:</span>
                         <input
@@ -302,7 +335,12 @@ const FinishedGoodsInventory = () => {
                                             <td>{entry.item}</td>
                                             <td>{entry.totalBags}</td>
                                             <td>{entry.kgPerBag}</td>
-                                            <td style={{ fontWeight: 'bold', color: 'var(--accent-primary)' }}>{entry.totalPackedKg.toFixed(2)}</td>
+                                            <td>
+                                                <span style={{ fontWeight: 'bold', color: 'var(--accent-primary)' }}>{entry.totalPackedKg.toFixed(2)}</span>
+                                                {entry.batchId && entry.batchId !== 'General Stock' && (
+                                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginTop: '2px' }}>{entry.batchId}</div>
+                                                )}
+                                            </td>
                                             <td>
                                                 {entry.document && (
                                                     <span className="file-badge" title={entry.document}>
@@ -323,7 +361,7 @@ const FinishedGoodsInventory = () => {
                                     ))}
                                     {filteredData.length === 0 && (
                                         <tr>
-                                            <td colSpan="8" style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>
+                                            <td colSpan="9" style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>
                                                 No finished goods records found for {viewDate}.
                                             </td>
                                         </tr>
