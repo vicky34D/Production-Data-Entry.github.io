@@ -26,6 +26,15 @@ CREATE TABLE IF NOT EXISTS formulations (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Formulation Ingredients (The Mix/Ratio)
+CREATE TABLE IF NOT EXISTS formulation_ingredients (
+    id SERIAL PRIMARY KEY,
+    formulation_id INTEGER REFERENCES formulations(id) ON DELETE CASCADE,
+    raw_material_id INTEGER REFERENCES raw_materials(id),
+    quantity_per_unit DECIMAL(10, 4) NOT NULL, -- e.g., 0.600 for 600g per 1 unit
+    unit VARCHAR(20) DEFAULT 'kg'
+);
+
 -- Production Batches
 CREATE TABLE IF NOT EXISTS production_batches (
     id SERIAL PRIMARY KEY,
@@ -47,6 +56,92 @@ CREATE TABLE IF NOT EXISTS daily_logs (
     date DATE DEFAULT CURRENT_DATE
 );
 
+-- Product / Item Master (used across all flows)
+CREATE TABLE IF NOT EXISTS items (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(150) NOT NULL UNIQUE,
+    category VARCHAR(80) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Goods Received Notes (Raw Material IN)
+CREATE TABLE IF NOT EXISTS goods_received_notes (
+    id SERIAL PRIMARY KEY,
+    grn_date DATE NOT NULL,
+    po_number VARCHAR(100) NOT NULL,
+    supplier_invoice VARCHAR(100),
+    supplier_name VARCHAR(150) NOT NULL,
+    item_id INTEGER NOT NULL REFERENCES items(id),
+    total_bags NUMERIC(12,2) NOT NULL,
+    qty_per_bag NUMERIC(12,3) NOT NULL,
+    total_kg NUMERIC(14,3) NOT NULL,
+    unloading_cost NUMERIC(14,2) DEFAULT 0,
+    document_name VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Daily Store Updates (Raw Material OUT to production)
+CREATE TABLE IF NOT EXISTS daily_store_updates (
+    id SERIAL PRIMARY KEY,
+    update_date DATE NOT NULL,
+    item_id INTEGER NOT NULL REFERENCES items(id),
+    bags_out NUMERIC(12,2) NOT NULL,
+    qty_per_bag NUMERIC(12,3) NOT NULL,
+    total_kg_out NUMERIC(14,3) NOT NULL,
+    document_name VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Spare Parts Purchases (IN)
+CREATE TABLE IF NOT EXISTS spare_parts_purchases (
+    id SERIAL PRIMARY KEY,
+    purchase_date DATE NOT NULL,
+    supplier_name VARCHAR(150) NOT NULL,
+    item_id INTEGER NOT NULL REFERENCES items(id),
+    quantity NUMERIC(14,3) NOT NULL,
+    document_name VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Spare Parts Usage / Updates (OUT)
+CREATE TABLE IF NOT EXISTS spare_parts_updates (
+    id SERIAL PRIMARY KEY,
+    update_date DATE NOT NULL,
+    item_id INTEGER NOT NULL REFERENCES items(id),
+    quantity NUMERIC(14,3) NOT NULL,
+    machine_number VARCHAR(50) NOT NULL,
+    document_name VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Finished Goods Production (IN to FG stock)
+CREATE TABLE IF NOT EXISTS finished_goods_inventory (
+    id SERIAL PRIMARY KEY,
+    production_date DATE NOT NULL,
+    customer_name VARCHAR(150) NOT NULL,
+    item_id INTEGER NOT NULL REFERENCES items(id),
+    total_bags NUMERIC(12,2) NOT NULL,
+    kg_per_bag NUMERIC(12,3) NOT NULL,
+    total_packed_kg NUMERIC(14,3) NOT NULL,
+    document_name VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Goods Dispatch Notes (OUT from FG stock)
+CREATE TABLE IF NOT EXISTS goods_dispatch_notes (
+    id SERIAL PRIMARY KEY,
+    dispatch_date DATE NOT NULL,
+    invoice_number VARCHAR(120) NOT NULL,
+    customer_name VARCHAR(150) NOT NULL,
+    item_id INTEGER NOT NULL REFERENCES items(id),
+    total_bags NUMERIC(12,2) NOT NULL,
+    kg_per_bag NUMERIC(12,3) NOT NULL,
+    total_kg NUMERIC(14,3) NOT NULL,
+    loading_cost NUMERIC(14,2) DEFAULT 0,
+    document_name VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Initial Seed Data (Optional - prevents empty app on first run)
 INSERT INTO raw_materials (item_code, name, category, current_stock, unit) VALUES
 ('RM-001', 'Bamboo Sticks (8 inch)', 'Bamboo', 5000.00, 'kg'),
@@ -59,3 +154,10 @@ INSERT INTO formulations (name, type, description) VALUES
 ('Sandalwood Supreme', 'Masala', 'Premium sandalwood blend with natural extracts'),
 ('Rose Moghul', 'Flora', 'Traditional rose scent with slow-burning binder')
 ON CONFLICT DO NOTHING;
+
+-- Seed a few default items (used by UI)
+INSERT INTO items (name, category) VALUES
+('Sandalwood Supreme', 'Premium Masala'),
+('Rose Petals', 'Flora'),
+('Oudh Aura', 'Dipped')
+ON CONFLICT (name) DO NOTHING;

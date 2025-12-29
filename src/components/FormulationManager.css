@@ -1,0 +1,199 @@
+.formulation-container {
+    display: flex;
+    height: 100%;
+    gap: 1.5rem;
+}
+
+.formulation-list {
+    width: 300px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.formulation-list h3 {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-light);
+    background: var(--bg-surface-subtle);
+}
+
+.list-content {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.list-item {
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-light);
+    transition: background 0.2s;
+}
+
+.list-item:hover {
+    background: var(--bg-surface-subtle);
+}
+
+.list-item.active {
+    background: var(--bg-surface-subtle);
+    border-left: 3px solid var(--primary-color);
+}
+
+.item-name {
+    font-weight: 500;
+}
+
+.item-type {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    background: var(--bg-page);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.arrow {
+    color: var(--text-tertiary);
+    opacity: 0;
+}
+
+.list-item.active .arrow {
+    opacity: 1;
+}
+
+.add-form {
+    padding: 0.75rem;
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    gap: 0.5rem;
+}
+
+.add-form input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid var(--border-medium);
+    border-radius: 4px;
+}
+
+.add-form select {
+    padding: 0.5rem;
+    border: 1px solid var(--border-medium);
+    border-radius: 4px;
+}
+
+.add-form button {
+    background: var(--primary-color);
+    color: white;
+    border-radius: 4px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Editor Area */
+.formulation-editor {
+    flex: 1;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+}
+
+.empty-state {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    font-size: 1.1rem;
+}
+
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+}
+
+.subtitle {
+    font-size: 0.875rem;
+    color: var(--text-tertiary);
+    margin-top: 0.25rem;
+}
+
+.save-btn {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    background: var(--accent-success);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.ingredients-table-wrapper {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.ingredients-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ingredients-table th {
+    text-align: left;
+    padding: 0.75rem;
+    border-bottom: 2px solid var(--border-light);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.ingredients-table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.ingredients-table select,
+.ingredients-table input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-medium);
+    border-radius: 4px;
+}
+
+.remove-btn {
+    background: transparent;
+    color: var(--text-tertiary);
+}
+
+.remove-btn:hover {
+    color: var(--accent-danger);
+}
+
+.add-row-btn {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px dashed var(--border-medium);
+    background: transparent;
+    color: var(--primary-color);
+    border-radius: 6px;
+    width: 100%;
+    justify-content: center;
+}
+
+.add-row-btn:hover {
+    background: var(--bg-surface-subtle);
+    border-color: var(--primary-color);
+}

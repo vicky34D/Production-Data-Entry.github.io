@@ -88,15 +88,14 @@ const LandingPage = () => {
                 <nav className="rocket-nav">
                     <div className="nav-logo">
                         <LayoutGrid size={24} color="#fff" />
-                        <span>AJ Aromatics</span>
+                        <span>AJ Aromatics Enterprise</span>
                     </div>
                     <div className="nav-links">
-                        <span className="nav-item">Documentation</span>
-                        <span className="nav-item">Support</span>
+                        <span className="nav-item">Employee Portal</span>
                         <span className="nav-item">System Status</span>
                     </div>
                     <div className="nav-auth">
-                        <button className="btn-signin" onClick={() => setShowAuthModal(true)}>Admin Access</button>
+                        <button className="btn-signin" onClick={() => setShowAuthModal(true)}>Admin Login</button>
                     </div>
                 </nav>
 
@@ -108,8 +107,8 @@ const LandingPage = () => {
                         transition={{ duration: 0.8 }}
                         className="hero-text"
                     >
-                        <h1>Elevate your <span className="highlight-blue">Incense</span> Production.</h1>
-                        <p>Streamline formulation, track raw materials, and optimize manufacturing flow from mixing to packaging.</p>
+                        <h1>Internal Production <span className="highlight-blue">System</span></h1>
+                        <p>Secure login for inventory management, formulation tracking, and daily production logs.</p>
                     </motion.div>
 
                     {/* Central Input Box */}

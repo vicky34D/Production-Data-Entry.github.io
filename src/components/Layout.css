@@ -1,0 +1,144 @@
+.layout-container {
+    display: flex;
+    height: 100vh;
+    background-color: var(--bg-page);
+    overflow: hidden;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 260px;
+    background-color: var(--bg-surface);
+    border-right: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    transition: width var(--transition-normal);
+    z-index: 50;
+}
+
+.sidebar.collapsed {
+    width: 80px;
+}
+
+.sidebar-header {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.brand-title {
+    font-size: 1.25rem;
+    color: var(--primary-color);
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.collapse-btn {
+    background: transparent;
+    color: var(--text-tertiary);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.collapse-btn:hover {
+    background-color: var(--bg-surface-subtle);
+    color: var(--primary-color);
+}
+
+.sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.nav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.nav-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-tertiary);
+    margin-bottom: 0.5rem;
+    padding-left: 0.75rem;
+    white-space: nowrap;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    color: var(--text-secondary);
+    border-radius: 0.5rem;
+    transition: all var(--transition-fast);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.sidebar-item:hover {
+    background-color: var(--bg-surface-subtle);
+    color: var(--text-primary);
+}
+
+.sidebar-item.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.sidebar-item.collapsed {
+    justify-content: center;
+    padding: 0.75rem 0;
+}
+
+/* Main Content Styles */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.top-bar {
+    height: 64px;
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+}
+
+.page-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.content-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+    position: relative;
+}
