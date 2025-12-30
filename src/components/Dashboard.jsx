@@ -104,7 +104,62 @@ const Dashboard = () => {
     };
 
     const exportCSV = (tableId, filename) => {
-        alert("Export feature coming soon in React version!");
+        let headers = [];
+        let rows = [];
+
+        if (filename === 'machine_details.csv') {
+            headers = ["Date", "Machine", "Total Weight", "Tray Details"];
+            rows = Object.keys(machineGroups).sort().map(mach => {
+                const data = machineGroups[mach];
+                const trayDetails = data.trays.map(t => `${t.tray} (${t.weight}kg)`).join('; ');
+                return [
+                    viewDate,
+                    mach,
+                    data.weight.toFixed(2),
+                    trayDetails
+                ];
+            });
+        } else if (filename === 'daily_summary.csv') {
+            headers = ["Date", "Total Wet (KG)", "Trays", "Active Machines", "Avg/Mach", "Top Operator", "Op. Weight"];
+
+            if (filteredData.length > 0) {
+                const totalMachines = Object.keys(machineGroups).length;
+                const avgWet = totalMachines > 0 ? (totalWeight / totalMachines).toFixed(2) : 0;
+
+                const opStats = {};
+                filteredData.forEach(item => {
+                    opStats[item.operator] = (opStats[item.operator] || 0) + item.weight;
+                });
+                let bestOp = "-", bestWt = 0;
+                for (let [op, wt] of Object.entries(opStats)) {
+                    if (wt > bestWt) { bestWt = wt; bestOp = op; }
+                }
+
+                rows = [[
+                    viewDate,
+                    totalWeight.toFixed(2),
+                    totalTrays,
+                    totalMachines,
+                    avgWet,
+                    bestOp,
+                    bestWt.toFixed(2)
+                ]];
+            } else {
+                rows = [[viewDate, "0.00", "0", "0", "0.00", "-", "0.00"]];
+            }
+        }
+
+        let csvContent = "data:text/csv;charset=utf-8,"
+            + headers.join(",") + "\n"
+            + rows.map(e => e.map(cell => `"${cell}"`).join(",")).join("\n");
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
     // Derived Data for View
