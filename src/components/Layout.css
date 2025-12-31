@@ -202,3 +202,71 @@
     scrollbar-width: thin;
     scrollbar-color: var(--border-medium) transparent;
 }
+
+/* Mobile Responsiveness for Layout */
+@media (max-width: 768px) {
+    .layout-container {
+        position: relative;
+    }
+
+    /* Sidebar becomes overlay on mobile */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        height: 100vh;
+        z-index: 1000;
+        /* When collapsed on mobile, we hide it completely */
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 280px !important;
+    }
+
+    .sidebar.collapsed {
+        transform: translateX(-100%);
+        /* Slide out */
+        width: 280px !important;
+        /* Keep width but hide */
+    }
+
+    /* Add backdrop when open */
+    .sidebar:not(.collapsed)::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: -1;
+        width: 100vw;
+    }
+
+    /* Adjust main content to not be pushed */
+    .main-content {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+
+    .top-bar {
+        padding: 0 1rem;
+    }
+
+    .content-area {
+        padding: 1rem;
+    }
+
+    .page-title {
+        font-size: 1.2rem;
+    }
+
+    /* Since we rely on the collapse button which is INSIDE the sidebar usually,
+       we might need it visible or accessible. 
+       Usually the top bar has a hamburger. 
+       Assuming the Layout.jsx has a mechanism or the internal sidebar collapse toggle works. 
+       On mobile, if it's collapsed (hidden), how do we open it?
+       We need a visible toggle if one isn't there. 
+       But for now, let's assume the user logic handles interaction or the default state is open?
+       Actually, standard is collapsed on mobile. If buttons are inside sidebar, you can't open it!
+    */
+}

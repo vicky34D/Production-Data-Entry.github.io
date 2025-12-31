@@ -215,6 +215,17 @@ app.post('/api/formulations', authMiddleware, async (req, res) => {
     }
 });
 
+app.delete('/api/formulations/:id', authMiddleware, async (req, res) => {
+    const { id } = req.params;
+    try {
+        await pool.query('DELETE FROM formulations WHERE id = $1', [id]);
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to delete formulation' });
+    }
+});
+
 app.get('/api/formulations/:id/ingredients', authMiddleware, async (req, res) => {
     const { id } = req.params;
     try {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Calculator, AlertTriangle, CheckCircle, Package, Play, Save } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Calculator, AlertTriangle, CheckCircle, Package, Play, Save, ArrowLeft } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 import './ProductionPlanner.css';
 
 const ProductionPlanner = () => {
@@ -9,11 +9,8 @@ const ProductionPlanner = () => {
     const [selectedFormulationId, setSelectedFormulationId] = useState('');
     const [targetQuantity, setTargetQuantity] = useState('');
     const [inventory, setInventory] = useState([]);
-    const [ingredients, setIngredients] = useState([]);
     const [plan, setPlan] = useState(null);
     const [batchId, setBatchId] = useState('');
-
-    // ... (previous imports)
 
     useEffect(() => {
         fetchFormulations();
@@ -27,27 +24,10 @@ const ProductionPlanner = () => {
         setBatchId(id);
     };
 
-    const fetchFormulations = async () => {
-        try {
-            // Try API first
-            const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3001/api/formulations', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setFormulations(data);
-            } else {
-                throw new Error("API failed");
-            }
-        } catch (err) {
-            // Fallback to Mock Formulations
-            console.warn('Backend unavailable, using mock data');
-            setFormulations([
-                { id: 1, name: 'Sandalwood Premium', type: 'Masala' },
-                { id: 2, name: 'Rose Deluxe', type: 'Dipped' },
-                { id: 3, name: 'Mogra Gold', type: 'Flora' }
-            ]);
+    const fetchFormulations = () => {
+        const saved = localStorage.getItem('formulations');
+        if (saved) {
+            setFormulations(JSON.parse(saved));
         }
     };
 
@@ -70,56 +50,32 @@ const ProductionPlanner = () => {
                 id: p.id,
                 name: p.name,
                 current_stock: inQty - outQty,
-                unit: 'kg' // Assuming KG for consistency
+                unit: 'kg'
             };
         });
 
-        if (realInventory.length > 0) {
-            setInventory(realInventory);
-        } else {
-            // Fallback if no items in master
-            setInventory([
-                { id: 101, name: 'Bamboo Sticks', current_stock: 5000, unit: 'kg' },
-                { id: 102, name: 'Charcoal Powder', current_stock: 200, unit: 'kg' },
-                { id: 103, name: 'Jigat Powder', current_stock: 50, unit: 'kg' }
-            ]);
-        }
+        setInventory(realInventory);
     };
 
-    const handleCalculate = async () => {
+    const handleCalculate = () => {
         if (!selectedFormulationId || !targetQuantity) return;
 
-        // Mock Ingredients logic linked to inventory names
-        // In a real app, this comes from the FormulationManager API/State
-        // We'll map formulation types to likely ingredients
-        let mockIngredients = [];
-        const form = formulations.find(f => f.id == selectedFormulationId);
+        const form = formulations.find(f => f.id.toString() === selectedFormulationId.toString());
 
-        if (form) {
-            // Dynamic Recipe based on available inventory
-            // We search for keywords in inventory items
-            const findItem = (keyword) => inventory.find(i => i.name.toLowerCase().includes(keyword.toLowerCase()));
+        if (!form) return;
 
-            const bamboo = findItem('bamboo') || { id: 101, name: 'Bamboo Sticks' };
-            const charcoal = findItem('charcoal') || { id: 102, name: 'Charcoal Powder' };
-            const jigat = findItem('jigat') || { id: 103, name: 'Jigat Powder' };
-            const perfume = findItem('perfume') || findItem('oil') || { id: 999, name: 'Perfume Compound' };
-
-            mockIngredients = [
-                { raw_material_id: bamboo.id, raw_material_name: bamboo.name, quantity_per_unit: 0.8, raw_material_unit: 'kg' },
-                { raw_material_id: charcoal.id, raw_material_name: charcoal.name, quantity_per_unit: 0.2, raw_material_unit: 'kg' },
-                { raw_material_id: jigat.id, raw_material_name: jigat.name, quantity_per_unit: 0.1, raw_material_unit: 'kg' },
-                { raw_material_id: perfume.id, raw_material_name: perfume.name, quantity_per_unit: 0.05, raw_material_unit: 'kg' }
-            ];
-        }
-
-        setIngredients(mockIngredients);
+        const ingredients = form.ingredients || [];
 
         // Calculate
-        const requirements = mockIngredients.map(ing => {
-            const requiredQty = ing.quantity_per_unit * parseFloat(targetQuantity);
-            // Match exactly by name if ID fails, or use ID
-            const stockItem = inventory.find(i => i.name === ing.raw_material_name);
+        const requirements = ingredients.map(ing => {
+            // ing.raw_material_id stores the name in the new logic (see FormulationManager)
+            // Or if it stores ID, we need to map back.
+            // In FormulationManager, I changed the value to 'rm.name'.
+
+            const requiredQty = (parseFloat(ing.quantity_per_unit) || 0) * parseFloat(targetQuantity);
+
+            // Match inventory
+            const stockItem = inventory.find(i => i.name === ing.raw_material_id); // raw_material_id holds name now
             const currentStock = stockItem ? parseFloat(stockItem.current_stock) : 0;
 
             return {
@@ -127,13 +83,14 @@ const ProductionPlanner = () => {
                 requiredQty,
                 currentStock,
                 shortage: Math.max(0, requiredQty - currentStock),
-                sufficient: currentStock >= requiredQty
+                sufficient: currentStock >= requiredQty,
+                name: ing.raw_material_id // keep track of name
             };
         });
 
         setPlan({
             target: parseFloat(targetQuantity),
-            formulationName: form?.name || 'Unknown',
+            formulationName: form.name,
             requirements
         });
     };
@@ -156,113 +113,177 @@ const ProductionPlanner = () => {
         localStorage.setItem('productionBatches', JSON.stringify([...existingBatches, newBatch]));
 
         // 2. Deduct Inventory (Auto-Issue Materials)
+        // Add to storeUpdateData (DSU)
         const dsu = JSON.parse(localStorage.getItem('storeUpdateData') || '[]');
+        let currentSNo = dsu.length;
+
         const newDsuEntries = plan.requirements.map((req, idx) => ({
             id: Date.now() + idx,
+            sNo: ++currentSNo,
             date: new Date().toISOString().split('T')[0],
-            item: req.raw_material_name,
-            totalKg: req.requiredQty, // Deducting required quantity
-            purpose: `Production Issue for Batch ${batchId}`,
-            remarks: 'Auto-deducted by Planner'
+            item: req.name, // The raw material name
+            totalBags: 0, // Auto-deduction
+            qtyPerBag: 0, // Auto-deduction
+            totalKg: req.requiredQty,
+            document: `Batch ${batchId} Plan`,
+            timestamp: new Date().toLocaleTimeString()
         }));
 
         localStorage.setItem('storeUpdateData', JSON.stringify([...dsu, ...newDsuEntries]));
 
         alert(`Batch ${batchId} Created! Materials have been issued from inventory.`);
-        navigate('/dashboard');
+        navigate('/inventory/dsu'); // Redirect to Store Update to show the entries
     };
 
     const getStatusColor = (req) => req.sufficient ? 'text-success' : 'text-danger';
 
     return (
-        <div className="planner-container">
-            <div className="planner-card glass">
-                <div className="card-header">
-                    <Calculator size={24} className="icon-primary" />
-                    <h2>Production Planner</h2>
+        <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-color)' }}>
+            <header className="inventory-header">
+                <div className="brand" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <Link to="/inventory" style={{ opacity: 0.7, transition: 'opacity 0.2s' }} title="Back to Hub">
+                        <ArrowLeft size={24} />
+                    </Link>
+                    <div className="brand-icon" style={{
+                        width: '32px', height: '32px',
+                        background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                        borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontWeight: 'bold', color: 'white'
+                    }}>PP</div>
+                    <h1>Production Planner</h1>
                 </div>
+            </header>
 
-                <div className="planner-inputs">
-                    <div className="input-group">
-                        <label>Batch ID</label>
-                        <input type="text" value={batchId} readOnly style={{ background: '#f1f5f9', color: '#64748b' }} />
+            <div className="inventory-container" style={{ display: 'block', maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
+                <div className="planner-card glass" style={{ background: 'white', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
+                    <div className="card-header" style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '16px', marginBottom: '24px' }}>
+                        <Calculator size={24} className="icon-primary" color="#f59e0b" />
+                        <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Calculate Material Requirements</h2>
                     </div>
 
-                    <div className="input-group">
-                        <label>Select Formulation</label>
-                        <select
-                            value={selectedFormulationId}
-                            onChange={e => setSelectedFormulationId(e.target.value)}
-                        >
-                            <option value="">-- Choose Recipe --</option>
-                            {formulations.map(f => (
-                                <option key={f.id} value={f.id}>{f.name} ({f.type})</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="input-group">
-                        <label>Target Quantity (Output)</label>
-                        <div className="input-wrapper">
-                            <input
-                                type="number"
-                                placeholder="Enter Qty"
-                                value={targetQuantity}
-                                onChange={e => setTargetQuantity(e.target.value)}
-                            />
-                            <span className="unit-badge">Cases</span>
+                    <div className="planner-inputs" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', alignItems: 'end' }}>
+                        <div className="input-group">
+                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 500, color: '#64748b' }}>Batch ID</label>
+                            <input type="text" value={batchId} readOnly style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#f8fafc', color: '#64748b' }} />
                         </div>
-                    </div>
 
-                    <button
-                        className="calculate-btn"
-                        onClick={handleCalculate}
-                        disabled={!selectedFormulationId || !targetQuantity}
-                    >
-                        Calculate Plan
-                    </button>
-                </div>
-            </div>
+                        <div className="input-group">
+                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 500, color: '#64748b' }}>Select Formulation</label>
+                            <select
+                                value={selectedFormulationId}
+                                onChange={e => setSelectedFormulationId(e.target.value)}
+                                style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                            >
+                                <option value="">-- Choose Recipe --</option>
+                                {formulations.map(f => (
+                                    <option key={f.id} value={f.id}>{f.name} ({f.type})</option>
+                                ))}
+                            </select>
+                        </div>
 
-            {plan && (
-                <div className="results-area glass">
-                    <div className="results-header">
-                        <h3>Material Requirements for Batch {batchId}</h3>
-                        <p>{plan.target} Units of {plan.formulationName}</p>
-                    </div>
-
-                    <div className="requirements-grid">
-                        {plan.requirements.map((req, idx) => (
-                            <div key={idx} className={`req-card ${!req.sufficient ? 'shortage' : ''}`}>
-                                <div className="req-header">
-                                    <span className="material-name">{req.raw_material_name}</span>
-                                    {req.sufficient ?
-                                        <CheckCircle size={20} className="text-success" /> :
-                                        <AlertTriangle size={20} className="text-danger" />
-                                    }
-                                </div>
-
-                                <div className="req-details">
-                                    <div className="detail-row">
-                                        <span>Required:</span>
-                                        <strong>{req.requiredQty.toFixed(2)} {req.raw_material_unit}</strong>
-                                    </div>
-                                    <div className="detail-row">
-                                        <span>Allocated:</span>
-                                        <span className={getStatusColor(req)}>{req.sufficient ? 'Full' : 'Partial'}</span>
-                                    </div>
-                                </div>
+                        <div className="input-group">
+                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: 500, color: '#64748b' }}>Target Quantity (Output)</label>
+                            <div className="input-wrapper" style={{ position: 'relative' }}>
+                                <input
+                                    type="number"
+                                    placeholder="Enter Qty"
+                                    value={targetQuantity}
+                                    onChange={e => setTargetQuantity(e.target.value)}
+                                    style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                                />
                             </div>
-                        ))}
-                    </div>
+                        </div>
 
-                    <div className="action-footer">
-                        <button className="btn-confirm" onClick={handleCreateBatch}>
-                            <Play size={20} /> Start Production Batch
+                        <button
+                            className="calculate-btn"
+                            onClick={handleCalculate}
+                            disabled={!selectedFormulationId || !targetQuantity}
+                            style={{
+                                padding: '10px 20px',
+                                background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '8px',
+                                fontWeight: 600,
+                                cursor: (!selectedFormulationId || !targetQuantity) ? 'not-allowed' : 'pointer',
+                                opacity: (!selectedFormulationId || !targetQuantity) ? 0.7 : 1
+                            }}
+                        >
+                            Calculate Plan
                         </button>
                     </div>
                 </div>
-            )}
+
+                {plan && (
+                    <div className="results-area glass" style={{ marginTop: '30px', background: 'white', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
+                        <div className="results-header" style={{ marginBottom: '20px' }}>
+                            <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Material Requirements for Batch {batchId}</h3>
+                            <p style={{ color: '#64748b' }}>{plan.target} Units of {plan.formulationName}</p>
+                        </div>
+
+                        <div className="requirements-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '20px', marginBottom: '30px' }}>
+                            {plan.requirements.map((req, idx) => (
+                                <div key={idx} className={`req-card`} style={{
+                                    border: '1px solid #e2e8f0',
+                                    borderRadius: '12px',
+                                    padding: '16px',
+                                    borderLeft: `4px solid ${req.sufficient ? '#10b981' : '#ef4444'}`
+                                }}>
+                                    <div className="req-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                                        <span className="material-name" style={{ fontWeight: 600, fontSize: '1rem' }}>{req.name}</span>
+                                        {req.sufficient ?
+                                            <CheckCircle size={20} className="text-success" color="#10b981" /> :
+                                            <AlertTriangle size={20} className="text-danger" color="#ef4444" />
+                                        }
+                                    </div>
+
+                                    <div className="req-details" style={{ fontSize: '0.9rem' }}>
+                                        <div className="detail-row" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                            <span style={{ color: '#64748b' }}>Required:</span>
+                                            <strong>{req.requiredQty.toFixed(2)} KG</strong>
+                                        </div>
+                                        <div className="detail-row" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                            <span style={{ color: '#64748b' }}>In Stock:</span>
+                                            <strong>{req.currentStock.toFixed(2)} KG</strong>
+                                        </div>
+                                        {!req.sufficient && (
+                                            <div className="detail-row" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', background: '#fef2f2', padding: '4px', borderRadius: '4px' }}>
+                                                <span style={{ color: '#ef4444', fontWeight: 600 }}>Shortage:</span>
+                                                <span style={{ color: '#ef4444', fontWeight: 700 }}>-{req.shortage.toFixed(2)} KG</span>
+                                            </div>
+                                        )}
+                                        <div className="detail-row" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                            <span style={{ color: '#64748b' }}>Status:</span>
+                                            <span style={{ color: req.sufficient ? '#10b981' : '#ef4444', fontWeight: 600 }}>
+                                                {req.sufficient ? 'Available' : 'INSUFFICIENT'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="action-footer" style={{ textAlign: 'right' }}>
+                            <button className="btn-confirm" onClick={handleCreateBatch} style={{
+                                padding: '12px 24px',
+                                background: '#10b981',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '8px',
+                                fontWeight: 600,
+                                fontSize: '1rem',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                cursor: 'pointer',
+                                transition: 'filter 0.2s'
+                            }}>
+                                <Play size={20} /> Execute Production Batch
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
