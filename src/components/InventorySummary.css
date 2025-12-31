@@ -1,8 +1,19 @@
+:root {
+    --summary-bg: #f8fafc;
+    --summary-card: #ffffff;
+    --summary-text-primary: #0f172a;
+    --summary-text-secondary: #64748b;
+    --summary-border: #e2e8f0;
+    --accent-primary: #6366f1;
+    --accent-success: #10b981;
+    --accent-danger: #ef4444;
+}
+
 .inventory-summary-page {
     min-height: 100vh;
-    background-color: #0f172a;
-    color: #f8fafc;
-    font-family: 'Inter', sans-serif;
+    background-color: var(--summary-bg);
+    color: var(--summary-text-primary);
+    font-family: 'Outfit', 'Inter', sans-serif;
     padding: 2rem;
 }
 
@@ -22,7 +33,7 @@
 }
 
 .back-btn {
-    color: #94a3b8;
+    color: var(--summary-text-secondary);
     transition: color 0.2s, transform 0.2s;
     background: transparent;
     border: none;
@@ -30,7 +41,7 @@
 }
 
 .back-btn:hover {
-    color: #f8fafc;
+    color: var(--summary-text-primary);
     transform: translateX(-4px);
 }
 
@@ -50,16 +61,14 @@
     justify-content: center;
     font-weight: 800;
     color: white;
+    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3);
 }
 
 .brand-title h1 {
     font-size: 1.75rem;
     font-weight: 800;
     margin: 0;
-    background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--summary-text-primary);
 }
 
 .header-actions {
@@ -79,23 +88,27 @@
 }
 
 .btn-primary {
-    background: #6366f1;
+    background: var(--accent-primary);
     color: white;
+    border: none;
+    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3);
 }
 
 .btn-primary:hover {
     background: #4f46e5;
     transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
 }
 
 .btn-secondary {
-    background: #1e293b;
-    border: 1px solid #334155;
-    color: #f8fafc;
+    background: #ffffff;
+    border: 1px solid var(--summary-border);
+    color: var(--summary-text-secondary);
 }
 
 .btn-secondary:hover {
-    background: #334155;
+    background: #f1f5f9;
+    color: var(--summary-text-primary);
 }
 
 .summary-stats {
@@ -106,50 +119,60 @@
 }
 
 .stat-card {
-    background: #1e293b;
-    border: 1px solid #334155;
+    background: var(--summary-card);
+    border: 1px solid var(--summary-border);
     border-radius: 20px;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
 }
 
 .stat-label {
     font-size: 0.875rem;
-    color: #94a3b8;
+    color: var(--summary-text-secondary);
     font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .stat-value {
     font-size: 2rem;
     font-weight: 800;
+    color: var(--summary-text-primary);
 }
 
 .stat-card.in .stat-value {
-    color: #10b981;
+    color: var(--accent-success);
 }
 
 .stat-card.out .stat-value {
-    color: #ef4444;
+    color: var(--accent-danger);
 }
 
 .stat-card.dead .stat-value {
-    color: #64748b;
+    color: var(--summary-text-secondary);
 }
 
 .section-container {
-    background: #1e293b;
-    border: 1px solid #334155;
+    background: var(--summary-card);
+    border: 1px solid var(--summary-border);
     border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
 }
 
 .section-header {
-    background: #1e293b;
+    background: var(--summary-card);
     padding: 1.5rem 2rem;
-    border-bottom: 1px solid #334155;
+    border-bottom: 1px solid var(--summary-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -159,15 +182,25 @@
     font-size: 1.25rem;
     font-weight: 700;
     margin: 0;
+    color: var(--summary-text-primary);
 }
 
 .search-input {
-    background: #0f172a;
-    border: 1px solid #334155;
+    background: #f1f5f9;
+    border: 1px solid var(--summary-border);
     border-radius: 12px;
-    padding: 0.6rem 1rem;
-    color: white;
+    padding: 0.8rem 1rem;
+    color: var(--summary-text-primary);
     width: 300px;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .table-wrapper {
@@ -180,21 +213,22 @@
 }
 
 .stock-table th {
-    background: rgba(15, 23, 42, 0.5);
+    background: #f8fafc;
     padding: 1rem 2rem;
     text-align: left;
     font-size: 0.75rem;
     font-weight: 700;
-    color: #94a3b8;
+    color: var(--summary-text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border-bottom: 1px solid #334155;
+    border-bottom: 1px solid var(--summary-border);
 }
 
 .stock-table td {
     padding: 1rem 2rem;
-    border-bottom: 1px solid #334155;
+    border-bottom: 1px solid var(--summary-border);
     font-size: 0.95rem;
+    color: var(--summary-text-primary);
 }
 
 .stock-table tr:last-child td {
@@ -202,12 +236,12 @@
 }
 
 .stock-table tr:hover td {
-    background: rgba(255, 255, 255, 0.02);
+    background: #f8fafc;
 }
 
 .category-tag {
     background: rgba(99, 102, 241, 0.1);
-    color: #818cf8;
+    color: var(--accent-primary);
     padding: 0.2rem 0.6rem;
     border-radius: 6px;
     font-size: 0.75rem;
@@ -215,12 +249,12 @@
 }
 
 .stock-in {
-    color: #10b981;
+    color: var(--accent-success);
     font-weight: 600;
 }
 
 .stock-out {
-    color: #f87171;
+    color: var(--accent-danger);
     font-weight: 600;
 }
 
@@ -229,17 +263,27 @@
     padding: 0.25rem 0.75rem;
     border-radius: 8px;
     font-weight: 700;
-    background: #0f172a;
+    background: #f1f5f9;
+    /* Light gray box for numbers */
 }
 
 .status-dead {
-    color: #64748b;
+    color: var(--summary-text-secondary);
     font-weight: 500;
     font-style: italic;
+    background: #f1f5f9;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
 }
 
 .status-active {
-    color: #10b981;
+    color: var(--accent-success);
+    font-weight: 600;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
 }
 
 @media (max-width: 768px) {

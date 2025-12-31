@@ -68,6 +68,26 @@ const FinishedGoodsInventory = () => {
             if (!confirmNoBatch) return;
         }
 
+        // --- BATCH VALIDATION LOGIC ---
+        if (selectedBatchId) {
+            const batch = batches.find(b => b.id === selectedBatchId);
+            if (batch) {
+                const plannedQty = parseFloat(batch.targetQuantity) || 0;
+
+                // Allow a small margin of error or exact match
+                if (Math.abs(totalPackedKg - plannedQty) > 0.01) {
+                    const diff = totalPackedKg - plannedQty;
+                    const type = diff > 0 ? "HIGHER" : "LOWER";
+                    const msg = `⚠️ QUANTITY MISMATCH WARNING ⚠️\n\nPlanned Batch Output: ${plannedQty} Kg\nActual Entry: ${totalPackedKg} Kg\n\nDifference: ${Math.abs(diff).toFixed(2)} Kg (${type})\n\nDo you want to record this deviation?`;
+
+                    if (!window.confirm(msg)) {
+                        return; // Stop if user cancels
+                    }
+                }
+            }
+        }
+        // ------------------------------
+
         const entry = {
             id: Date.now(),
             sNo: finishedGoodsData.length + 1,
@@ -83,6 +103,56 @@ const FinishedGoodsInventory = () => {
         };
 
         setFinishedGoodsData([...finishedGoodsData, entry]);
+
+        // --- AUTO-DEDUCT RAW MATERIALS ---
+        if (selectedBatchId && selectedBatchId !== 'General Stock') {
+            const batch = batches.find(b => b.id === selectedBatchId);
+            if (batch && batch.requirements) {
+                const dsu = JSON.parse(localStorage.getItem('storeUpdateData') || '[]');
+                let currentSNo = dsu.length;
+
+                // Calculate raw materials needed for THIS specific entry amount
+                const ratio = totalPackedKg / (parseFloat(batch.targetQuantity) || 1);
+
+                const newDsuEntries = batch.requirements.map((req, idx) => ({
+                    id: Date.now() + idx + 100, // Offset
+                    sNo: ++currentSNo,
+                    date: date,
+                    item: req.name,
+                    totalBags: 0,
+                    qtyPerBag: 0,
+                    totalKg: (req.requiredQty * ratio),
+                    document: `Batch ${batch.id} - FGI Log`,
+                    timestamp: new Date().toLocaleTimeString()
+                }));
+
+                localStorage.setItem('storeUpdateData', JSON.stringify([...dsu, ...newDsuEntries]));
+
+                // --- BATCH CLOSURE LOGIC ---
+                // Check if this entry pushes us over the completion line
+                const allEntries = [...finishedGoodsData, entry].filter(e => e.batchId === batch.id);
+                const totalProduced = allEntries.reduce((sum, e) => sum + e.totalPackedKg, 0);
+                const target = parseFloat(batch.targetQuantity) || 0;
+
+                if (target > 0 && totalProduced >= (target * 0.98)) {
+                    // 98% Completion Trigger
+                    const yieldPct = ((totalProduced / target) * 100).toFixed(1);
+                    const closeMsg = `✅ BATCH TARGET REACHED!\n\nTarget: ${target} Kg\nTotal Produced: ${totalProduced} Kg\nYield Efficiency: ${yieldPct}%\n\nDo you want to CLOSE this batch now? (It will be archived)`;
+
+                    if (window.confirm(closeMsg)) {
+                        const updatedBatches = batches.map(b => {
+                            if (b.id === batch.id) return { ...b, status: 'Completed', actualYield: yieldPct };
+                            return b;
+                        });
+                        localStorage.setItem('productionBatches', JSON.stringify(updatedBatches));
+                        setBatches(updatedBatches);
+                        setSelectedBatchId(''); // Reset selection
+                        alert("Batch Closed Successfully. Great Job!");
+                    }
+                }
+            }
+        }
+        // ---------------------------------
 
         // Reset form (keep date)
         setCustomerName('');
@@ -158,18 +228,34 @@ const FinishedGoodsInventory = () => {
                 </div>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                     {batches.length > 0 && (
-                        <div className="batch-selector" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.5)', padding: '4px 8px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                            <Factory size={16} color="var(--text-secondary)" />
-                            <select
-                                value={selectedBatchId}
-                                onChange={e => setSelectedBatchId(e.target.value)}
-                                style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}
-                            >
-                                <option value="">-- General Stock --</option>
-                                {batches.filter(b => b.status === "In Production").map(b => (
-                                    <option key={b.id} value={b.id}>{b.id}</option>
-                                ))}
-                            </select>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <div className="batch-selector" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.5)', padding: '4px 8px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                                <Factory size={16} color="var(--text-secondary)" />
+                                <select
+                                    value={selectedBatchId}
+                                    onChange={e => setSelectedBatchId(e.target.value)}
+                                    style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}
+                                >
+                                    <option value="">-- General Stock --</option>
+                                    {batches.filter(b => b.status === "In Production").map(b => (
+                                        <option key={b.id} value={b.id}>{b.id}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {selectedBatchId && selectedBatchId !== 'General Stock' && (() => {
+                                const currentBatch = batches.find(b => b.id === selectedBatchId);
+                                if (!currentBatch) return null;
+                                const total = finishedGoodsData.filter(d => d.batchId === selectedBatchId).reduce((acc, curr) => acc + curr.totalPackedKg, 0);
+                                const target = parseFloat(currentBatch.targetQuantity) || 0;
+                                const pct = target > 0 ? Math.round((total / target) * 100) : 0;
+
+                                return (
+                                    <div style={{ fontSize: '0.8rem', fontWeight: 600, color: pct >= 100 ? '#10b981' : 'var(--text-secondary)', background: 'rgba(255,255,255,0.5)', padding: '4px 8px', borderRadius: '8px' }}>
+                                        {total.toFixed(0)} / {target} Kg ({pct}%)
+                                    </div>
+                                );
+                            })()}
                         </div>
                     )}
 

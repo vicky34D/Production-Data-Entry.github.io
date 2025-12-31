@@ -68,6 +68,7 @@ const Layout = () => {
 
                     <div className="nav-group">
                         <p className="nav-label">{!collapsed && 'Inventory'}</p>
+                        <SidebarItem to="/inventory" icon={Package} label="Inventory Hub" collapsed={collapsed} />
                         <SidebarItem to="/inventory/summary" icon={Package} label="Stock Summary" collapsed={collapsed} />
                         <SidebarItem to="/inventory/grn" icon={Truck} label="Goods Received" collapsed={collapsed} />
                         <SidebarItem to="/inventory/dsu" icon={History} label="Store Updates" collapsed={collapsed} />

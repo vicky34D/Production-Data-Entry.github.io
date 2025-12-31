@@ -108,31 +108,14 @@ const ProductionPlanner = () => {
             requirements: plan.requirements
         };
 
-        // 1. Save Batch
+        // 1. Save Batch (Planned Only)
         const existingBatches = JSON.parse(localStorage.getItem('productionBatches') || '[]');
         localStorage.setItem('productionBatches', JSON.stringify([...existingBatches, newBatch]));
 
-        // 2. Deduct Inventory (Auto-Issue Materials)
-        // Add to storeUpdateData (DSU)
-        const dsu = JSON.parse(localStorage.getItem('storeUpdateData') || '[]');
-        let currentSNo = dsu.length;
+        // No auto-deduction here. Deduction happens in Finished Goods Inventory when adding entries.
 
-        const newDsuEntries = plan.requirements.map((req, idx) => ({
-            id: Date.now() + idx,
-            sNo: ++currentSNo,
-            date: new Date().toISOString().split('T')[0],
-            item: req.name, // The raw material name
-            totalBags: 0, // Auto-deduction
-            qtyPerBag: 0, // Auto-deduction
-            totalKg: req.requiredQty,
-            document: `Batch ${batchId} Plan`,
-            timestamp: new Date().toLocaleTimeString()
-        }));
-
-        localStorage.setItem('storeUpdateData', JSON.stringify([...dsu, ...newDsuEntries]));
-
-        alert(`Batch ${batchId} Created! Materials have been issued from inventory.`);
-        navigate('/inventory/dsu'); // Redirect to Store Update to show the entries
+        alert(`Batch ${batchId} Planned! \n\nGo to 'Finished Goods Inventory' to log actual produced quantities and deduct items progressively.`);
+        navigate('/inventory/fgi');
     };
 
     const getStatusColor = (req) => req.sufficient ? 'text-success' : 'text-danger';
