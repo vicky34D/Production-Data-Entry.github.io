@@ -1,4 +1,4 @@
-/* Inventory Styles - Bordered Box Theme */
+/* Inventory Styles - Bordered Box Theme Responsive */
 .inventory-container {
     max-width: 1600px;
     margin: 0 auto;
@@ -6,12 +6,6 @@
     display: grid;
     grid-template-columns: 350px 1fr;
     gap: 2rem;
-}
-
-@media (max-width: 1024px) {
-    .inventory-container {
-        grid-template-columns: 1fr;
-    }
 }
 
 /* Card Re-style to match Bordered Look */
@@ -33,6 +27,9 @@
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap;
+    /* responsive header */
+    gap: 0.5rem;
 }
 
 .card-title {
@@ -81,17 +78,17 @@
     gap: 1rem;
 }
 
-/* Base Buttons are handled by index.css but subclasses here */
+/* Base Buttons */
 .btn-primary {
     background: var(--primary-color);
     color: white;
     width: 100%;
-    /* In form context */
 }
 
 /* Table */
 .table-container {
     overflow-x: auto;
+    width: 100%;
 }
 
 table {
@@ -134,4 +131,40 @@ tr:last-child td {
     align-items: center;
     margin: -2rem -2rem 2rem -2rem;
     /* Stretch full width */
+    flex-wrap: wrap;
+    /* responsive header */
+    gap: 1rem;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1024px) {
+    .inventory-container {
+        grid-template-columns: 1fr;
+        /* Stack */
+    }
+}
+
+@media (max-width: 640px) {
+    .inventory-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        /* Stack inputs */
+    }
+
+    .card {
+        padding: 1rem;
+        /* tighter card */
+    }
+
+    th,
+    td {
+        padding: 0.75rem 0.5rem;
+        /* tighter table cells */
+    }
 }

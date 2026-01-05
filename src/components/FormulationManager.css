@@ -240,18 +240,21 @@
 .add-row-btn {
     margin: 1rem;
     background: white;
-    border: 1px dashed var(--border-color);
+    border: 1px solid var(--border-color);
+    /* Solid border */
     padding: 0.75rem;
     border-radius: 0.5rem;
-    color: var(--text-secondary);
-    font-weight: 500;
+    color: var(--text-primary);
+    font-weight: 600;
     cursor: pointer;
     text-align: center;
     display: block;
+    transition: all 0.2s;
 }
 
 .add-row-btn:hover {
     border-color: var(--accent-formula);
     color: var(--accent-formula);
     background: #f5f3ff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }

@@ -1,4 +1,4 @@
-/* Inventory Hub - Bordered Cards */
+/* Inventory Hub - Responsive Bordered */
 .inventory-hub-container {
     min-height: 100vh;
     background-color: var(--bg-page);
@@ -13,6 +13,7 @@
     display: flex;
     align-items: center;
     gap: 1.5rem;
+    flex-wrap: wrap;
 }
 
 .hub-content {
@@ -21,6 +22,8 @@
     justify-content: center;
     align-items: flex-start;
     padding: 3rem;
+    overflow-x: hidden;
+    /* Prevent horizontal page scroll */
 }
 
 /* Process Container */
@@ -30,6 +33,7 @@
     justify-content: center;
     gap: 2rem;
     max-width: 1400px;
+    width: 100%;
 }
 
 .process-step-wrapper {
@@ -37,16 +41,14 @@
     flex-direction: column;
     align-items: center;
     position: relative;
-    margin-bottom: 2rem;
+    /* margin-bottom handled by flex gap */
 }
 
 /* Bordered Process Card */
 .process-card {
     background: white;
     border: 1px solid var(--border-color);
-    /* Added Border */
     border-radius: 1.5rem;
-    /* Rounder for friendly look */
     padding: 2rem;
     width: 240px;
     height: 240px;
@@ -59,6 +61,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: var(--shadow-sm);
+    position: relative;
 }
 
 .process-card:hover {
@@ -71,8 +74,7 @@
     font-size: 0.9rem;
     font-weight: 700;
     color: white !important;
-    background: var(--text-tertiary);
-    /* Circle background back */
+    /* background set inline */
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -105,14 +107,67 @@
     line-height: 1.4;
 }
 
-/* Connector */
+/* Connector (Hidden for clean flow) */
 .step-connector {
     display: none;
 }
 
-/* Responsive */
-@media (max-width: 1200px) {
+/* RESPONSIVE */
+
+@media (max-width: 1024px) {
+    .hub-content {
+        padding: 2rem 1rem;
+    }
+
+    .process-card {
+        width: 180px;
+        /* Smaller cards on tablet */
+        height: 180px;
+        padding: 1rem;
+    }
+
+    .step-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .step-label {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 640px) {
     .process-flow-container {
         gap: 1.5rem;
+    }
+
+    .process-card {
+        width: 100%;
+        /* Full width cards on mobile */
+        max-width: 320px;
+        height: auto;
+        min-height: 160px;
+        flex-direction: row;
+        /* Horizontal layout on mobile */
+        justify-content: flex-start;
+        text-align: left;
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+
+    .step-number {
+        top: 50%;
+        left: 0;
+        /* Position left */
+        transform: translate(-50%, -50%);
+        display: none;
+        /* Hide number on list view mobile or move it */
+    }
+
+    .step-icon {
+        background: transparent;
+        width: 40px;
+        height: 40px;
+        margin-bottom: 0;
     }
 }

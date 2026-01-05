@@ -221,7 +221,7 @@ const Dashboard = () => {
                     />
                 </div>
 
-                <button className="btn-reset" onClick={handleClearData}>
+                <button className="btn btn-danger" onClick={handleClearData}>
                     <Lock size={14} style={{ marginRight: '6px' }} /> Reset System
                 </button>
             </div>
