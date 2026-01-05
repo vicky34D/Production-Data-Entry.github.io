@@ -1,53 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
 
 :root {
-    /* Brand Colors - Clean White Theme */
-    --primary-color: #4f46e5;
-    /* Indigo 600 */
-    --primary-hover: #4338ca;
-    /* Indigo 700 */
-    --secondary-color: #64748b;
-    /* Slate 500 */
+    /* Brand Colors - Modern Flat */
+    --primary-color: #2563eb;
+    /* Royal Blue */
+    --primary-hover: #1d4ed8;
 
     /* Backgrounds */
-    --bg-page: #f1f5f9;
-    /* Slate 100 - Very light grey for contrast */
+    --bg-page: #f8fafc;
+    /* Very light slate */
     --bg-surface: #ffffff;
-    --bg-subtle: #f8fafc;
-    /* Slate 50 */
+    --bg-input: #ffffff;
 
-    /* Text Colors */
-    --text-primary: #0f172a;
-    /* Slate 900 */
-    --text-secondary: #475569;
-    /* Slate 600 */
+    /* Text */
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
     --text-tertiary: #94a3b8;
-    /* Slate 400 */
 
-    /* Borders */
+    /* Borders - Visible but subtle */
     --border-color: #e2e8f0;
-    /* Slate 200 */
-    --border-light: #f1f5f9;
+    /* Slate 200 - Visible border */
+    --border-subtle: #f1f5f9;
 
     /* Functional */
     --accent-success: #10b981;
+    --accent-info: #0ea5e9;
     --accent-warning: #f59e0b;
     --accent-danger: #ef4444;
-    --accent-info: #0ea5e9;
 
-    /* Shadows - Soft & Modern */
+    /* Shadows - Ultra Soft */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
-    /* Transitions */
-    --transition-fast: 0.15s ease-in-out;
-    --transition-normal: 0.3s ease-in-out;
-
-    /* Component Variables */
-    --card-bg: #ffffff;
-    --input-bg: #ffffff;
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
 }
 
 * {
@@ -56,7 +42,6 @@
     padding: 0;
     outline: none;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -64,26 +49,6 @@ body {
     color: var(--text-primary);
     background-color: var(--bg-page);
     min-height: 100vh;
-    line-height: 1.5;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
 }
 
 /* Typography */
@@ -95,18 +60,7 @@ h5,
 h6 {
     font-family: 'Outfit', sans-serif;
     color: var(--text-primary);
-    font-weight: 600;
-    letter-spacing: -0.025em;
-}
-
-a {
-    color: var(--primary-color);
-    text-decoration: none;
-    transition: var(--transition-fast);
-}
-
-a:hover {
-    color: var(--primary-hover);
+    font-weight: 700;
 }
 
 button {
@@ -115,87 +69,83 @@ button {
     border: none;
 }
 
-/* Inputs */
+/* Inputs - Clean Field Style */
 input,
 select,
 textarea {
-    background: var(--input-bg) !important;
+    background: var(--bg-input) !important;
     border: 1px solid var(--border-color) !important;
+    /* Visible border */
     color: var(--text-primary) !important;
     padding: 0.75rem 1rem;
     border-radius: 0.5rem;
-    /* Slightly squarer for clean look */
     font-family: 'Inter', sans-serif;
     transition: var(--transition-fast);
     width: 100%;
     font-size: 0.95rem;
+    font-weight: 500;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
     border-color: var(--primary-color) !important;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-    /* Focus ring */
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1) !important;
     outline: none;
 }
 
-/* Core Components */
+/* Core Components - Bordered Box */
 .card {
-    background: var(--card-bg);
+    background: white;
     border: 1px solid var(--border-color);
+    /* Added Border */
     border-radius: 1rem;
-    box-shadow: var(--shadow-sm);
     padding: 1.5rem;
-    color: var(--text-primary);
+    /* Padding needed for box */
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
 }
 
+/* Buttons */
 .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0.6rem 1.2rem;
+    padding: 0.6rem 1.25rem;
     border-radius: 0.5rem;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 0.9rem;
     transition: all var(--transition-fast);
-    text-transform: capitalize;
 }
 
 .btn-primary {
     background: var(--primary-color);
     color: white;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .btn-primary:hover {
     background: var(--primary-hover);
     transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
 }
 
 .btn-secondary {
     background: white;
     color: var(--text-secondary);
     border: 1px solid var(--border-color);
+    /* Added border to button */
 }
 
 .btn-secondary:hover {
-    background: var(--bg-subtle);
-    border-color: #cbd5e1;
-    color: var(--text-primary);
+    color: var(--primary-color);
+    background: #f8fafc;
+    border-color: var(--primary-color);
 }
 
 .btn-danger {
-    background: #fee2e2;
-    color: #b91c1c;
-    padding: 0.5rem;
-    border-radius: 0.375rem;
-}
-
-.btn-danger:hover {
-    background: #fecaca;
+    background: #fff1f2;
+    color: #e11d48;
+    border: 1px solid #fecdd3;
 }
 
 /* Tables */
@@ -206,15 +156,14 @@ table {
 
 th {
     text-align: left;
-    padding: 1rem;
-    font-weight: 600;
+    padding: 0.75rem 1rem;
     color: var(--text-secondary);
-    border-bottom: 1px solid var(--border-color);
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    background: var(--bg-subtle);
-    /* Different header bg */
+    border-bottom: 1px solid var(--border-color);
+    background: #f8fafc;
+    /* Subtle header bg */
 }
 
 td {
@@ -226,8 +175,4 @@ td {
 
 tr:last-child td {
     border-bottom: none;
-}
-
-tr:hover td {
-    background: var(--bg-subtle);
 }

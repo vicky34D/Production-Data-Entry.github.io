@@ -1,5 +1,4 @@
-/* Inventory Hub Styles - Step by Step Process Layout */
-
+/* Inventory Hub - Bordered Cards */
 .inventory-hub-container {
     min-height: 100vh;
     background-color: var(--bg-page);
@@ -8,56 +7,49 @@
 }
 
 .hub-header {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border-light);
-    padding: 1rem 2rem;
-    position: sticky;
-    top: 0;
-    z-index: 50;
+    background: white;
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.5rem 2rem;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 1.5rem;
 }
 
 .hub-content {
     flex: 1;
     display: flex;
     justify-content: center;
-    align-items: center;
-    /* Center vertically */
-    padding: 2rem;
-    overflow-x: auto;
-    /* Allow horizontal scroll if needed */
+    align-items: flex-start;
+    padding: 3rem;
 }
 
-/* Linear Process Flow Container - Grid Layout for specific wrapping */
+/* Process Container */
 .process-flow-container {
     display: flex;
     flex-wrap: wrap;
-    /* Allow wrapping */
     justify-content: center;
-    /* Center lines */
-    gap: 0;
-    /* Connectors handle visual gap */
-    padding: 2rem;
-    max-width: 1200px;
+    gap: 2rem;
+    max-width: 1400px;
 }
 
 .process-step-wrapper {
     display: flex;
+    flex-direction: column;
     align-items: center;
     position: relative;
+    margin-bottom: 2rem;
 }
 
-/* Individual Process Step Card */
+/* Bordered Process Card */
 .process-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-medium);
-    border-radius: 12px;
-    padding: 1.5rem 1rem;
-    width: 200px;
-    height: 180px;
+    background: white;
+    border: 1px solid var(--border-color);
+    /* Added Border */
+    border-radius: 1.5rem;
+    /* Rounder for friendly look */
+    padding: 2rem;
+    width: 240px;
+    height: 240px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -65,38 +57,44 @@
     gap: 1rem;
     text-align: center;
     cursor: pointer;
+    transition: all 0.2s ease;
     box-shadow: var(--shadow-sm);
-    transition: all 0.3s ease;
-    position: relative;
-    z-index: 2;
+}
+
+.process-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
 }
 
 .step-number {
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: white;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-weight: 700;
-    width: 24px;
-    height: 24px;
+    color: white !important;
+    background: var(--text-tertiary);
+    /* Circle background back */
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .step-icon {
-    background: var(--bg-surface-subtle);
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
+    width: 64px;
+    height: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 0.5rem;
+    background: #f8fafc;
+    border-radius: 50%;
 }
 
 .step-label {
@@ -104,50 +102,17 @@
     font-weight: 600;
     color: var(--text-primary);
     font-size: 1rem;
-    line-height: 1.3;
+    line-height: 1.4;
 }
 
-/* Connector Line Logic for Wrapped Layout */
-.process-step-wrapper {
-    margin-right: -4px;
-    /* Pull closer to overlap connector */
-    margin-bottom: 3rem;
-    /* Space between rows */
-}
-
-/* Base Connector */
+/* Connector */
 .step-connector {
-    width: 60px;
-    height: 4px;
-    background-color: var(--border-medium);
-    position: relative;
-    z-index: 1;
-    border-radius: 2px;
-}
-
-/* Hide connector for the last item in the first row (Item 4) to break the line clean */
-.process-step-wrapper:nth-child(4) .step-connector {
     display: none;
 }
 
-/* Ensure the last item (Item 7) has no connector */
-.process-step-wrapper:last-child .step-connector {
-    display: none;
-}
-
-/* Responsive: Stack vertically on smaller screens */
+/* Responsive */
 @media (max-width: 1200px) {
     .process-flow-container {
-        flex-direction: column;
-        gap: 2rem;
-    }
-
-    .process-step-wrapper {
-        flex-direction: column;
-    }
-
-    .step-connector {
-        width: 4px;
-        height: 50px;
+        gap: 1.5rem;
     }
 }

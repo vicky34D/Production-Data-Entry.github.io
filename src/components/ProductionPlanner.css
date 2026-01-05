@@ -1,96 +1,117 @@
+/* Production Planner - Bordered Theme */
 :root {
-    --bg-color: #f8fafc;
-    --card-bg: #ffffff;
-    --text-primary: #1e293b;
-    --text-secondary: #64748b;
-    --border-color: #e2e8f0;
     --accent-plan: #f59e0b;
-    /* Amber for Planning */
-    --accent-plan-hover: #d97706;
+    /* Amber */
 }
 
 .planner-container {
     padding-bottom: 4rem;
+    max-width: 1600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 }
 
-/* Glass/Card Effects */
+/* Glass/Card Effects - REPLACED with Bordered Box */
 .glass {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
+    background: white;
     border: 1px solid var(--border-color);
-    border-radius: 16px;
+    border-radius: 1rem;
     padding: 2rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-/* Header Icons */
-.icon-primary {
-    color: var(--accent-plan);
-    margin-right: 12px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 2rem;
 }
 
 /* Inputs Grid */
 .planner-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
     margin-top: 1.5rem;
 }
 
+/* Inputs overrides if needed, else inherit global */
+
 /* Buttons */
 .calculate-btn {
-    transition: all 0.2s;
-    box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.3);
+    background: var(--accent-plan);
+    color: white;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
 }
 
 .calculate-btn:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 8px -1px rgba(245, 158, 11, 0.4);
+    background: #d97706;
 }
 
-/* Requirements Cards */
+/* Requirements Grid */
+.requirements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
 .req-card {
-    background: #fff;
-    transition: transform 0.2s;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: all 0.2s;
 }
 
 .req-card:hover {
+    border-color: var(--accent-plan);
     transform: translateY(-2px);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
-.text-success {
-    color: #10b981;
+.req-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
-.text-danger {
-    color: #ef4444;
+.req-stat {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
 }
 
-/* Footer Action */
-.btn-confirm:hover {
-    background: #059669 !important;
-    /* Slightly darker green */
-    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.4);
-    transform: translateY(-1px);
+.req-stat span:last-child {
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
-/* Mobile Responsiveness */
+.status-indicator {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-ok {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.status-low {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
 @media (max-width: 768px) {
-
-    .planner-card,
-    .results-area {
-        padding: 1.5rem !important;
-    }
-
     .planner-inputs {
-        grid-template-columns: 1fr !important;
-        /* Force stack */
-    }
-
-    .requirements-grid {
-        grid-template-columns: 1fr !important;
-    }
-
-    .btn-confirm {
-        width: 100%;
-        justify-content: center;
+        grid-template-columns: 1fr;
     }
 }

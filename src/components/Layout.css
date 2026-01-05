@@ -1,112 +1,99 @@
+/* Seamless Layout */
 .layout-container {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
     background-color: var(--bg-page);
-    overflow: hidden;
     color: var(--text-primary);
-    position: relative;
 }
 
-/* Sidebar Styles - Clean White */
+/* Sidebar - Floating Navigation */
 .sidebar {
-    width: 260px;
-    background: white;
-    border-right: 1px solid var(--border-color);
+    width: 280px;
+    background: transparent;
+    /* No background */
     display: flex;
     flex-direction: column;
-    transition: width var(--transition-normal);
-    z-index: 50;
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.01);
-    /* Very subtle shadow */
+    padding: 2rem 1.5rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
 }
 
 .sidebar.collapsed {
-    width: 72px;
+    width: 90px;
+    padding: 2rem 1rem;
 }
 
 .sidebar-header {
-    height: 72px;
-    /* Standard height */
+    margin-bottom: 3rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 1.5rem;
-    border-bottom: 1px solid var(--border-color);
 }
 
 .brand-title {
-    font-size: 1.25rem;
-    font-family: 'Outfit', sans-serif;
-    color: var(--primary-color);
-    font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
 .collapse-btn {
-    background: transparent;
     color: var(--text-tertiary);
+    background: transparent;
     padding: 0.5rem;
-    border-radius: 0.5rem;
-    transition: all var(--transition-fast);
+    border-radius: 50%;
 }
 
 .collapse-btn:hover {
-    background-color: var(--bg-subtle);
-    color: var(--primary-color);
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--text-primary);
 }
 
 .sidebar-nav {
     flex: 1;
-    overflow-y: auto;
-    padding: 1.5rem 1rem;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 2.5rem;
 }
 
 .nav-group {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.5rem;
 }
 
 .nav-label {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 600;
+    letter-spacing: 0.1em;
+    font-weight: 700;
     color: var(--text-tertiary);
-    margin-bottom: 0.5rem;
-    padding-left: 0.75rem;
-    white-space: nowrap;
+    margin-bottom: 0.75rem;
+    padding-left: 1rem;
 }
 
 .sidebar-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
     color: var(--text-secondary);
-    border-radius: 0.5rem;
-    transition: all var(--transition-fast);
+    border-radius: 1rem;
     text-decoration: none;
-    font-weight: 500;
-    position: relative;
-    overflow: hidden;
-    white-space: nowrap;
+    font-weight: 600;
+    transition: all var(--transition-fast);
 }
 
 .sidebar-item:hover {
-    background-color: var(--bg-subtle);
-    color: var(--text-primary);
+    color: var(--primary-color);
+    background: rgba(37, 99, 235, 0.05);
 }
 
 .sidebar-item.active {
-    background-color: #eef2ff;
-    /* Very light indigo */
+    background: white;
     color: var(--primary-color);
-    font-weight: 600;
+    box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05);
 }
 
 .sidebar-item.collapsed {
@@ -118,104 +105,86 @@
     display: none;
 }
 
-/* Main Content Styles */
+/* Main Content */
 .main-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    position: relative;
-    background: var(--bg-page);
+    padding: 2rem 3rem;
+    max-width: 1600px;
 }
 
 .top-bar {
-    height: 72px;
-    background: white;
-    border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 2rem;
-    z-index: 40;
+    margin-bottom: 3rem;
 }
 
 .page-title {
-    font-size: 1.5rem;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -1px;
     color: var(--text-primary);
-    font-weight: 600;
 }
 
 .user-profile {
     display: flex;
     align-items: center;
     gap: 1rem;
-    cursor: pointer;
 }
 
 .user-avatar {
-    width: 36px;
-    height: 36px;
-    background: #e0e7ff;
-    color: var(--primary-color);
+    width: 44px;
+    height: 44px;
+    background: var(--text-primary);
+    color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.85rem;
     font-weight: 700;
-    border: 1px solid #c7d2fe;
 }
 
 .content-area {
     flex: 1;
-    overflow-y: auto;
-    padding: 2rem;
-    position: relative;
 }
 
-/* Responsive Support (Basic that works with current Layout.jsx) */
+/* Responsive */
+@media (max-width: 1024px) {
+    .main-content {
+        padding: 2rem;
+    }
+}
+
 @media (max-width: 768px) {
     .layout-container {
         flex-direction: column;
-        /* Stack if needed, or handle sidebar differently */
     }
-
-    /* If Layout.jsx doesn't handle mobile explicitly yet, 
-       we can forcefully hide sidebar or make it overlay via CSS if structured right.
-       Since user reverted JS, we'll keep it simple: 
-       Sidebar likely stays on left but might squish. 
-       Let's ensure it doesn't break. */
 
     .sidebar {
-        position: fixed;
-        height: 100vh;
-        z-index: 100;
-        /* If not collapsed, it might cover content on small screens */
-    }
-
-    .main-content {
-        margin-left: 72px;
-        /* Assume collapsed width at least */
-        width: calc(100% - 72px);
-    }
-
-    .sidebar:not(.collapsed)+.main-content {
-        /* When sidebar is open on mobile, maybe push content or let it overlay? */
-        margin-left: 260px;
-        /* Push content */
-        width: calc(100% - 260px);
-    }
-
-    /* Adjust padding for small screens */
-    .content-area {
+        width: 100%;
+        height: auto;
+        position: relative;
         padding: 1rem;
     }
 
-    .top-bar {
-        padding: 0 1rem;
+    .sidebar-nav {
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 1rem;
+        gap: 1rem;
     }
 
-    .page-title {
-        font-size: 1.2rem;
+    .nav-group {
+        flex-direction: row;
+    }
+
+    .nav-label {
+        display: none;
+    }
+
+    .main-content {
+        padding: 1rem;
     }
 }

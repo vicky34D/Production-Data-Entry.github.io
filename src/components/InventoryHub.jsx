@@ -42,9 +42,8 @@ const InventoryHub = () => {
                         <div key={step.id} className="process-step-wrapper">
                             <motion.div
                                 className="process-card"
-                                whileHover={{ y: -5, boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}
+                                whileHover={{ scale: 1.05 }}
                                 onClick={() => handleItemClick(step.path)}
-                                style={{ borderTop: `4px solid ${step.color}` }}
                             >
                                 <div className="step-number" style={{ background: step.color }}>{step.id}</div>
                                 <div className="step-icon" style={{ color: step.color }}>

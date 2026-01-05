@@ -221,21 +221,6 @@ const Dashboard = () => {
                     />
                 </div>
 
-                {/* Product/Item Selector */}
-                <div className="batch-selector" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'white', padding: '4px 8px', borderRadius: '8px', border: '1px solid var(--border-medium)' }}>
-                    <Factory size={16} color="var(--primary-color)" />
-                    <select
-                        value={selectedItem}
-                        onChange={e => setSelectedItem(e.target.value)}
-                        style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}
-                    >
-                        <option value="">-- Select Product --</option>
-                        {itemsList.map(item => (
-                            <option key={item.id} value={item.name}>{item.name}</option>
-                        ))}
-                    </select>
-                </div>
-
                 <button className="btn-reset" onClick={handleClearData}>
                     <Lock size={14} style={{ marginRight: '6px' }} /> Reset System
                 </button>
@@ -252,13 +237,28 @@ const Dashboard = () => {
                     >
                         <div className="card-header">
                             <div className="card-title">
-                                <Plus size={20} /> New Entry {selectedItem && <span style={{ fontSize: '0.8em', color: 'var(--text-tertiary)', marginLeft: '8px' }}>- {selectedItem}</span>}
+                                <Plus size={20} /> New Entry
                             </div>
                         </div>
 
                         <div className="form-group">
                             <label>Date</label>
                             <input type="date" value={entryDate} readOnly style={{ backgroundColor: 'var(--bg-color)', cursor: 'not-allowed' }} />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Product Item</label>
+                            <select
+                                value={selectedItem}
+                                onChange={e => setSelectedItem(e.target.value)}
+                                disabled={!isToday}
+                                style={!isToday ? { backgroundColor: 'var(--bg-color)', cursor: 'not-allowed' } : {}}
+                            >
+                                <option value="">-- Select Product --</option>
+                                {itemsList.map(item => (
+                                    <option key={item.id} value={item.name}>{item.name}</option>
+                                ))}
+                            </select>
                         </div>
 
                         <div className="form-group">
