@@ -101,13 +101,13 @@ const DailyStoreUpdate = () => {
             item.totalBags || 0,
             item.qtyPerBag || 0,
             item.totalKg.toFixed(2),
-            item.type === 'PRODUCTION_IN' ? 'Production IN' : 'Usage OUT'
+            item.type === 'PRODUCTION_IN' ? 'Production IN' :
+                item.type === 'GRN_IN' ? 'Purchase IN' : 'Usage OUT'
         ]);
 
         let csvContent = "data:text/csv;charset=utf-8,"
             + headers.join(",") + "\n"
             + rows.map(e => e.join(",")).join("\n");
-
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
@@ -290,14 +290,16 @@ const DailyStoreUpdate = () => {
                                             <td>{entry.qtyPerBag || '-'}</td>
                                             <td style={{
                                                 fontWeight: 'bold',
-                                                color: entry.type === 'PRODUCTION_IN' ? '#10b981' : 'var(--accent-primary)' // Green for IN, Blue for OUT (default)
+                                                color: (entry.type === 'PRODUCTION_IN' || entry.type === 'GRN_IN') ? '#10b981' : 'var(--accent-primary)'
                                             }}>
-                                                {entry.type === 'PRODUCTION_IN' ? '+' : ''}{entry.totalKg.toFixed(2)}
+                                                {(entry.type === 'PRODUCTION_IN' || entry.type === 'GRN_IN') ? '+' : ''}{entry.totalKg.toFixed(2)}
                                             </td>
                                             <td>
                                                 {entry.type === 'PRODUCTION_IN' ?
                                                     <span className="badge" style={{ background: '#dcfce7', color: '#166534' }}>Production IN</span> :
-                                                    <span className="badge" style={{ background: '#fee2e2', color: '#991b1b' }}>Usage OUT</span>
+                                                    entry.type === 'GRN_IN' ?
+                                                        <span className="badge" style={{ background: '#e0f2fe', color: '#0369a1' }}>Purchase IN</span> :
+                                                        <span className="badge" style={{ background: '#fee2e2', color: '#991b1b' }}>Usage OUT</span>
                                                 }
                                             </td>
                                             <td>
@@ -316,22 +318,24 @@ const DailyStoreUpdate = () => {
                                                     <span style={{ color: '#ccc', fontSize: '0.8em' }}><Lock size={14} /></span>
                                                 )}
                                             </td>
-                                        </tr>
+                                        </tr >
                                     ))}
-                                    {filteredData.length === 0 && (
-                                        <tr>
-                                            <td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>
-                                                No usage records found for {viewDate}.
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    </motion.div>
-                </main>
-            </div>
-        </div>
+                                    {
+                                        filteredData.length === 0 && (
+                                            <tr>
+                                                <td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>
+                                                    No usage records found for {viewDate}.
+                                                </td>
+                                            </tr>
+                                        )
+                                    }
+                                </tbody >
+                            </table >
+                        </div >
+                    </motion.div >
+                </main >
+            </div >
+        </div >
     );
 };
 

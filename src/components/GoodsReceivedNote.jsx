@@ -69,8 +69,27 @@ const GoodsReceivedNote = () => {
             totalKg,
             unloadingCost: parseFloat(unloadingCost) || 0,
             document: selectedFileName,
+            transactionId: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), // For linking
             timestamp: new Date().toLocaleTimeString()
         };
+
+        // --- UPDATE DAILY STORE (Stock IN) ---
+        const dsuData = JSON.parse(localStorage.getItem('storeUpdateData') || '[]');
+        const dsuEntry = {
+            id: Date.now() + 1, // Slight offset to avoid key collision if fast
+            sNo: dsuData.length + 1,
+            date,
+            item,
+            totalBags: parseFloat(totalBags),
+            qtyPerBag: parseFloat(qtyPerBag),
+            totalKg,
+            type: 'GRN_IN', // New Type
+            document: `GRN - ${supplierName}`,
+            transactionId: entry.transactionId, // Linked ID
+            timestamp: new Date().toLocaleTimeString()
+        };
+        localStorage.setItem('storeUpdateData', JSON.stringify([...dsuData, dsuEntry]));
+        // -------------------------------------
 
         setInventoryData([...inventoryData, entry]);
 
@@ -90,7 +109,20 @@ const GoodsReceivedNote = () => {
             alert("Restricted: You cannot delete records from previous days.");
             return;
         }
-        if (window.confirm("Delete this entry?")) {
+        if (window.confirm("Delete this entry? This will also revert the Stock update.")) {
+            const entryToDelete = inventoryData.find(item => item.id === id);
+
+            // Cascading Delete if linked
+            if (entryToDelete && entryToDelete.transactionId) {
+                const dsu = JSON.parse(localStorage.getItem('storeUpdateData') || '[]');
+                const updatedDsu = dsu.filter(d => d.transactionId !== entryToDelete.transactionId);
+
+                if (dsu.length !== updatedDsu.length) {
+                    localStorage.setItem('storeUpdateData', JSON.stringify(updatedDsu));
+                    console.log(`Rolled back ${dsu.length - updatedDsu.length} daily store entries.`);
+                }
+            }
+
             const updatedData = inventoryData.filter(item => item.id !== id);
             // Re-index S.No
             const reIndexedData = updatedData.map((item, index) => ({ ...item, sNo: index + 1 }));
