@@ -32,12 +32,14 @@
     color: var(--text-secondary);
 }
 
+
 .date-input {
-    background: white;
+    background: var(--bg-input);
     border: 1px solid var(--border-color);
     padding: 0.5rem 1rem;
     width: auto;
     font-size: 0.9rem;
+    color: var(--text-primary);
 }
 
 /* Grids */
@@ -66,13 +68,14 @@
 }
 
 .stat-card {
-    background: white;
+    background: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: 1rem;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+
     box-shadow: var(--shadow-sm);
 }
 

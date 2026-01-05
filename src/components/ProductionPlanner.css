@@ -15,7 +15,7 @@
 
 /* Glass/Card Effects - REPLACED with Bordered Box */
 .glass {
-    background: white;
+    background: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: 1rem;
     padding: 2rem;
@@ -56,7 +56,7 @@
 }
 
 .req-card {
-    background: white;
+    background: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: 1rem;
     padding: 1.5rem;

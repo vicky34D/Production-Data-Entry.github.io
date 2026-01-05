@@ -31,7 +31,7 @@
 
 /* Sidebar List */
 .formulation-list {
-    background: white;
+    background: var(--bg-surface);
     border-radius: 1rem;
     border: 1px solid var(--border-color);
     display: flex;
@@ -43,7 +43,7 @@
 .list-header {
     padding: 1.5rem;
     border-bottom: 1px solid var(--border-color);
-    background: #f8fafc;
+    background: var(--bg-hover);
 }
 
 .list-header h3 {
@@ -72,12 +72,12 @@
 }
 
 .list-item:hover {
-    background: #f1f5f9;
+    background: var(--bg-hover);
     border-color: var(--border-color);
 }
 
 .list-item.active {
-    background: #f5f3ff;
+    background: var(--bg-hover);
     border-color: var(--accent-formula);
     color: var(--accent-formula);
 }
@@ -94,7 +94,7 @@
 
 .item-type {
     font-size: 0.75rem;
-    background: white;
+    background: var(--bg-page);
     padding: 2px 6px;
     border-radius: 4px;
     border: 1px solid var(--border-color);
@@ -105,7 +105,7 @@
 .add-form {
     padding: 1.5rem;
     border-top: 1px solid var(--border-color);
-    background: white;
+    background: var(--bg-surface);
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -129,7 +129,7 @@
 
 /* Editor Area - Bordered Box */
 .formulation-editor {
-    background: white;
+    background: var(--bg-surface);
     border-radius: 1rem;
     border: 1px solid var(--border-color);
     padding: 0;

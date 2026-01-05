@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import {
     LayoutDashboard,
@@ -11,7 +11,9 @@ import {
     X,
     Factory,
     FlaskConical,
-    Calculator
+    Calculator,
+    Sun,
+    Moon
 } from 'lucide-react';
 import './Layout.css';
 
@@ -29,7 +31,48 @@ const SidebarItem = ({ to, icon: Icon, label, collapsed }) => (
 
 const Layout = () => {
     const [collapsed, setCollapsed] = useState(false);
+    // Initialize theme from localStorage or default to 'dark'
+    const [theme, setTheme] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('theme') || 'dark';
+        }
+        return 'dark';
+    });
+    const [installPrompt, setInstallPrompt] = useState(null);
+
     const location = useLocation();
+
+    // PWA Install Prompt
+    useEffect(() => {
+        const handler = (e) => {
+            e.preventDefault();
+            console.log("Install prompt captured");
+            setInstallPrompt(e);
+        };
+        window.addEventListener('beforeinstallprompt', handler);
+        return () => window.removeEventListener('beforeinstallprompt', handler);
+    }, []);
+
+    const handleInstallClick = () => {
+        if (!installPrompt) return;
+        installPrompt.prompt();
+        installPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+            }
+            setInstallPrompt(null);
+        });
+    };
+
+    // Apply theme to document
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    }, [theme]);
+
+    const toggleTheme = () => {
+        setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    };
 
     const getPageTitle = () => {
         const path = location.pathname;
@@ -75,6 +118,37 @@ const Layout = () => {
                     <div className="nav-group">
                         <p className="nav-label">{!collapsed && 'Settings'}</p>
                         <SidebarItem to="/items" icon={Settings} label="Item Master" collapsed={collapsed} />
+                        {installPrompt && (
+                            <button
+                                onClick={handleInstallClick}
+                                className={`sidebar-item ${collapsed ? 'collapsed' : ''}`}
+                                style={{
+                                    border: 'none',
+                                    background: 'transparent',
+                                    width: '100%',
+                                    cursor: 'pointer',
+                                    color: 'var(--accent-info)',
+                                    marginTop: 'auto'
+                                }}
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M8 12l4 4 4-4" />
+                                    <path d="M12 8v8" />
+                                </svg>
+                                {!collapsed && <span>Install App</span>}
+                            </button>
+                        )}
                     </div>
                 </nav>
             </aside>
@@ -83,6 +157,22 @@ const Layout = () => {
                 <header className="top-bar">
                     <h1 className="page-title">{getPageTitle()}</h1>
                     <div className="user-profile">
+                        <button
+                            onClick={toggleTheme}
+                            style={{
+                                background: 'transparent',
+                                border: 'none',
+                                cursor: 'pointer',
+                                color: 'var(--text-primary)',
+                                padding: '0.5rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                            aria-label="Toggle Theme"
+                        >
+                            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+                        </button>
                         <span className="user-avatar">AD</span>
                     </div>
                 </header>

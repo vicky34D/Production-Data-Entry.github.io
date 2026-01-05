@@ -2,38 +2,83 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
 
 :root {
-    /* Brand Colors - Modern Flat */
-    --primary-color: #2563eb;
-    /* Royal Blue */
-    --primary-hover: #1d4ed8;
-
-    /* Backgrounds */
-    --bg-page: #f8fafc;
-    /* Very light slate */
-    --bg-surface: #ffffff;
-    --bg-input: #ffffff;
-
-    /* Text */
-    --text-primary: #1e293b;
-    --text-secondary: #64748b;
-    --text-tertiary: #94a3b8;
-
-    /* Borders - Visible but subtle */
-    --border-color: #e2e8f0;
-    /* Slate 200 - Visible border */
-    --border-subtle: #f1f5f9;
-
-    /* Functional */
-    --accent-success: #10b981;
-    --accent-info: #0ea5e9;
-    --accent-warning: #f59e0b;
-    --accent-danger: #ef4444;
-
-    /* Shadows - Ultra Soft */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-
+    /* Shared Variables */
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s ease;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+}
+
+/* Light Mode (Equa Theme) */
+:root {
+    --primary-color: #7C3AED;
+    /* Violet/Purple */
+    --primary-hover: #6D28D9;
+
+    --bg-page: #F8FAFC;
+    /* Light Slate Background */
+    --bg-sidebar: #FFFFFF;
+    /* Pure White Sidebar */
+    --bg-surface: #FFFFFF;
+    /* Pure White Cards */
+    --bg-input: #FFFFFF;
+    --bg-hover: #F1F5F9;
+
+    --text-primary: #111827;
+    /* Near Black */
+    --text-secondary: #6B7280;
+    /* Cool Gray */
+    --text-tertiary: #9CA3AF;
+
+    --border-color: #E2E8F0;
+    --border-subtle: #F1F5F9;
+
+    --accent-success: #10B981;
+    --accent-info: #3B82F6;
+    --accent-warning: #F59E0B;
+    --accent-danger: #EF4444;
+
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    /* Subtle shadow for depth */
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    --shadow-soft: 0 10px 15px -3px rgba(0, 0, 0, 0.03);
+}
+
+/* Dark Mode - Equa Theme */
+[data-theme='dark'] {
+    --primary-color: #8b5cf6;
+    /* Vibrant Violet */
+    --primary-hover: #7c3aed;
+
+    --bg-page: #0B0B0F;
+    /* Ultra Dark */
+    --bg-sidebar: #13131A;
+    /* Dark Surface */
+    --bg-surface: #18181F;
+    /* Slightly Lighter Surface */
+    --bg-input: #23232C;
+    --bg-hover: #2A2A35;
+
+    --text-primary: #F8FAFC;
+    --text-secondary: #A0A0AB;
+    --text-tertiary: #6B7280;
+
+    --border-color: #2D2D38;
+    /* Subtle Dark Border */
+    --border-subtle: #18181F;
+
+    --accent-success: #34D399;
+    --accent-info: #38BDF8;
+    --accent-warning: #FBBF24;
+    --accent-danger: #F87171;
+
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
 * {
@@ -44,11 +89,33 @@
     -webkit-font-smoothing: antialiased;
 }
 
+
 body {
     font-family: 'Inter', sans-serif;
     color: var(--text-primary);
     background-color: var(--bg-page);
     min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--text-tertiary);
+    border-radius: 3px;
+    opacity: 0.5;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
 }
 
 /* Typography */
@@ -96,14 +163,13 @@ textarea:focus {
 
 /* Core Components - Bordered Box */
 .card {
-    background: white;
+    background: var(--bg-surface);
     border: 1px solid var(--border-color);
-    /* Added Border */
-    border-radius: 1rem;
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
-    /* Padding needed for box */
     margin-bottom: 2rem;
     box-shadow: var(--shadow-sm);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 /* Buttons */
@@ -113,7 +179,7 @@ textarea:focus {
     justify-content: center;
     gap: 0.5rem;
     padding: 0.6rem 1.25rem;
-    border-radius: 0.5rem;
+    border-radius: var(--radius-md);
     font-weight: 600;
     font-size: 0.9rem;
     transition: all var(--transition-fast);

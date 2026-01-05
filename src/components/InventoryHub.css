@@ -6,8 +6,9 @@
     flex-direction: column;
 }
 
+
 .hub-header {
-    background: white;
+    background: var(--bg-surface);
     border-bottom: 1px solid var(--border-color);
     padding: 1.5rem 2rem;
     display: flex;
@@ -46,7 +47,7 @@
 
 /* Bordered Process Card */
 .process-card {
-    background: white;
+    background: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: 1.5rem;
     padding: 2rem;
@@ -56,6 +57,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
     gap: 1rem;
     text-align: center;
     cursor: pointer;

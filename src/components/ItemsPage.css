@@ -33,17 +33,18 @@
 
 /* Search */
 .search-bar input {
-    background: white;
+    background: var(--bg-input);
     border: 1px solid var(--border-color);
     border-radius: 0.5rem;
     padding: 0.6rem 1rem 0.6rem 2.5rem;
     width: 300px;
     font-size: 0.9rem;
+    color: var(--text-primary);
 }
 
 /* Add Item Form - Bordered Card */
 .add-item-form {
-    background: white;
+    background: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: 1rem;
     padding: 1.5rem;
@@ -68,8 +69,8 @@
 .item-input,
 .item-select {
     width: 100%;
-    background: white !important;
-    /* Force white */
+    background: var(--bg-input) !important;
+    /* Force white/dark */
     border: 1px solid var(--border-color);
     padding: 0.75rem;
     border-radius: 0.5rem;
@@ -99,7 +100,7 @@
 
 /* Item Card - Bordered */
 .item-card {
-    background: white;
+    background: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: 1rem;
     padding: 1.5rem;
@@ -123,7 +124,7 @@
 }
 
 .category-badge {
-    background: #f1f5f9;
+    background: var(--bg-hover);
     color: var(--text-secondary);
     border: 1px solid var(--border-color);
     padding: 2px 8px;
@@ -134,7 +135,7 @@
 }
 
 .delete-btn {
-    background: white;
+    background: var(--bg-surface);
     border: 1px solid var(--border-color);
     color: var(--text-tertiary);
     padding: 4px;

@@ -10,7 +10,7 @@
 
 /* Header */
 .inventory-header {
-    background: white;
+    background: var(--bg-surface);
     border-bottom: 1px solid var(--border-color);
     padding: 1.5rem 2rem;
     position: sticky;
@@ -42,7 +42,7 @@
 
 .form-group input,
 .form-group select {
-    background: white;
+    background: var(--bg-input);
     border: 1px solid var(--border-color);
     border-radius: 0.5rem;
     padding: 0.75rem 1rem;
@@ -64,7 +64,7 @@
 
 /* Buttons */
 .btn-upload {
-    background: white;
+    background: var(--bg-surface);
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
     width: 100%;
