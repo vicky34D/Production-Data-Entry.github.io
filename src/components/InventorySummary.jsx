@@ -35,11 +35,13 @@ const InventorySummary = () => {
             const inGRN = grn.filter(d => norm(d.item) === productName).reduce((sum, d) => sum + (parseFloat(d.totalKg) || 0), 0);
             const inFGI = fgi.filter(d => norm(d.item) === productName).reduce((sum, d) => sum + (parseFloat(d.totalPackedKg) || 0), 0);
             const inSPP = spp.filter(d => norm(d.item) === productName).reduce((sum, d) => sum + (parseFloat(d.quantity) || 0), 0);
+            const inDSU = dsu.filter(d => norm(d.item) === productName && d.type === 'PRODUCTION_IN').reduce((sum, d) => sum + (parseFloat(d.totalKg) || 0), 0);
 
-            const totalIn = inGRN + inFGI + inSPP;
+            const totalIn = inGRN + inFGI + inSPP + inDSU;
 
             // Calculate OUT (Used / Dispatched / Consumed)
-            const outDSU = dsu.filter(d => norm(d.item) === productName).reduce((sum, d) => sum + (parseFloat(d.totalKg) || 0), 0);
+            // Exclude PRODUCTION_IN type from OUT calculation
+            const outDSU = dsu.filter(d => norm(d.item) === productName && d.type !== 'PRODUCTION_IN').reduce((sum, d) => sum + (parseFloat(d.totalKg) || 0), 0);
             const outGDN = gdn.filter(d => norm(d.item) === productName).reduce((sum, d) => sum + (parseFloat(d.totalKg) || 0), 0);
             const outSPU = spu.filter(d => norm(d.item) === productName).reduce((sum, d) => sum + (parseFloat(d.quantity) || 0), 0);
 

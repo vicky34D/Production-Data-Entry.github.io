@@ -13,9 +13,9 @@ const Dashboard = () => {
         return saved ? JSON.parse(saved) : [];
     });
 
-    // Batch State
-    const [batches, setBatches] = useState([]);
-    const [selectedBatchId, setSelectedBatchId] = useState('');
+    // Product State
+    const [itemsList, setItemsList] = useState([]);
+    const [selectedItem, setSelectedItem] = useState('');
 
     const todayStr = new Date().toISOString().split('T')[0];
     const [viewDate, setViewDate] = useState(todayStr);
@@ -28,13 +28,12 @@ const Dashboard = () => {
     const [wetWeight, setWetWeight] = useState('');
     const [selectedFileName, setSelectedFileName] = useState('');
 
-    // Load Batches
+    // Load Master Items
     useEffect(() => {
-        const savedBatches = JSON.parse(localStorage.getItem('productionBatches') || '[]');
-        setBatches(savedBatches);
-        // Default to first active batch if any
-        const active = savedBatches.find(b => b.status === 'In Production');
-        if (active) setSelectedBatchId(active.id);
+        const savedItems = localStorage.getItem('productItems');
+        if (savedItems) {
+            setItemsList(JSON.parse(savedItems));
+        }
     }, []);
 
     // Persist Data
@@ -61,12 +60,8 @@ const Dashboard = () => {
             alert(`Error: You can only add entries for the current date (${todayStr}).`);
             return;
         }
-        if (!operatorName || !trayId || !wetWeight) {
-            alert("Please fill all fields.");
-            return;
-        }
-        if (batches.length > 0 && !selectedBatchId) {
-            alert("Please select a Production Batch to link this entry to.");
+        if (!operatorName || !trayId || !wetWeight || !selectedItem) {
+            alert("Please fill all fields (Method, Operator, Tray, Weight).");
             return;
         }
 
@@ -77,14 +72,32 @@ const Dashboard = () => {
             machine: machineId,
             tray: trayId,
             weight: parseFloat(wetWeight),
-            batchId: selectedBatchId || 'Unassigned',
+            item: selectedItem,
             document: selectedFileName,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
 
         setProductionData([...productionData, entry]);
+
+        // Integrate with Daily Store Update & Stock Summary (Stock In)
+        const dsu = JSON.parse(localStorage.getItem('storeUpdateData') || '[]');
+        const dsuEntry = {
+            id: Date.now() + 1,
+            sNo: dsu.length + 1,
+            date: entryDate,
+            item: selectedItem,
+            totalBags: 0,
+            qtyPerBag: 0,
+            totalKg: parseFloat(wetWeight),
+            type: 'PRODUCTION_IN', // Mark as IN
+            document: `Production - ${machineId}`,
+            timestamp: new Date().toLocaleTimeString()
+        };
+        localStorage.setItem('storeUpdateData', JSON.stringify([...dsu, dsuEntry]));
+
         setWetWeight('');
         setSelectedFileName('');
+        setSelectedItem('');
     };
 
     const handleDeleteEntry = (id, date) => {
@@ -194,22 +207,20 @@ const Dashboard = () => {
                     />
                 </div>
 
-                {/* Batch Selector if active batches exist */}
-                {batches.length > 0 && (
-                    <div className="batch-selector" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'white', padding: '4px 8px', borderRadius: '8px', border: '1px solid var(--border-medium)' }}>
-                        <Factory size={16} color="var(--primary-color)" />
-                        <select
-                            value={selectedBatchId}
-                            onChange={e => setSelectedBatchId(e.target.value)}
-                            style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}
-                        >
-                            <option value="">-- No Active Batch --</option>
-                            {batches.filter(b => b.status === "In Production").map(b => (
-                                <option key={b.id} value={b.id}>{b.id} - {b.formulationName}</option>
-                            ))}
-                        </select>
-                    </div>
-                )}
+                {/* Product/Item Selector */}
+                <div className="batch-selector" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'white', padding: '4px 8px', borderRadius: '8px', border: '1px solid var(--border-medium)' }}>
+                    <Factory size={16} color="var(--primary-color)" />
+                    <select
+                        value={selectedItem}
+                        onChange={e => setSelectedItem(e.target.value)}
+                        style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}
+                    >
+                        <option value="">-- Select Product --</option>
+                        {itemsList.map(item => (
+                            <option key={item.id} value={item.name}>{item.name}</option>
+                        ))}
+                    </select>
+                </div>
 
                 <button className="btn-reset" onClick={handleClearData}>
                     <Lock size={14} style={{ marginRight: '6px' }} /> Reset System
@@ -227,7 +238,7 @@ const Dashboard = () => {
                     >
                         <div className="card-header">
                             <div className="card-title">
-                                <Plus size={20} /> New Entry {selectedBatchId && <span style={{ fontSize: '0.8em', color: 'var(--text-tertiary)', marginLeft: '8px' }}>to {selectedBatchId}</span>}
+                                <Plus size={20} /> New Entry {selectedItem && <span style={{ fontSize: '0.8em', color: 'var(--text-tertiary)', marginLeft: '8px' }}>- {selectedItem}</span>}
                             </div>
                         </div>
 
@@ -337,7 +348,7 @@ const Dashboard = () => {
                                                 <div style={{ fontWeight: 500 }}>{item.operator}</div>
                                                 <div style={{ fontSize: '0.8em', color: 'var(--text-secondary)' }}>
                                                     {item.machine} • {item.tray} • {item.weight}kg <br />
-                                                    {item.batchId && <span style={{ fontSize: '0.9em', color: 'var(--primary-color)' }}>{item.batchId}</span>}
+                                                    {item.item && <span style={{ fontSize: '0.9em', color: 'var(--primary-color)' }}>{item.item}</span>}
                                                 </div>
                                                 {item.document && (
                                                     <span className="file-badge" style={{ marginTop: '4px' }} title={item.document}>

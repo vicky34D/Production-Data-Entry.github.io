@@ -234,7 +234,7 @@ const LandingPage = () => {
                         <div className="marquee-track reverse-scroll">
                             {[...Array(2)].map((_, i) => (
                                 <div key={`r2-${i}`} className="review-group">
-                                    <ReviewCard name="Sarah Jenkins" handle="@ZenLiving" text="The Sandalwood Supreme is a best-seller in our stores. Customers love the long-lasting scent." icon="twitter" color="#1DA1F2" />
+                                    <ReviewCard name="Sarah Jenkins" handle="@ZenLiving" text="The Black Stone is a best-seller in our stores. Customers love the long-lasting scent." icon="twitter" color="#1DA1F2" />
                                     <ReviewCard name="Production Team" handle="Internal" text="The new dashboard makes tracking daily dipping and packing targets so much easier." icon="discord" color="#5865F2" />
                                     <ReviewCard name="Aarav Singh" handle="@VedaScents" text="Custom formulations are handled with great secrecy and precision. Truly professional service." icon="linkedin" color="#0A66C2" />
                                     <ReviewCard name="Quality Control" handle="Report" text="Zero defects in the last 10,000 packets. The automated checks are working perfectly." icon="mail" color="#EA4335" />

@@ -10,9 +10,9 @@ const ItemsPage = () => {
     const [items, setItems] = useState(() => {
         const saved = localStorage.getItem('productItems');
         return saved ? JSON.parse(saved) : [
-            { id: 1, name: 'Sandalwood Supreme', category: 'Premium Masala' },
-            { id: 2, name: 'Rose Petals', category: 'Flora' },
-            { id: 3, name: 'Oudh Aura', category: 'Dipped' }
+            { id: 1, name: 'Black Stone', category: 'Flora' },
+            { id: 2, name: '1234 one', category: 'Flora' },
+            { id: 3, name: 'New Box', category: 'Flora' }
         ];
     });
 

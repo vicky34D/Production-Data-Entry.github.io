@@ -269,9 +269,10 @@ const DailyStoreUpdate = () => {
                                         <th>S.No</th>
                                         <th>Date</th>
                                         <th>Items</th>
-                                        <th>No. of Bags OUT</th>
+                                        <th>No. of Bags</th>
                                         <th>Qty Per Bag</th>
-                                        <th>Total Kg OUT</th>
+                                        <th>Total Kg</th>
+                                        <th>Type</th>
                                         <th>Doc</th>
                                         <th>Action</th>
                                     </tr>
@@ -281,10 +282,23 @@ const DailyStoreUpdate = () => {
                                         <tr key={entry.id}>
                                             <td>{entry.sNo}</td>
                                             <td>{entry.date}</td>
-                                            <td>{entry.item}</td>
-                                            <td>{entry.totalBags}</td>
-                                            <td>{entry.qtyPerBag}</td>
-                                            <td style={{ fontWeight: 'bold', color: 'var(--accent-primary)' }}>{entry.totalKg.toFixed(2)}</td>
+                                            <td>
+                                                <div style={{ fontWeight: 500 }}>{entry.item}</div>
+                                            </td>
+                                            <td>{entry.totalBags || '-'}</td>
+                                            <td>{entry.qtyPerBag || '-'}</td>
+                                            <td style={{
+                                                fontWeight: 'bold',
+                                                color: entry.type === 'PRODUCTION_IN' ? '#10b981' : 'var(--accent-primary)' // Green for IN, Blue for OUT (default)
+                                            }}>
+                                                {entry.type === 'PRODUCTION_IN' ? '+' : ''}{entry.totalKg.toFixed(2)}
+                                            </td>
+                                            <td>
+                                                {entry.type === 'PRODUCTION_IN' ?
+                                                    <span className="badge" style={{ background: '#dcfce7', color: '#166534' }}>Production IN</span> :
+                                                    <span className="badge" style={{ background: '#fee2e2', color: '#991b1b' }}>Usage OUT</span>
+                                                }
+                                            </td>
                                             <td>
                                                 {entry.document && (
                                                     <span className="file-badge" title={entry.document}>
