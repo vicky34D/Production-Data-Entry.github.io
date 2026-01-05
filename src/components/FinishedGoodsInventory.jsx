@@ -2,16 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Plus, ClipboardList, Trash2, Download, Lock, Upload, Factory } from 'lucide-react';
+import { safeGet, safeSet } from '../utils/storage';
 import './FinishedGoodsInventory.css';
 
 const FinishedGoodsInventory = () => {
     const fileInputRef = useRef(null);
 
     // State
-    const [finishedGoodsData, setFinishedGoodsData] = useState(() => {
-        const saved = localStorage.getItem('finishedGoodsData');
-        return saved ? JSON.parse(saved) : [];
-    });
+    const [finishedGoodsData, setFinishedGoodsData] = useState(() => safeGet('finishedGoodsData', []));
 
     // Batch State
     const [batches, setBatches] = useState([]);
@@ -32,12 +30,12 @@ const FinishedGoodsInventory = () => {
 
     // Load Master Items & Batches
     useEffect(() => {
-        const savedItems = localStorage.getItem('productItems');
-        if (savedItems) {
-            setItemsList(JSON.parse(savedItems));
+        const savedItems = safeGet('productItems', []);
+        if (savedItems.length > 0) {
+            setItemsList(savedItems);
         }
 
-        const savedBatches = JSON.parse(localStorage.getItem('productionBatches') || '[]');
+        const savedBatches = safeGet('productionBatches', []);
         setBatches(savedBatches);
         // Default to first active batch if any
         const active = savedBatches.find(b => b.status === 'In Production');
@@ -49,7 +47,7 @@ const FinishedGoodsInventory = () => {
 
     // Persist Data
     useEffect(() => {
-        localStorage.setItem('finishedGoodsData', JSON.stringify(finishedGoodsData));
+        safeSet('finishedGoodsData', finishedGoodsData);
     }, [finishedGoodsData]);
 
     const handleAddEntry = () => {
@@ -88,6 +86,8 @@ const FinishedGoodsInventory = () => {
         }
         // ------------------------------
 
+        const transactionId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random());
+
         const entry = {
             id: Date.now(),
             sNo: finishedGoodsData.length + 1,
@@ -99,16 +99,15 @@ const FinishedGoodsInventory = () => {
             totalPackedKg,
             batchId: selectedBatchId || 'General Stock',
             document: selectedFileName,
+            transactionId: transactionId, // Link for rollback
             timestamp: new Date().toLocaleTimeString()
         };
-
-        setFinishedGoodsData([...finishedGoodsData, entry]);
 
         // --- AUTO-DEDUCT RAW MATERIALS ---
         if (selectedBatchId && selectedBatchId !== 'General Stock') {
             const batch = batches.find(b => b.id === selectedBatchId);
             if (batch && batch.requirements) {
-                const dsu = JSON.parse(localStorage.getItem('storeUpdateData') || '[]');
+                const dsu = safeGet('storeUpdateData', []);
                 let currentSNo = dsu.length;
 
                 // Calculate raw materials needed for THIS specific entry amount
@@ -122,11 +121,13 @@ const FinishedGoodsInventory = () => {
                     totalBags: 0,
                     qtyPerBag: 0,
                     totalKg: (req.requiredQty * ratio),
+                    type: 'PRODUCTION_OUT', // Explicit type
                     document: `Batch ${batch.id} - FGI Log`,
+                    transactionId: transactionId, // Link for rollback
                     timestamp: new Date().toLocaleTimeString()
                 }));
 
-                localStorage.setItem('storeUpdateData', JSON.stringify([...dsu, ...newDsuEntries]));
+                safeSet('storeUpdateData', [...dsu, ...newDsuEntries]);
 
                 // --- BATCH CLOSURE LOGIC ---
                 // Check if this entry pushes us over the completion line
@@ -144,7 +145,7 @@ const FinishedGoodsInventory = () => {
                             if (b.id === batch.id) return { ...b, status: 'Completed', actualYield: yieldPct };
                             return b;
                         });
-                        localStorage.setItem('productionBatches', JSON.stringify(updatedBatches));
+                        safeSet('productionBatches', updatedBatches);
                         setBatches(updatedBatches);
                         setSelectedBatchId(''); // Reset selection
                         alert("Batch Closed Successfully. Great Job!");
@@ -153,6 +154,8 @@ const FinishedGoodsInventory = () => {
             }
         }
         // ---------------------------------
+
+        setFinishedGoodsData([...finishedGoodsData, entry]);
 
         // Reset form (keep date)
         setCustomerName('');
@@ -167,7 +170,22 @@ const FinishedGoodsInventory = () => {
             alert("Restricted: You cannot delete records from previous days.");
             return;
         }
-        if (window.confirm("Delete this entry?")) {
+        if (window.confirm("Delete this entry? This will also revert any automatic raw material deductions.")) {
+            const entryToDelete = finishedGoodsData.find(item => item.id === id);
+
+            // Cascading Delete if linked
+            if (entryToDelete && entryToDelete.transactionId) {
+                const dsu = safeGet('storeUpdateData', []);
+                const updatedDsu = dsu.filter(d => d.transactionId !== entryToDelete.transactionId);
+
+                if (dsu.length !== updatedDsu.length) {
+                    safeSet('storeUpdateData', updatedDsu);
+                    console.log(`Rolled back ${dsu.length - updatedDsu.length} raw material entries.`);
+                }
+            } else {
+                console.warn("Legacy entry deleted. No automatic rollback possible.");
+            }
+
             const updatedData = finishedGoodsData.filter(item => item.id !== id);
             // Re-index S.No
             const reIndexedData = updatedData.map((item, index) => ({ ...item, sNo: index + 1 }));

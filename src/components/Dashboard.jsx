@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Plus, Activity, TrendingUp, Lock, Upload, Factory } from 'lucide-react';
+import { Plus, Activity, TrendingUp, Lock, Upload, Factory } from 'lucide-react';
+import { safeGet, safeSet } from '../utils/storage';
 import './Dashboard.css';
 
 const Dashboard = () => {
     const fileInputRef = useRef(null);
 
     // State
-    const [productionData, setProductionData] = useState(() => {
-        const saved = localStorage.getItem('agarbattiDataWet');
-        return saved ? JSON.parse(saved) : [];
-    });
+    const [productionData, setProductionData] = useState(() => safeGet('agarbattiDataWet', []));
 
     // Product State
     const [itemsList, setItemsList] = useState([]);
@@ -30,15 +27,15 @@ const Dashboard = () => {
 
     // Load Master Items
     useEffect(() => {
-        const savedItems = localStorage.getItem('productItems');
-        if (savedItems) {
-            setItemsList(JSON.parse(savedItems));
+        const savedItems = safeGet('productItems', []);
+        if (savedItems.length > 0) {
+            setItemsList(savedItems);
         }
     }, []);
 
     // Persist Data
     useEffect(() => {
-        localStorage.setItem('agarbattiDataWet', JSON.stringify(productionData));
+        safeSet('agarbattiDataWet', productionData);
     }, [productionData]);
 
     // Auto-calculate Tray ID
@@ -65,6 +62,8 @@ const Dashboard = () => {
             return;
         }
 
+        const transactionId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random());
+
         const entry = {
             id: Date.now(),
             date: entryDate,
@@ -74,13 +73,14 @@ const Dashboard = () => {
             weight: parseFloat(wetWeight),
             item: selectedItem,
             document: selectedFileName,
+            transactionId: transactionId, // Link for rollback
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
 
         setProductionData([...productionData, entry]);
 
         // Integrate with Daily Store Update & Stock Summary (Stock In)
-        const dsu = JSON.parse(localStorage.getItem('storeUpdateData') || '[]');
+        const dsu = safeGet('storeUpdateData', []);
         const dsuEntry = {
             id: Date.now() + 1,
             sNo: dsu.length + 1,
@@ -91,13 +91,14 @@ const Dashboard = () => {
             totalKg: parseFloat(wetWeight),
             type: 'PRODUCTION_IN', // Mark as IN
             document: `Production - ${machineId}`,
+            transactionId: transactionId, // Link for rollback
             timestamp: new Date().toLocaleTimeString()
         };
-        localStorage.setItem('storeUpdateData', JSON.stringify([...dsu, dsuEntry]));
+        safeSet('storeUpdateData', [...dsu, dsuEntry]);
 
         setWetWeight('');
         setSelectedFileName('');
-        setSelectedItem('');
+        // Keep selected item for convenience
     };
 
     const handleDeleteEntry = (id, date) => {
@@ -105,7 +106,20 @@ const Dashboard = () => {
             alert("Restricted: You cannot delete records from previous days.");
             return;
         }
-        if (window.confirm("Delete this entry?")) {
+        if (window.confirm("Delete this entry? This will also revert the 'Stock In' record.")) {
+            const entryToDelete = productionData.find(item => item.id === id);
+
+            // Cascading Rollback
+            if (entryToDelete && entryToDelete.transactionId) {
+                const dsu = safeGet('storeUpdateData', []);
+                const updatedDsu = dsu.filter(d => d.transactionId !== entryToDelete.transactionId);
+                if (dsu.length !== updatedDsu.length) {
+                    safeSet('storeUpdateData', updatedDsu);
+                }
+            } else {
+                console.warn("Legacy entry deleted. Stock In record might remain.");
+            }
+
             setProductionData(productionData.filter(item => item.id !== id));
         }
     };

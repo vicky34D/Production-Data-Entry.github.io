@@ -1,46 +1,43 @@
 .layout-container {
     display: flex;
     height: 100vh;
-    background-color: transparent;
-    /* Handled by body */
+    background-color: var(--bg-page);
     overflow: hidden;
     color: var(--text-primary);
+    position: relative;
 }
 
-/* Sidebar Styles */
+/* Sidebar Styles - Clean White */
 .sidebar {
-    width: 280px;
-    background: var(--bg-surface);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-right: 1px solid var(--border-light);
+    width: 260px;
+    background: white;
+    border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     transition: width var(--transition-normal);
     z-index: 50;
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.01);
+    /* Very subtle shadow */
 }
 
 .sidebar.collapsed {
-    width: 80px;
+    width: 72px;
 }
 
 .sidebar-header {
-    height: 80px;
+    height: 72px;
+    /* Standard height */
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 1.5rem;
-    border-bottom: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .brand-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-family: 'Outfit', sans-serif;
-    background: linear-gradient(135deg, var(--primary-color), var(--accent-info));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--primary-color);
     font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
@@ -50,12 +47,12 @@
     background: transparent;
     color: var(--text-tertiary);
     padding: 0.5rem;
-    border-radius: 0.75rem;
+    border-radius: 0.5rem;
     transition: all var(--transition-fast);
 }
 
 .collapse-btn:hover {
-    background-color: rgba(99, 102, 241, 0.1);
+    background-color: var(--bg-subtle);
     color: var(--primary-color);
 }
 
@@ -71,62 +68,50 @@
 .nav-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.25rem;
 }
 
 .nav-label {
     font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-weight: 700;
+    letter-spacing: 0.08em;
+    font-weight: 600;
     color: var(--text-tertiary);
     margin-bottom: 0.5rem;
-    padding-left: 1rem;
+    padding-left: 0.75rem;
     white-space: nowrap;
-    opacity: 0.8;
 }
 
 .sidebar-item {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 0.875rem 1rem;
+    gap: 0.75rem;
+    padding: 0.75rem;
     color: var(--text-secondary);
-    border-radius: 0.75rem;
+    border-radius: 0.5rem;
     transition: all var(--transition-fast);
     text-decoration: none;
     font-weight: 500;
     position: relative;
     overflow: hidden;
+    white-space: nowrap;
 }
 
 .sidebar-item:hover {
-    background-color: var(--bg-surface-hover);
-    color: var(--primary-color);
-    transform: translateX(4px);
+    background-color: var(--bg-subtle);
+    color: var(--text-primary);
 }
 
 .sidebar-item.active {
-    background: linear-gradient(to right, rgba(99, 102, 241, 0.1), rgba(14, 165, 233, 0.05));
+    background-color: #eef2ff;
+    /* Very light indigo */
     color: var(--primary-color);
     font-weight: 600;
-    border: 1px solid rgba(99, 102, 241, 0.2);
-}
-
-.sidebar-item.active::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background: var(--primary-color);
-    border-radius: 0 4px 4px 0;
 }
 
 .sidebar-item.collapsed {
     justify-content: center;
-    padding: 0.875rem 0;
+    padding: 0.75rem 0;
 }
 
 .sidebar-item.collapsed span {
@@ -140,13 +125,13 @@
     flex-direction: column;
     overflow: hidden;
     position: relative;
+    background: var(--bg-page);
 }
 
 .top-bar {
-    height: 80px;
-    background: transparent;
-    /* Let body gradient show through or glass effect */
-    /* Often convenient to keep top bar cleaner */
+    height: 72px;
+    background: white;
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -155,118 +140,82 @@
 }
 
 .page-title {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     color: var(--text-primary);
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .user-profile {
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 0.5rem;
-    background: var(--bg-surface);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--border-light);
-    border-radius: 2rem;
-    padding-right: 1.5rem;
-    box-shadow: var(--shadow-sm);
     cursor: pointer;
-    transition: var(--transition-normal);
-}
-
-.user-profile:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
 }
 
 .user-avatar {
-    width: 42px;
-    height: 42px;
-    background: linear-gradient(135deg, var(--primary-color), var(--accent-info));
-    color: white;
+    width: 36px;
+    height: 36px;
+    background: #e0e7ff;
+    color: var(--primary-color);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 700;
-    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3);
+    border: 1px solid #c7d2fe;
 }
 
 .content-area {
     flex: 1;
     overflow-y: auto;
-    padding: 0 2rem 2rem 2rem;
+    padding: 2rem;
     position: relative;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border-medium) transparent;
 }
 
-/* Mobile Responsiveness for Layout */
+/* Responsive Support (Basic that works with current Layout.jsx) */
 @media (max-width: 768px) {
     .layout-container {
-        position: relative;
+        flex-direction: column;
+        /* Stack if needed, or handle sidebar differently */
     }
 
-    /* Sidebar becomes overlay on mobile */
+    /* If Layout.jsx doesn't handle mobile explicitly yet, 
+       we can forcefully hide sidebar or make it overlay via CSS if structured right.
+       Since user reverted JS, we'll keep it simple: 
+       Sidebar likely stays on left but might squish. 
+       Let's ensure it doesn't break. */
+
     .sidebar {
         position: fixed;
-        top: 0;
-        left: 0;
-        bottom: 0;
         height: 100vh;
-        z-index: 1000;
-        /* When collapsed on mobile, we hide it completely */
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        width: 280px !important;
+        z-index: 100;
+        /* If not collapsed, it might cover content on small screens */
     }
 
-    .sidebar.collapsed {
-        transform: translateX(-100%);
-        /* Slide out */
-        width: 280px !important;
-        /* Keep width but hide */
-    }
-
-    /* Add backdrop when open */
-    .sidebar:not(.collapsed)::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: -1;
-        width: 100vw;
-    }
-
-    /* Adjust main content to not be pushed */
     .main-content {
-        margin-left: 0 !important;
-        width: 100%;
+        margin-left: 72px;
+        /* Assume collapsed width at least */
+        width: calc(100% - 72px);
+    }
+
+    .sidebar:not(.collapsed)+.main-content {
+        /* When sidebar is open on mobile, maybe push content or let it overlay? */
+        margin-left: 260px;
+        /* Push content */
+        width: calc(100% - 260px);
+    }
+
+    /* Adjust padding for small screens */
+    .content-area {
+        padding: 1rem;
     }
 
     .top-bar {
         padding: 0 1rem;
     }
 
-    .content-area {
-        padding: 1rem;
-    }
-
     .page-title {
         font-size: 1.2rem;
     }
-
-    /* Since we rely on the collapse button which is INSIDE the sidebar usually,
-       we might need it visible or accessible. 
-       Usually the top bar has a hamburger. 
-       Assuming the Layout.jsx has a mechanism or the internal sidebar collapse toggle works. 
-       On mobile, if it's collapsed (hidden), how do we open it?
-       We need a visible toggle if one isn't there. 
-       But for now, let's assume the user logic handles interaction or the default state is open?
-       Actually, standard is collapsed on mobile. If buttons are inside sidebar, you can't open it!
-    */
 }
