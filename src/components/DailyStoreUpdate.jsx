@@ -93,14 +93,15 @@ const DailyStoreUpdate = () => {
     };
 
     const exportCSV = () => {
-        const headers = ["S. No.", "Date", "Item", "No. of Bags OUT", "Qty Per Bag", "Total Kg OUT"];
+        const headers = ["S. No.", "Date", "Item", "Bags", "Qty Per Bag", "Total Kg", "Type"];
         const rows = storeData.map(item => [
             item.sNo,
             item.date,
             item.item,
-            item.totalBags,
-            item.qtyPerBag,
-            item.totalKg
+            item.totalBags || 0,
+            item.qtyPerBag || 0,
+            item.totalKg.toFixed(2),
+            item.type === 'PRODUCTION_IN' ? 'Production IN' : 'Usage OUT'
         ]);
 
         let csvContent = "data:text/csv;charset=utf-8,"

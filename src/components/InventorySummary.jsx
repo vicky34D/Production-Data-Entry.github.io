@@ -119,20 +119,7 @@ const InventorySummary = () => {
                     <button className="action-btn btn-primary" onClick={exportCSV}>
                         <Download size={18} /> Export CSV
                     </button>
-                    <button className="btn btn-upload" style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        padding: '0.5rem 1rem',
-                        borderRadius: '6px',
-                        fontWeight: '600',
-                        fontSize: '0.85rem',
-                        gap: '8px',
-                        cursor: 'pointer',
-                        border: '1px solid var(--border-medium)',
-                        background: 'var(--bg-surface)',
-                        color: 'var(--text-secondary)'
-                    }} title="Upload supportive documents" onClick={() => fileInputRef.current.click()}>
+                    <button className="action-btn btn-secondary" title="Upload supportive documents" onClick={() => fileInputRef.current.click()}>
                         <Upload size={18} /> Upload Docs
                     </button>
                     <input
