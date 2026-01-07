@@ -1,29 +1,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
 :root {
-    /* Theme Colors - Extracted from Design */
-    --bg-page: #E3EBE9; /* Light Mint/Grey Background */
-    --bg-sidebar: #1F1F1F; /* Dark Sidebar */
+    /* Theme Colors - FinSet Light Theme */
+    --bg-page: #FFFFFF;
+    --bg-sidebar: #F9FAFC;
+    /* Very light grey for sidebar */
     --bg-surface: #FFFFFF;
-    
-    --primary-color: #1F1F1F;
-    --accent-yellow: #FFE8AC; /* Pastel Yellow */
-    --accent-blue: #CDE8F5;   /* Pastel Blue */
-    --accent-pink: #F8D1D1;   /* Pastel Pink */
-    
-    --text-primary: #1F1F1F;
-    --text-secondary: #8E8E93;
-    --text-muted: #BCBCBC;
-    
-    --border-color: #F0F0F0;
-    
+
+    --primary-color: #6366F1;
+    /* Indigo/Violet Brand Color */
+    --accent-yellow: #FEF3C7;
+    --accent-blue: #E0E7FF;
+    --accent-pink: #FAE8FF;
+    --accent-active: #6366F1;
+    /* Violet for active pills */
+
+    --text-primary: #111827;
+    /* Dark text */
+    --text-secondary: #9CA3AF;
+    /* Grey text */
+    --text-muted: #D1D5DB;
+
+    --border-color: #F3F4F6;
+
     --radius-sm: 0.5rem;
     --radius-md: 1rem;
     --radius-lg: 1.5rem;
+    --radius-xl: 1.5rem;
+    /* Standard rounded, not super bubbly */
     --radius-full: 9999px;
-    
-    --shadow-soft: 0 4px 20px rgba(0,0,0,0.03);
-    --shadow-card: 0 2px 10px rgba(0,0,0,0.02);
+
+    --shadow-soft: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 * {
@@ -41,7 +49,12 @@ body {
     min-height: 100vh;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-weight: 600;
     letter-spacing: -0.02em;
 }
@@ -51,10 +64,12 @@ h1, h2, h3, h4, h5, h6 {
     width: 6px;
     height: 6px;
 }
+
 ::-webkit-scrollbar-thumb {
     background: #D1D5DB;
     border-radius: 4px;
 }
+
 ::-webkit-scrollbar-track {
     background: transparent;
 }
@@ -78,7 +93,7 @@ button {
 }
 
 .btn-primary {
-    background: var(--bg-sidebar);
+    background: var(--primary-color);
     color: white;
 }
 

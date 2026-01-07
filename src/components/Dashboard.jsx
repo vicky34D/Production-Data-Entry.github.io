@@ -1,211 +1,253 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import {
-    MoreVertical,
-    Mail,
-    Phone,
-    Video,
-    Calendar as CalendarIcon,
-    Clock,
-    User,
-    MapPin,
-    ChevronDown,
-    Plus,
-    ArrowRight,
-    Search
-} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Calendar, Plus, MoreHorizontal, ArrowUpRight, ArrowDownRight, Settings } from 'lucide-react';
 import { safeGet } from '../utils/storage';
 import './Dashboard.css';
 
 const Dashboard = () => {
-    // Data Logic
-    const [productionData, setProductionData] = useState(() => safeGet('agarbattiDataWet', []));
-    const todayStr = new Date().toISOString().split('T')[0];
+    const navigate = useNavigate();
+    const [dateRange, setDateRange] = useState('This month');
 
-    // Derived Stats
-    const filteredData = productionData.filter(item => item.date === todayStr);
-    const totalWeight = filteredData.reduce((sum, item) => sum + item.weight, 0);
-    const activeOperators = new Set(filteredData.map(e => e.operator)).size;
-
-    // Machine Grouping for "Projects"
-    const machineGroups = {};
-    filteredData.forEach(item => {
-        if (!machineGroups[item.machine]) {
-            machineGroups[item.machine] = { weight: 0, trays: 0 };
-        }
-        machineGroups[item.machine].weight += item.weight;
-        machineGroups[item.machine].trays += 1;
+    // Real Data State
+    const [stats, setStats] = useState({
+        totalProduction: 0,
+        efficiency: 92.5, // Mocked for now, implies machine uptime
+        materialUsage: 0,
+        batchCount: 0,
+        activeBatches: 0
     });
 
-    const machines = Object.keys(machineGroups).length > 0
-        ? Object.keys(machineGroups).map(k => ({ id: k, ...machineGroups[k] }))
-        : [
-            { id: 'M1', weight: 0, trays: 0, status: 'Idle' },
-            { id: 'M2', weight: 0, trays: 0, status: 'Idle' },
-            { id: 'M3', weight: 0, trays: 0, status: 'Idle' }
-        ];
+    useEffect(() => {
+        // Fetch Data from LocalStorage
+        const fgiData = safeGet('finishedGoodsData', []);
+        const dsuData = safeGet('storeUpdateData', []);
+        const batches = safeGet('productionBatches', []);
+
+        // Calculate Totals
+        const totalOutput = fgiData.reduce((acc, curr) => acc + (parseFloat(curr.totalPackedKg) || 0), 0);
+        const batchCount = batches.length;
+        const activeBatches = batches.filter(b => b.status === "In Production").length;
+
+        // Calculate Material Usage (Only 'Usage OUT' or 'PRODUCTION_OUT')
+        // Assuming default type is OUT if not specified, or checking types
+        const totalUsage = dsuData.reduce((acc, curr) => {
+            const isOut = !curr.type || curr.type === 'PRODUCTION_OUT' || curr.type === 'Usage OUT';
+            return isOut ? acc + (parseFloat(curr.totalKg) || 0) : acc;
+        }, 0);
+
+        setStats({
+            totalProduction: totalOutput,
+            efficiency: 94.2, // Could be calculated based on target vs actual if available
+            materialUsage: totalUsage,
+            batchCount,
+            activeBatches
+        });
+    }, []);
+
+    const toggleDateRange = () => {
+        setDateRange(prev => prev === 'This month' ? 'This year' : 'This month');
+    };
 
     return (
         <div className="dashboard-container">
             <div className="dashboard-layout">
-                {/* Left Column */}
-                <div className="left-column">
-                    {/* Profile Card */}
-                    <div className="card profile-card">
-                        <div className="profile-header">
-                            <ArrowRight size={20} />
-                            <div style={{ fontWeight: 600 }}>My Profile</div>
-                            <div className="icon-btn"><MoreVertical size={16} /></div>
+                {/* Main Column */}
+                <div className="main-column">
+                    {/* Action Bar */}
+                    <div className="action-bar">
+                        <div className="date-filter" onClick={toggleDateRange}>
+                            <Calendar size={16} color="var(--text-secondary)" />
+                            <span>{dateRange}</span>
                         </div>
-
-                        <div className="profile-pic-container">
-                            <div className="profile-pic" style={{ background: '#ddd', overflow: 'hidden' }}>
-                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Robert" alt="Profile" style={{ width: '100%', height: '100%' }} />
-                            </div>
-                        </div>
-
-                        <div className="profile-name">Robert Smith</div>
-                        <div className="profile-role">Production Manager</div>
-
-                        <div className="profile-actions">
-                            <button className="action-circle"><Mail size={18} /></button>
-                            <button className="action-circle" style={{ background: 'white', border: '1px solid #eee', color: '#333' }}><Phone size={18} /></button>
-                            <button className="action-circle" style={{ background: 'white', border: '1px solid #eee', color: '#333' }}><Video size={18} /></button>
-                        </div>
-
-                        <div className="time-slot" style={{ marginTop: '1.5rem' }}>
-                            <div style={{ textAlign: 'left' }}>
-                                <div style={{ fontSize: '0.8rem', color: '#888' }}>Today's Date</div>
-                                <div style={{ fontWeight: 600 }}>{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>
-                            </div>
-                            <CalendarIcon size={20} color="#666" />
+                        <div className="widget-actions">
+                            <button className="btn btn-outline" onClick={() => navigate('/items')}>
+                                <Settings size={16} style={{ marginRight: '8px' }} />
+                                Manage items
+                            </button>
+                            <button className="btn btn-fill" onClick={() => navigate('/plan')}>
+                                <Plus size={16} style={{ marginRight: '8px' }} />
+                                Add Plan
+                            </button>
                         </div>
                     </div>
 
-                    {/* Detailed Info */}
-                    <div className="card">
-                        <div className="card-header">
-                            <div className="card-title">Detailed Information</div>
+                    {/* Metrics Grid */}
+                    <div className="metrics-grid">
+                        {/* Card 1: Total Production */}
+                        <div className="metric-card">
+                            <div className="metric-header">
+                                <span className="metric-title">Total Production</span>
+                                <MoreHorizontal size={16} color="var(--text-secondary)" />
+                            </div>
+                            <div className="metric-value-row">
+                                <div className="metric-value">{stats.totalProduction.toLocaleString()} kg</div>
+                                <div className="trend-badge trend-up">
+                                    <ArrowUpRight size={12} />
+                                    <span>{stats.activeBatches > 0 ? '+ Active' : 'Stable'}</span>
+                                </div>
+                            </div>
+                            <div className="metric-footer">
+                                <div className="mini-stat">
+                                    <ArrowUpRight size={12} color="#6366F1" />
+                                    <span>{stats.batchCount} batches</span>
+                                </div>
+                                <div className="mini-stat">
+                                    <Settings size={12} color="#6366F1" />
+                                    <span>{stats.activeBatches} active</span>
+                                </div>
+                            </div>
                         </div>
-                        <div className="info-list">
-                            <div className="info-item">
-                                <div className="info-icon"><User size={18} /></div>
-                                <div className="info-content">
-                                    <div className="info-label">Active Operators</div>
-                                    <div className="info-value">{activeOperators} Online</div>
-                                </div>
-                                <div style={{ color: '#10B981', fontSize: '0.8rem' }}>Online</div>
+
+                        {/* Card 2: Efficiency */}
+                        <div className="metric-card">
+                            <div className="metric-header">
+                                <span className="metric-title">Efficiency Rate</span>
+                                <MoreHorizontal size={16} color="var(--text-secondary)" />
                             </div>
-                            <div className="info-item">
-                                <div className="info-icon"><Clock size={18} /></div>
-                                <div className="info-content">
-                                    <div className="info-label">Total Production</div>
-                                    <div className="info-value">{totalWeight.toFixed(2)} KG</div>
+                            <div className="metric-value-row">
+                                <div className="metric-value">{stats.efficiency}%</div>
+                                <div className="trend-badge trend-up">
+                                    <ArrowUpRight size={12} />
+                                    <span>6.3%</span>
                                 </div>
                             </div>
-                            <div className="info-item">
-                                <div className="info-icon"><MapPin size={18} /></div>
-                                <div className="info-content">
-                                    <div className="info-label">Location</div>
-                                    <div className="info-value">Factory Unit 1</div>
+                            <div className="metric-footer">
+                                <div className="mini-stat">
+                                    <span>Optimal</span>
+                                </div>
+                                <span style={{ opacity: 0.6 }}>vs last month</span>
+                            </div>
+                        </div>
+
+                        {/* Card 3: Material Usage */}
+                        <div className="metric-card">
+                            <div className="metric-header">
+                                <span className="metric-title">Material Usage</span>
+                                <MoreHorizontal size={16} color="var(--text-secondary)" />
+                            </div>
+                            <div className="metric-value-row">
+                                <div className="metric-value">{stats.materialUsage.toLocaleString()} kg</div>
+                                <div className="trend-badge trend-down">
+                                    <ArrowDownRight size={12} />
+                                    <span>Monitor</span>
                                 </div>
                             </div>
+                            <div className="metric-footer">
+                                <div className="mini-stat">
+                                    <span>Consumed</span>
+                                </div>
+                                <div className="mini-stat">
+                                    <span style={{ color: 'orange' }}>Check Stock</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Chart 1: Overview */}
+                    <div className="chart-card">
+                        <div className="chart-header">
+                            <div>
+                                <h3 className="chart-title">Production Overview</h3>
+                                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Daily output vs target</p>
+                            </div>
+                            <div className="chart-legend">
+                                <div className="legend-item">
+                                    <span className="dot" style={{ background: 'var(--primary-color)' }}></span>
+                                    <span>Actual</span>
+                                </div>
+                                <div className="legend-item">
+                                    <span className="dot" style={{ background: '#E2E8F0' }}></span>
+                                    <span>Target</span>
+                                </div>
+                            </div>
+                        </div>
+                        {/* CSS Visual Mock for Area Chart */}
+                        <div className="chart-visual" style={{ alignItems: 'flex-end', height: '240px', justifyContent: 'space-between', padding: '0 1rem' }}>
+                            <svg viewBox="0 0 100 40" preserveAspectRatio="none" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
+                                <path
+                                    d="M0,35 Q10,25 20,30 T40,20 T60,25 T80,10 T100,20 V40 H0 Z"
+                                    fill="url(#gradient)"
+                                    opacity="0.2"
+                                />
+                                <path
+                                    d="M0,35 Q10,25 20,30 T40,20 T60,25 T80,10 T100,20"
+                                    fill="none"
+                                    stroke="var(--primary-color)"
+                                    strokeWidth="0.5"
+                                />
+                                <defs>
+                                    <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stopColor="var(--primary-color)" />
+                                        <stop offset="100%" stopColor="white" stopOpacity="0" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+
+                    {/* Chart 2: Budget vs Expense Bar Chart */}
+                    <div className="chart-card">
+                        <div className="chart-header">
+                            <div>
+                                <h3 className="chart-title">Material vs Output</h3>
+                            </div>
+                            <div className="date-filter" style={{ padding: '0.25rem 0.75rem' }}>
+                                <span>This year</span>
+                            </div>
+                        </div>
+                        <div className="chart-visual">
+                            {/* Simple CSS Bars */}
+                            {[40, 60, 55, 70, 45, 80, 65].map((h, i) => (
+                                <div key={i} className="chart-bar-visual" style={{ height: `${h}%` }}></div>
+                            ))}
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', padding: '0 2%', color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
+                            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Right Column */}
-                <div className="right-column">
-                    {/* Projects Section */}
-                    <div className="projects-section">
-                        <div className="section-header">
-                            <div className="header-title">Ongoing Production</div>
-                            <div className="icon-btn"><ChevronDown size={20} /></div>
+                {/* Right Column Stats */}
+                <div className="stats-column">
+                    <div className="stats-card">
+                        <div className="chart-header" style={{ width: '100%', marginBottom: '0' }}>
+                            <h3 className="chart-title">Statistics</h3>
+                            <button style={{ border: 'none', background: 'none' }}>
+                                <MoreHorizontal size={16} color="var(--text-secondary)" />
+                            </button>
                         </div>
-
-                        <div className="projects-grid">
-                            {machines.map((m, idx) => (
-                                <div key={m.id} className={`project-card ${idx % 3 === 0 ? 'card-pastel-yellow' : idx % 3 === 1 ? 'card-pastel-blue' : 'card-pastel-pink'}`}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                        <span className="project-date">{todayStr}</span>
-                                        <MoreVertical size={16} />
-                                    </div>
-                                    <div>
-                                        <div className="project-name">Machine {m.id}</div>
-                                        <div className="project-sub">{m.weight ? `${m.weight.toFixed(1)}kg produced` : 'Idle'}</div>
-                                    </div>
-                                    <div className="project-sub" style={{ marginTop: '0.5rem' }}>
-                                        {m.trays ? `${m.trays} Trays` : 'No Activity'}
-                                    </div>
-
-                                    <div className="progress-section">
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
-                                            <span>Progress</span>
-                                            <span>{m.weight ? Math.min(100, (m.weight / 100) * 100).toFixed(0) : 0}%</span>
-                                        </div>
-                                        <div className="progress-bar">
-                                            <div className="progress-fill" style={{ width: `${m.weight ? Math.min(100, m.weight) : 0}%` }}></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                        <div className="donut-chart-mock">
+                            <span className="donut-value">{Math.round((stats.totalProduction / (stats.materialUsage || 1)) * 100) || 0}%</span>
+                            <span className="donut-sub">Yield</span>
+                        </div>
+                        <div className="stats-list">
+                            <div className="stat-row">
+                                <span className="stat-dot" style={{ background: 'var(--primary-color)' }}></span>
+                                <span>Output</span>
+                            </div>
+                            <div className="stat-row">
+                                <span className="stat-dot" style={{ background: '#94A3B8' }}></span>
+                                <span>Input Waste</span>
+                            </div>
+                            <div className="stat-row">
+                                <span className="stat-dot" style={{ background: '#CBD5E1' }}></span>
+                                <span>Recycled</span>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Bottom Row: Calendar & Inbox */}
-                    <div className="bottom-row">
-                        {/* Calendar Widget (Visual) */}
-                        <div className="card">
-                            <div className="card-header">
-                                <div className="card-title">Calendar</div>
-                                <div className="icon-btn"><MoreVertical size={16} /></div>
-                            </div>
-                            <div style={{ textAlign: 'center' }}>
-                                <h3 style={{ marginBottom: '1rem' }}>March</h3>
-                                {/* Simple Grid Representation */}
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.5rem', fontSize: '0.8rem', color: '#888' }}>
-                                    <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
-                                    {Array.from({ length: 30 }).map((_, i) => (
-                                        <span key={i} style={{
-                                            padding: '0.5rem',
-                                            background: i === 11 ? '#FFB7B2' : i === 19 ? '#333' : 'transparent',
-                                            color: i === 19 ? 'white' : 'inherit',
-                                            borderRadius: '8px'
-                                        }}>
-                                            {i + 1}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Inbox Widget */}
-                        <div className="card">
-                            <div className="card-header">
-                                <div className="card-title">Recent Activity</div>
-                                <div className="icon-btn"><Search size={16} /></div>
-                            </div>
-                            <div className="inbox-list">
-                                {productionData.slice().reverse().slice(0, 3).length > 0 ? (
-                                    productionData.slice().reverse().slice(0, 3).map((item) => (
-                                        <div className="msg-item" key={item.id}>
-                                            <div className="msg-avatar" style={{ background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                {item.operator.charAt(0)}
-                                            </div>
-                                            <div className="msg-content">
-                                                <h4>{item.operator}</h4>
-                                                <p>Produced {item.weight}kg on {item.machine}</p>
-                                            </div>
-                                            <div style={{ marginLeft: 'auto', fontSize: '0.8rem', color: '#aaa' }}>
-                                                {item.timestamp || 'Now'}
-                                            </div>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <div style={{ color: '#999', textAlign: 'center' }}>No recent activity</div>
-                                )}
-                            </div>
-                        </div>
+                    {/* Another promo/info card if needed. Can be converted to Quick Action */}
+                    <div className="stats-card" style={{ background: 'var(--primary-color)', color: 'white' }}>
+                        <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Production Access</h3>
+                        <p style={{ fontSize: '0.85rem', opacity: 0.8, marginBottom: '1rem', textAlign: 'center' }}>
+                            Quickly jump to planning to schedule new batches.
+                        </p>
+                        <button
+                            style={{ background: 'white', color: 'var(--primary-color)', padding: '0.5rem 1rem', borderRadius: '2rem', fontWeight: 600 }}
+                            onClick={() => navigate('/plan')}
+                        >
+                            Open Planner
+                        </button>
                     </div>
                 </div>
             </div>

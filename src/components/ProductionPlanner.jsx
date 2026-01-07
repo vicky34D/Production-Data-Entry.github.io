@@ -130,7 +130,7 @@ const ProductionPlanner = () => {
                     <div className="brand-icon" style={{
                         width: '32px', height: '32px',
                         background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                        borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
                         fontWeight: 'bold', color: 'white'
                     }}>PP</div>
                     <h1>Production Planner</h1>

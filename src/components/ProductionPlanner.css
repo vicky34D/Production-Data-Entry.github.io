@@ -17,7 +17,7 @@
 .glass {
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
-    border-radius: 1rem;
+    border-radius: 1.5rem;
     padding: 2rem;
     box-shadow: var(--shadow-sm);
     margin-bottom: 2rem;
@@ -58,7 +58,7 @@
 .req-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
-    border-radius: 1rem;
+    border-radius: 1.5rem;
     padding: 1.5rem;
     transition: all 0.2s;
 }

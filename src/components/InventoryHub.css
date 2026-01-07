@@ -1,175 +1,369 @@
-/* Inventory Hub - Responsive Bordered */
-.inventory-hub-container {
-    min-height: 100vh;
-    background-color: var(--bg-page);
-    display: flex;
-    flex-direction: column;
+/* Inventory Hub - Professional ERP Styles */
+.erp-container {
+    padding: 1rem;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-
-.hub-header {
-    background: var(--bg-surface);
-    border-bottom: 1px solid var(--border-color);
+.erp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    background: white;
     padding: 1.5rem 2rem;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-soft);
+}
+
+.header-left {
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    flex-wrap: wrap;
 }
 
-.hub-content {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 3rem;
-    overflow-x: hidden;
-    /* Prevent horizontal page scroll */
-}
-
-/* Process Container */
-.process-flow-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 2rem;
-    max-width: 1400px;
-    width: 100%;
-}
-
-.process-step-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    /* margin-bottom handled by flex gap */
-}
-
-/* Bordered Process Card */
-.process-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-color);
-    border-radius: 1.5rem;
-    padding: 2rem;
-    width: 240px;
-    height: 240px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    gap: 1rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: var(--shadow-sm);
-    position: relative;
-}
-
-.process-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-    border-color: var(--primary-color);
-}
-
-.step-number {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: white !important;
-    /* background set inline */
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
+.erp-brand-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    color: white;
+    font-weight: 800;
+    font-size: 1.2rem;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: absolute;
-    top: -16px;
-    left: 50%;
-    transform: translateX(-50%);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
 }
 
-.step-icon {
-    width: 64px;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 0.5rem;
-    background: #f8fafc;
-    border-radius: 50%;
-}
-
-.step-label {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 600;
+.header-left h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
     color: var(--text-primary);
+}
+
+.header-left p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Header Stats Group */
+.header-stats-group {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.stat-pill {
+    background: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--shadow-card);
+}
+
+.stat-pill.warning {
+    background: #FEF2F2;
+    border-color: #FECACA;
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-content .label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.stat-content .value {
     font-size: 1rem;
-    line-height: 1.4;
+    font-weight: 700;
+    color: var(--text-primary);
 }
 
-/* Connector (Hidden for clean flow) */
-.step-connector {
-    display: none;
+.value.live {
+    color: #16A34A;
+    font-weight: 600;
 }
 
-/* RESPONSIVE */
-
-@media (max-width: 1024px) {
-    .hub-content {
-        padding: 2rem 1rem;
-    }
-
-    .process-card {
-        width: 180px;
-        /* Smaller cards on tablet */
-        height: 180px;
-        padding: 1rem;
-    }
-
-    .step-icon {
-        width: 48px;
-        height: 48px;
-    }
-
-    .step-label {
-        font-size: 0.9rem;
-    }
+/* Navigation Tabs */
+.erp-nav-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    background: white;
+    padding: 0.5rem;
+    border-radius: var(--radius-full);
+    width: fit-content;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-@media (max-width: 640px) {
-    .process-flow-container {
-        gap: 1.5rem;
-    }
+.tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-full);
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
 
-    .process-card {
-        width: 100%;
-        /* Full width cards on mobile */
-        max-width: 320px;
-        height: auto;
-        min-height: 160px;
-        flex-direction: row;
-        /* Horizontal layout on mobile */
-        justify-content: flex-start;
-        text-align: left;
-        padding: 1.5rem;
-        gap: 1.5rem;
-    }
+.tab-btn:hover {
+    background: var(--bg-page);
+    color: var(--text-primary);
+}
 
-    .step-number {
-        top: 50%;
-        left: 0;
-        /* Position left */
-        transform: translate(-50%, -50%);
-        display: none;
-        /* Hide number on list view mobile or move it */
-    }
+.tab-btn.active {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
 
-    .step-icon {
-        background: transparent;
-        width: 40px;
-        height: 40px;
-        margin-bottom: 0;
-    }
+/* Grid Layouts */
+/* Modules Grid */
+.section-heading {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    margin-left: 0.5rem;
+    font-weight: 600;
+}
+
+.modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.module-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-soft);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 180px;
+}
+
+.module-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.15);
+}
+
+.module-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    /* Squircle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.step-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    border: 1px solid currentColor;
+    background: white;
+}
+
+.module-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
+}
+
+.module-info p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.module-footer {
+    border-top: 1px solid var(--border-color);
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.erp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+.erp-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border-color);
+}
+
+.erp-card.full-width {
+    grid-column: 1 / -1;
+}
+
+.summary-card {
+    text-align: center;
+    padding: 2rem;
+}
+
+.summary-card h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.big-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.sub-text {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Tables */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.erp-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.erp-table th {
+    text-align: left;
+    padding: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.erp-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    vertical-align: middle;
+}
+
+.badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-neutral {
+    background: #F3F4F6;
+    color: #4B5563;
+}
+
+.badge-danger {
+    background: #FEE2E2;
+    color: #DC2626;
+}
+
+.badge-success {
+    background: #D1FAE5;
+    color: #059669;
+}
+
+/* Forms */
+.erp-form-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: #F9FAFB;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    background: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.btn-block {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 1rem;
+    font-size: 1rem;
+}
+
+.mini-table {
+    width: 100%;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+}
+
+.mini-table th,
+.mini-table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
 }

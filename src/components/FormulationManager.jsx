@@ -119,7 +119,7 @@ const FormulationManager = () => {
                     <div className="brand-icon" style={{
                         width: '32px', height: '32px',
                         background: 'linear-gradient(135deg, #a855f7, #9333ea)',
-                        borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
                         fontWeight: 'bold', color: 'white'
                     }}>FM</div>
                     <h1>Formulation Manager</h1>
