@@ -19,10 +19,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: -2rem -2rem 2rem -2rem;
-    /* Stretch full width */
+    margin-bottom: 2rem;
     flex-wrap: wrap;
-    /* Allow wrap */
 }
 
 .inventory-header h1 {
