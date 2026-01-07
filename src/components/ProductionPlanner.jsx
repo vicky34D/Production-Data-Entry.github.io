@@ -65,16 +65,24 @@ const ProductionPlanner = () => {
         const ingredients = form.ingredients || [];
 
         const requirements = ingredients.map(ing => {
-            const requiredQty = (parseFloat(ing.quantity_per_unit) || 0) * parseFloat(targetQuantity);
-            const stockItem = inventory.find(i => i.name === ing.raw_material_id);
+            const qtyPerUnit = parseFloat(ing.quantity_per_unit) || 0;
+            const requiredQty = qtyPerUnit * parseFloat(targetQuantity);
+
+            // Robust matching for inventory lookup
+            const ingName = (ing.raw_material_id || '').trim().toLowerCase();
+            const stockItem = inventory.find(i => (i.name || '').trim().toLowerCase() === ingName);
             const currentStock = stockItem ? parseFloat(stockItem.current_stock) : 0;
+
+            const isZeroRequirement = requiredQty === 0;
+            const sufficient = currentStock >= requiredQty;
 
             return {
                 ...ing,
                 requiredQty,
                 currentStock,
                 shortage: Math.max(0, requiredQty - currentStock),
-                sufficient: currentStock >= requiredQty,
+                sufficient,
+                isZeroRequirement,
                 name: ing.raw_material_id
             };
         });
@@ -185,18 +193,21 @@ const ProductionPlanner = () => {
 
                     <div className="grid-cols-4">
                         {plan.requirements.map((req, idx) => (
-                            <div key={idx} className={`req-card ${req.sufficient ? 'sufficient' : 'shortage'}`}>
+                            <div key={idx} className={`req-card ${!req.sufficient ? 'shortage' : (req.isZeroRequirement ? 'neutral' : 'sufficient')}`}>
                                 <div className="req-header">
                                     <strong>{req.name}</strong>
-                                    {req.sufficient ?
-                                        <CheckCircle size={18} color="#10B981" /> :
+                                    {!req.sufficient ? (
                                         <AlertTriangle size={18} color="#EF4444" />
-                                    }
+                                    ) : req.isZeroRequirement ? (
+                                        <AlertTriangle size={18} color="var(--text-secondary)" />
+                                    ) : (
+                                        <CheckCircle size={18} color="#10B981" />
+                                    )}
                                 </div>
 
                                 <div className="data-row">
                                     <span>Required</span>
-                                    <span>{req.requiredQty.toFixed(2)} Kg</span>
+                                    <span>{req.requiredQty.toFixed(4)} Kg</span>
                                 </div>
                                 <div className="data-row">
                                     <span>Available</span>
@@ -206,6 +217,10 @@ const ProductionPlanner = () => {
                                 {!req.sufficient ? (
                                     <div className="shortage-alert">
                                         Shortage: -{req.shortage.toFixed(2)} Kg
+                                    </div>
+                                ) : req.isZeroRequirement ? (
+                                    <div className="status-badge" style={{ textAlign: 'center', marginTop: '1rem', display: 'block', background: 'var(--bg-page)' }}>
+                                        No Qty Set
                                     </div>
                                 ) : (
                                     <div className="status-badge ok" style={{ textAlign: 'center', marginTop: '1rem', display: 'block' }}>
