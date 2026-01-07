@@ -1,0 +1,239 @@
+/* Todo List - FinSet/DHARS Design System */
+.todo-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-page);
+    /* Ensure page background is correct */
+}
+
+.todo-header-nav {
+    width: 100%;
+    background: var(--bg-surface);
+    /* Dynamic background */
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(12px);
+    /* Keep glass effect if surface is semi-transparent */
+}
+
+.brand-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--text-primary);
+}
+
+.brand-icon-box {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #F97316, #EA580C);
+    /* Orange gradient */
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+}
+
+.brand-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.close-link {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.2s;
+}
+
+.close-link:hover {
+    color: var(--text-primary);
+}
+
+.todo-container {
+    max-width: 600px;
+    width: 100%;
+    padding: 2rem 1rem;
+    margin: 2rem auto;
+}
+
+.todo-card {
+    background: var(--bg-surface);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-soft);
+    padding: 2.5rem;
+    /* More spacious padding */
+    border: 1px solid var(--border-color);
+}
+
+.todo-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.todo-header h2 {
+    font-family: 'Outfit', sans-serif;
+    /* Use Outfit instead of Kalam for consistency */
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.todo-header p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.input-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    background: var(--bg-hover);
+    /* Subtle grouping bg */
+    padding: 0.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+}
+
+.task-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-family: 'Outfit', sans-serif;
+    background: transparent;
+    color: var(--text-primary);
+}
+
+.task-input:focus {
+    outline: none;
+}
+
+.btn-add {
+    background: linear-gradient(135deg, #F97316, #EA580C);
+    color: white;
+    border: none;
+    padding: 0 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.btn-add:hover {
+    transform: scale(1.02);
+}
+
+.btn-add:active {
+    transform: scale(0.98);
+}
+
+.todo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-page);
+    /* Distinct from card bg */
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.todo-item:hover {
+    border-color: var(--border-color);
+    transform: translateX(4px);
+}
+
+.todo-item.completed {
+    opacity: 0.6;
+    background: transparent;
+}
+
+.todo-checkbox {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    /* Squircle check */
+    margin-right: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.todo-checkbox.checked {
+    background-color: #10B981;
+    border-color: #10B981;
+}
+
+.task-text {
+    flex: 1;
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    transition: color 0.2s;
+}
+
+.todo-item.completed .task-text {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+}
+
+.btn-delete {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    /* Hide by default, show on hover */
+    transition: all 0.2s;
+}
+
+.todo-item:hover .btn-delete {
+    opacity: 1;
+}
+
+.btn-delete:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+}
+
+.empty-message {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-secondary);
+}

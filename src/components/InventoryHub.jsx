@@ -44,7 +44,7 @@ const InventoryHub = () => {
             sub: 'Track Material Usage',
             path: '/inventory/dsu',
             icon: <ClipboardCheck size={24} />,
-            color: '#1F2937', // Dark Grey
+            color: '#F97316', // Orange
             stat: 'Consumption Log'
         },
         {

@@ -3,7 +3,7 @@
     display: flex;
     min-height: 100vh;
     background-color: var(--bg-page);
-    /* No padding on container itself */
+    transition: all 0.3s ease;
 }
 
 /* Sidebar - Full Height Left Panel */
@@ -20,14 +20,34 @@
     top: 0;
     z-index: 50;
     overflow-y: auto;
+    transition: width 0.3s ease;
+}
+
+/* Collapsed State Logic */
+.layout-container.collapsed .sidebar {
+    width: 80px;
+    padding: 1.5rem 0.5rem;
 }
 
 .sidebar-header {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    justify-content: space-between;
     margin-bottom: 3rem;
     padding: 0 0.5rem;
+}
+
+.layout-container.collapsed .sidebar-header {
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0;
+}
+
+.logo-brand-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .logo-circle {
@@ -46,6 +66,26 @@
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--text-primary);
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.2s;
+}
+
+.collapse-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    border-radius: 4px;
+}
+
+.collapse-btn:hover {
+    color: var(--primary-color);
+    background: var(--bg-hover);
 }
 
 .sidebar-nav {
@@ -53,6 +93,7 @@
     flex-direction: column;
     gap: 0.5rem;
     flex: 1;
+    overflow: hidden;
 }
 
 .nav-group {
@@ -72,11 +113,18 @@
     text-decoration: none;
     font-weight: 500;
     transition: all 0.2s ease;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.layout-container.collapsed .sidebar-item {
+    justify-content: center;
+    padding: 0.75rem;
 }
 
 .sidebar-item:hover {
     color: var(--primary-color);
-    background: white;
+    background: var(--bg-surface);
 }
 
 .sidebar-item.active {
@@ -88,6 +136,7 @@
 .sidebar-item svg {
     width: 20px;
     height: 20px;
+    flex-shrink: 0;
 }
 
 .item-label {
@@ -104,6 +153,10 @@
     padding-top: 1.5rem;
 }
 
+.layout-container.collapsed .sidebar-footer {
+    align-items: center;
+}
+
 /* Main Content Area */
 .main-content {
     flex: 1;
@@ -112,6 +165,7 @@
     min-width: 0;
     padding: 0 2rem 2rem 2rem;
     /* Padding for inner content */
+    transition: all 0.3s ease;
 }
 
 /* Top Bar inside Main Content */
@@ -143,7 +197,7 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    background: white;
+    background: var(--bg-surface);
     padding: 0.5rem 0.5rem 0.5rem 1rem;
     border-radius: var(--radius-full);
     border: 1px solid var(--border-color);
@@ -177,7 +231,7 @@
     height: 40px;
     border-radius: 50%;
     border: 1px solid var(--border-color);
-    background: white;
+    background: var(--bg-surface);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -219,7 +273,7 @@
         padding: 0.8rem 1.5rem;
         flex-direction: row;
         justify-content: space-between;
-        background: white;
+        background: var(--bg-surface);
         border-top: 1px solid var(--border-color);
         box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
         z-index: 100;
@@ -227,10 +281,18 @@
         /* Remove default right border */
     }
 
+    /* Force reset sidebar styles for mobile even if collapsed state is active in state (though usually state resets on mount, good for safety) */
+    .layout-container.collapsed .sidebar {
+        width: 100%;
+        padding: 0.8rem 1.5rem;
+    }
+
     .sidebar-header,
     .sidebar-footer .item-label,
-    .sidebar-nav .item-label {
-        display: none;
+    .sidebar-nav .item-label,
+    .collapse-btn {
+        display: none !important;
+        /* Hide regular header/collapse btn on mobile */
     }
 
     .sidebar-nav {
@@ -248,6 +310,11 @@
     .sidebar-item {
         padding: 0.5rem;
         justify-content: center;
+    }
+
+    .layout-container.collapsed .sidebar-item {
+        justify-content: center;
+        padding: 0.5rem;
     }
 
     .main-content {

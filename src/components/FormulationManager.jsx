@@ -30,7 +30,6 @@ const FormulationManager = () => {
     // Load ingredients when selection changes
     useEffect(() => {
         if (selectedFormulation) {
-            // Find the latest version of the selected formulation from state
             const current = formulations.find(f => f.id === selectedFormulation.id);
             if (current && current.ingredients) {
                 setIngredients(current.ingredients);
@@ -47,7 +46,6 @@ const FormulationManager = () => {
         if (savedItems) {
             setRawMaterials(JSON.parse(savedItems));
         } else {
-            // Fallback/Demo Data if needed
             setRawMaterials([]);
         }
     };
@@ -110,99 +108,98 @@ const FormulationManager = () => {
     };
 
     return (
-        <div className="formulation-page" style={{ minHeight: '100vh', backgroundColor: 'var(--bg-color)' }}>
-            <header className="inventory-header">
-                <div className="brand" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Link to="/inventory" style={{ opacity: 0.7, transition: 'opacity 0.2s' }} title="Back to Hub">
-                        <ArrowLeft size={24} />
+        <div className="formulation-page">
+            {/* 1. Header Section */}
+            <header className="formulation-header">
+                <div className="brand-section">
+                    <Link to="/inventory" title="Back to Hub">
+                        <ArrowLeft size={24} color="var(--text-secondary)" />
                     </Link>
-                    <div className="brand-icon" style={{
-                        width: '32px', height: '32px',
-                        background: 'linear-gradient(135deg, #a855f7, #9333ea)',
-                        borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontWeight: 'bold', color: 'white'
-                    }}>FM</div>
-                    <h1>Formulation Manager</h1>
+                    <div className="brand-icon">FM</div>
+                    <div className="header-title">
+                        <h1>Formulation Manager</h1>
+                        <p>Create & Manage Production Recipes</p>
+                    </div>
                 </div>
             </header>
 
-            <div className="formulation-container">
-                {/* Sidebar List */}
-                <div className="formulation-list">
-                    <div className="list-header">
-                        <h3>Recipes</h3>
+            {/* 2. Main Layout */}
+            <div className="formulation-layout">
+                {/* Left Sidebar: List & Create */}
+                <aside className="recipe-sidebar">
+                    <div className="sidebar-header">
+                        <h3>Saved Recipes</h3>
                     </div>
-                    <div className="list-content">
+
+                    <div className="recipe-list">
                         {formulations.map(f => (
                             <div
                                 key={f.id}
-                                className={`list-item ${selectedFormulation?.id === f.id ? 'active' : ''}`}
+                                className={`recipe-item ${selectedFormulation?.id === f.id ? 'active' : ''}`}
                                 onClick={() => setSelectedFormulation(f)}
                             >
-                                <span className="item-name">{f.name}</span>
-                                <span className="item-type">{f.type}</span>
-                                <ChevronRight size={16} className="arrow" />
+                                <div className="item-info">
+                                    <span className="item-name">{f.name}</span>
+                                    <span className="item-badge">{f.type}</span>
+                                </div>
+                                <ChevronRight size={16} color="var(--text-secondary)" />
                             </div>
                         ))}
                     </div>
-                    <form className="add-form" onSubmit={handleCreateFormulation}>
-                        <div className="add-form-title">New Recipe</div>
+
+                    <form className="create-form" onSubmit={handleCreateFormulation}>
                         <input
                             type="text"
-                            placeholder="Formulation Name"
+                            placeholder="New Recipe Name"
                             value={newFormName}
                             onChange={e => setNewFormName(e.target.value)}
                             required
-                        />
-                        <input
-                            type="text"
-                            placeholder="Description"
-                            value={newFormDesc}
-                            onChange={e => setNewFormDesc(e.target.value)}
-                            className="desc-input"
                         />
                         <select value={newFormType} onChange={e => setNewFormType(e.target.value)}>
                             <option value="Masala">Masala</option>
                             <option value="Flora">Flora</option>
                             <option value="Dipped">Dipped</option>
                         </select>
-                        <button type="submit"><Plus size={18} /> Create Pattern</button>
+                        <button type="submit" className="btn-create">
+                            <Plus size={18} /> Create New
+                        </button>
                     </form>
-                </div>
+                </aside>
 
-                {/* Main Edit Area */}
-                <div className="formulation-editor">
+                {/* Right Panel: Editor */}
+                <main className="editor-panel">
                     {!selectedFormulation ? (
                         <div className="empty-state">
-                            <FlaskConical size={48} style={{ opacity: 0.2, marginBottom: '1rem' }} />
-                            Select a formulation to edit its composition
+                            <FlaskConical size={64} strokeWidth={1} style={{ opacity: 0.3 }} />
+                            <h3>Select a recipe to modify</h3>
+                            <p>Configure raw material mix ratios per unit output.</p>
                         </div>
                     ) : (
                         <>
                             <div className="editor-header">
-                                <div>
+                                <div className="editor-title">
                                     <h2>{selectedFormulation.name}</h2>
-                                    <p className="subtitle">Raw material mix ratio per 1 Unit of Output</p>
+                                    <p>{selectedFormulation.type} Formulation • Mix per 1 Unit</p>
                                 </div>
-                                <div className="header-actions">
-                                    <button className="delete-btn-header" onClick={handleDeleteFormulation} title="Delete Formulation">
-                                        <Trash2 size={18} />
+                                <div className="editor-actions">
+                                    <button className="btn-icon-danger" onClick={handleDeleteFormulation} title="Delete">
+                                        <Trash2 size={20} />
                                     </button>
-                                    <button className="save-btn" onClick={handleSaveIngredients}>
+                                    <button className="btn-save" onClick={handleSaveIngredients}>
                                         <Save size={18} />
                                         {saveStatus || 'Save Ingredients'}
                                     </button>
                                 </div>
                             </div>
 
-                            <div className="ingredients-table-wrapper">
-                                <table className="ingredients-table">
+                            <div className="table-scroll-area">
+                                <table className="ing-table">
                                     <thead>
                                         <tr>
-                                            <th>Raw Material</th>
-                                            <th>Qty per Unit</th>
-                                            <th>Unit</th>
-                                            <th>Action</th>
+                                            <th style={{ width: '40%' }}>Raw Material</th>
+                                            <th style={{ width: '30%' }}>Quantity</th>
+                                            <th style={{ width: '20%' }}>Unit</th>
+                                            <th style={{ width: '10%' }}></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -210,12 +207,13 @@ const FormulationManager = () => {
                                             <tr key={index}>
                                                 <td>
                                                     <select
+                                                        className="table-select"
                                                         value={ing.raw_material_id}
                                                         onChange={e => handleIngredientChange(index, 'raw_material_id', e.target.value)}
                                                     >
                                                         <option value="">Select Material...</option>
                                                         {rawMaterials.map(rm => (
-                                                            <option key={rm.id} value={rm.name}>{rm.name} ({rm.category})</option>
+                                                            <option key={rm.id} value={rm.name}>{rm.name}</option>
                                                         ))}
                                                     </select>
                                                 </td>
@@ -223,13 +221,14 @@ const FormulationManager = () => {
                                                     <input
                                                         type="number"
                                                         step="0.0001"
+                                                        className="table-input"
                                                         value={ing.quantity_per_unit}
                                                         onChange={e => handleIngredientChange(index, 'quantity_per_unit', parseFloat(e.target.value))}
                                                     />
                                                 </td>
                                                 <td>KG</td>
-                                                <td>
-                                                    <button className="remove-btn" onClick={() => handleRemoveIngredient(index)}>
+                                                <td style={{ textAlign: 'center' }}>
+                                                    <button className="btn-remove" onClick={() => handleRemoveIngredient(index)}>
                                                         <Trash2 size={16} />
                                                     </button>
                                                 </td>
@@ -237,14 +236,17 @@ const FormulationManager = () => {
                                         ))}
                                     </tbody>
                                 </table>
-                                <button className="add-row-btn" onClick={handleAddIngredientRow}>
-                                    <Plus size={16} /> Add Ingredient
+                            </div>
+
+                            <div className="footer-actions">
+                                <button className="btn-add-row" onClick={handleAddIngredientRow}>
+                                    <Plus size={16} /> Add Ingredient Row
                                 </button>
                             </div>
                         </>
                     )}
-                </div>
-            </div >
+                </main>
+            </div>
         </div>
     );
 };

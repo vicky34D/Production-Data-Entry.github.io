@@ -10,7 +10,7 @@
 
 /* Card Re-style to match Bordered Look */
 .card {
-    background-color: white;
+    background-color: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: 1.5rem;
     padding: 1.5rem;
@@ -57,7 +57,7 @@
 .form-group input,
 .form-group select {
     width: 100%;
-    background-color: white;
+    background-color: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: 0.5rem;
     padding: 0.75rem 1rem;
@@ -103,7 +103,7 @@ th {
     font-weight: 600;
     font-size: 0.75rem;
     text-transform: uppercase;
-    background: #f8fafc;
+    background: var(--bg-sidebar);
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -120,7 +120,7 @@ tr:last-child td {
 
 /* Header */
 .inventory-header {
-    background-color: white;
+    background-color: var(--bg-surface);
     border-bottom: 1px solid var(--border-color);
     padding: 1.5rem 2rem;
     position: sticky;

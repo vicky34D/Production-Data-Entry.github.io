@@ -36,7 +36,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: white;
+    background: var(--bg-surface);
     border: 1px solid var(--border-color);
     padding: 0.5rem 1rem;
     border-radius: var(--radius-full);
@@ -53,7 +53,7 @@
 
 .btn-outline {
     border: 1px solid var(--border-color);
-    background: white;
+    background: var(--bg-surface);
     color: var(--text-primary);
 }
 
@@ -71,7 +71,7 @@
 }
 
 .metric-card {
-    background: white;
+    background: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-xl);
     padding: 1.5rem;
@@ -144,7 +144,7 @@
 
 /* Main Charts Section */
 .chart-card {
-    background: white;
+    background: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-xl);
     padding: 1.5rem;
@@ -213,7 +213,7 @@
 
 /* Right Sidebar Stats */
 .stats-card {
-    background: white;
+    background: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-xl);
     padding: 1.5rem;

@@ -1,83 +1,198 @@
-/* Production Planner - Bordered Theme */
-:root {
-    --accent-plan: #f59e0b;
-    /* Amber */
-}
-
+/* Production Planner - FinSet/DHARS Design System */
 .planner-container {
-    padding-bottom: 4rem;
-    max-width: 1600px;
+    padding: 1rem;
+    max-width: 1400px;
     margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
 }
 
-/* Glass/Card Effects - REPLACED with Bordered Box */
-.glass {
+/* Header */
+.planner-header {
     background: var(--bg-surface);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-soft);
     border: 1px solid var(--border-color);
-    border-radius: 1.5rem;
+}
+
+.brand-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.brand-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    color: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.planner-title h1 {
+    font-size: 1.5rem;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.planner-title p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+/* Input Card */
+.planner-card {
+    background: var(--bg-surface);
+    border-radius: var(--radius-xl);
     padding: 2rem;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border-color);
     margin-bottom: 2rem;
 }
 
-/* Inputs Grid */
-.planner-inputs {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    font-weight: 600;
 }
 
-/* Inputs overrides if needed, else inherit global */
+.input-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    align-items: start;
+}
 
-/* Buttons */
-.calculate-btn {
-    background: var(--accent-plan);
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    color: var(--text-primary);
+    transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-group input:read-only {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.btn-calculate {
+    background: linear-gradient(135deg, #F59E0B, #D97706);
     color: white;
     font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     width: 100%;
-    margin-top: 1.5rem;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
+    margin-top: 1.85rem;
+    /* Align with inputs */
+    height: 48px;
+    /* Match input height roughly */
 }
 
-.calculate-btn:hover:not(:disabled) {
-    background: #d97706;
+.btn-calculate:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--text-secondary);
 }
 
-/* Requirements Grid */
-.requirements-grid {
+.btn-calculate:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+/* Results Section */
+.results-container {
+    animation: fadeIn 0.4s ease;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.grid-cols-4 {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
 }
 
 .req-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
-    border-radius: 1.5rem;
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
-    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
 }
 
 .req-card:hover {
-    border-color: var(--accent-plan);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card);
+}
+
+.req-card.sufficient {
+    border-left: 4px solid #10B981;
+}
+
+.req-card.shortage {
+    border-left: 4px solid #EF4444;
 }
 
 .req-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 0.75rem;
     margin-bottom: 1rem;
-    font-weight: 600;
-    color: var(--text-primary);
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
 }
 
-.req-stat {
+.req-header strong {
+    color: var(--text-primary);
+    font-size: 1.05rem;
+}
+
+.data-row {
     display: flex;
     justify-content: space-between;
     margin-bottom: 0.5rem;
@@ -85,33 +200,84 @@
     color: var(--text-secondary);
 }
 
-.req-stat span:last-child {
-    font-weight: 600;
+.data-row span:last-child {
     color: var(--text-primary);
+    font-weight: 500;
 }
 
-.status-indicator {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
+.shortage-alert {
+    background: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-weight: 600;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
     font-weight: 600;
 }
 
-.status-ok {
-    background: #f0fdf4;
-    color: #15803d;
-    border: 1px solid #bbf7d0;
+.status-badge.ok {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10B981;
 }
 
-.status-low {
-    background: #fef2f2;
-    color: #b91c1c;
-    border: 1px solid #fecaca;
+.status-badge.low {
+    background: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+}
+
+.action-bar-bottom {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-execute {
+    background: #10B981;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-execute:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 768px) {
-    .planner-inputs {
+    .input-grid {
         grid-template-columns: 1fr;
+    }
+
+    .planner-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
     }
 }

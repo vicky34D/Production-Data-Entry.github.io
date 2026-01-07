@@ -32,6 +32,42 @@
 
     --shadow-soft: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
     --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --bg-input: #F9FAFB;
+    /* Light input bg */
+}
+
+[data-theme='dark'] {
+    /* Dark Theme Colors */
+    --bg-page: #0B1120;
+    /* Very Dark Blue/Black */
+    --bg-sidebar: #111827;
+    /* Dark Gray for sidebar */
+    --bg-surface: #1F2937;
+    /* Slightly lighter for cards */
+    --bg-input: #374151;
+    /* Dark input bg */
+
+    --primary-color: #818CF8;
+    /* Lighter Indigo for dark mode contrast */
+    --accent-yellow: #78350f;
+    /* Darker yellow bg */
+    --accent-blue: #1e3a8a;
+    /* Darker blue bg */
+    --accent-pink: #831843;
+    /* Darker pink bg */
+    --accent-active: #818CF8;
+
+    --text-primary: #F9FAFB;
+    /* White/Off-white */
+    --text-secondary: #9CA3AF;
+    /* Light Gray */
+    --text-muted: #6B7280;
+
+    --border-color: #374151;
+    /* Dark border */
+
+    --shadow-soft: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
 }
 
 * {
