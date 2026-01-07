@@ -8,13 +8,13 @@ const InventoryHub = () => {
     const navigate = useNavigate();
 
     const steps = [
-        { id: '1', label: 'Goods Received Note', path: '/inventory/grn', icon: <Package size={24} />, color: 'var(--accent-info)' },
-        { id: '2', label: 'Daily Store Update', path: '/inventory/dsu', icon: <ClipboardCheck size={24} />, color: 'var(--primary-color)' },
-        { id: '3', label: 'Spare Parts Purchase', path: '/inventory/spp', icon: <ShoppingCart size={24} />, color: 'var(--accent-success)' },
-        { id: '4', label: 'Spare Parts Update', path: '/inventory/spu', icon: <Factory size={24} />, color: '#8b5cf6' },
-        { id: '5', label: 'Finished Goods Inv', path: '/inventory/fgi', icon: <Package size={24} />, color: '#ec4899' },
-        { id: '6', label: 'Goods Dispatch Note', path: '/inventory/gdn', icon: <Truck size={24} />, color: 'var(--accent-info)' },
-        { id: '7', label: 'Stock Summary', path: '/inventory/summary', icon: <BarChart3 size={24} />, color: 'var(--accent-warning)', isFinal: true }
+        { id: '1', label: 'Goods Received Note', path: '/inventory/grn', icon: <Package size={24} />, color: '#0EA5E9' }, // Sky Blue
+        { id: '2', label: 'Daily Store Update', path: '/inventory/dsu', icon: <ClipboardCheck size={24} />, color: '#1F1F1F' }, // Dark/Black
+        { id: '3', label: 'Spare Parts Purchase', path: '/inventory/spp', icon: <ShoppingCart size={24} />, color: '#10B981' }, // Emerald
+        { id: '4', label: 'Spare Parts Update', path: '/inventory/spu', icon: <Factory size={24} />, color: '#8b5cf6' }, // Violet
+        { id: '5', label: 'Finished Goods Inv', path: '/inventory/fgi', icon: <Package size={24} />, color: '#ec4899' }, // Pink
+        { id: '6', label: 'Goods Dispatch Note', path: '/inventory/gdn', icon: <Truck size={24} />, color: '#6366F1' }, // Indigo
+        { id: '7', label: 'Stock Summary', path: '/inventory/summary', icon: <BarChart3 size={24} />, color: '#F59E0B', isFinal: true } // Amber
     ];
 
     const handleItemClick = (path) => {
@@ -29,7 +29,7 @@ const InventoryHub = () => {
                 </Link>
                 <div className="brand-icon" style={{
                     width: '32px', height: '32px',
-                    background: 'linear-gradient(135deg, var(--primary-color), var(--primary-hover))',
+                    background: 'linear-gradient(135deg, #1F1F1F, #4B4B4B)',
                     borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontWeight: 'bold', color: 'white'
                 }}>INV</div>

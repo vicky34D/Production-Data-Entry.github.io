@@ -1,524 +1,212 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Activity, TrendingUp, Lock, Upload, Factory } from 'lucide-react';
-import { safeGet, safeSet } from '../utils/storage';
+import {
+    MoreVertical,
+    Mail,
+    Phone,
+    Video,
+    Calendar as CalendarIcon,
+    Clock,
+    User,
+    MapPin,
+    ChevronDown,
+    Plus,
+    ArrowRight,
+    Search
+} from 'lucide-react';
+import { safeGet } from '../utils/storage';
 import './Dashboard.css';
 
 const Dashboard = () => {
-    const fileInputRef = useRef(null);
-
-    // State
+    // Data Logic
     const [productionData, setProductionData] = useState(() => safeGet('agarbattiDataWet', []));
-
-    // Product State
-    const [itemsList, setItemsList] = useState([]);
-    const [selectedItem, setSelectedItem] = useState('');
-
     const todayStr = new Date().toISOString().split('T')[0];
-    const [viewDate, setViewDate] = useState(todayStr);
 
-    // Form State
-    const [entryDate, setEntryDate] = useState(todayStr);
-    const [operatorName, setOperatorName] = useState('');
-    const [machineId, setMachineId] = useState('M1');
-    const [trayId, setTrayId] = useState('');
-    const [wetWeight, setWetWeight] = useState('');
-    const [selectedFileName, setSelectedFileName] = useState('');
-
-    // Load Master Items
-    useEffect(() => {
-        const savedItems = safeGet('productItems', []);
-        if (savedItems.length > 0) {
-            setItemsList(savedItems);
-        }
-    }, []);
-
-    // Persist Data
-    useEffect(() => {
-        safeSet('agarbattiDataWet', productionData);
-    }, [productionData]);
-
-    // Auto-calculate Tray ID
-    useEffect(() => {
-        const existingEntries = productionData.filter(item => item.date === entryDate && item.machine === machineId);
-        let maxTray = 0;
-        existingEntries.forEach(item => {
-            const match = item.tray.match(/T(\d+)/);
-            if (match && match[1]) {
-                const num = parseInt(match[1]);
-                if (num > maxTray) maxTray = num;
-            }
-        });
-        setTrayId("T" + (maxTray + 1));
-    }, [productionData, entryDate, machineId]);
-
-    const handleAddEntry = () => {
-        if (entryDate !== todayStr) {
-            alert(`Error: You can only add entries for the current date (${todayStr}).`);
-            return;
-        }
-        if (!operatorName || !trayId || !wetWeight || !selectedItem) {
-            alert("Please fill all fields (Method, Operator, Tray, Weight).");
-            return;
-        }
-
-        const transactionId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random());
-
-        const entry = {
-            id: Date.now(),
-            date: entryDate,
-            operator: operatorName.trim(),
-            machine: machineId,
-            tray: trayId,
-            weight: parseFloat(wetWeight),
-            item: selectedItem,
-            document: selectedFileName,
-            transactionId: transactionId, // Link for rollback
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
-
-        setProductionData([...productionData, entry]);
-
-        // Integrate with Daily Store Update & Stock Summary (Stock In)
-        const dsu = safeGet('storeUpdateData', []);
-        const dsuEntry = {
-            id: Date.now() + 1,
-            sNo: dsu.length + 1,
-            date: entryDate,
-            item: selectedItem,
-            totalBags: 0,
-            qtyPerBag: 0,
-            totalKg: parseFloat(wetWeight),
-            type: 'PRODUCTION_IN', // Mark as IN
-            document: `Production - ${machineId}`,
-            transactionId: transactionId, // Link for rollback
-            timestamp: new Date().toLocaleTimeString()
-        };
-        safeSet('storeUpdateData', [...dsu, dsuEntry]);
-
-        setWetWeight('');
-        setSelectedFileName('');
-        // Keep selected item for convenience
-    };
-
-    const handleDeleteEntry = (id, date) => {
-        if (date !== todayStr) {
-            alert("Restricted: You cannot delete records from previous days.");
-            return;
-        }
-        if (window.confirm("Delete this entry? This will also revert the 'Stock In' record.")) {
-            const entryToDelete = productionData.find(item => item.id === id);
-
-            // Cascading Rollback
-            if (entryToDelete && entryToDelete.transactionId) {
-                const dsu = safeGet('storeUpdateData', []);
-                const updatedDsu = dsu.filter(d => d.transactionId !== entryToDelete.transactionId);
-                if (dsu.length !== updatedDsu.length) {
-                    safeSet('storeUpdateData', updatedDsu);
-                }
-            } else {
-                console.warn("Legacy entry deleted. Stock In record might remain.");
-            }
-
-            setProductionData(productionData.filter(item => item.id !== id));
-        }
-    };
-
-    const handleClearData = () => {
-        if (window.confirm("Delete ALL history? This cannot be undone.")) {
-            setProductionData([]);
-        }
-    };
-
-    const exportCSV = (tableId, filename) => {
-        let headers = [];
-        let rows = [];
-
-        if (filename === 'machine_details.csv') {
-            headers = ["Date", "Machine", "Total Weight", "Tray Details"];
-            rows = Object.keys(machineGroups).sort().map(mach => {
-                const data = machineGroups[mach];
-                const trayDetails = data.trays.map(t => `${t.tray} (${t.weight}kg)`).join('; ');
-                return [
-                    viewDate,
-                    mach,
-                    data.weight.toFixed(2),
-                    trayDetails
-                ];
-            });
-        } else if (filename === 'daily_summary.csv') {
-            headers = ["Date", "Total Wet (KG)", "Trays", "Active Machines", "Avg/Mach", "Top Operator", "Op. Weight"];
-
-            if (filteredData.length > 0) {
-                const totalMachines = Object.keys(machineGroups).length;
-                const avgWet = totalMachines > 0 ? (totalWeight / totalMachines).toFixed(2) : 0;
-
-                const opStats = {};
-                filteredData.forEach(item => {
-                    opStats[item.operator] = (opStats[item.operator] || 0) + item.weight;
-                });
-                let bestOp = "-", bestWt = 0;
-                for (let [op, wt] of Object.entries(opStats)) {
-                    if (wt > bestWt) { bestWt = wt; bestOp = op; }
-                }
-
-                rows = [[
-                    viewDate,
-                    totalWeight.toFixed(2),
-                    totalTrays,
-                    totalMachines,
-                    avgWet,
-                    bestOp,
-                    bestWt.toFixed(2)
-                ]];
-            } else {
-                rows = [[viewDate, "0.00", "0", "0", "0.00", "-", "0.00"]];
-            }
-        }
-
-        let csvContent = "data:text/csv;charset=utf-8,"
-            + headers.join(",") + "\n"
-            + rows.map(e => e.map(cell => `"${cell}"`).join(",")).join("\n");
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", filename);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-
-    // Derived Data for View
-    const filteredData = productionData.filter(item => item.date === viewDate);
-    const isToday = viewDate === todayStr;
-
-    // Stats
+    // Derived Stats
+    const filteredData = productionData.filter(item => item.date === todayStr);
     const totalWeight = filteredData.reduce((sum, item) => sum + item.weight, 0);
-    const totalTrays = filteredData.length;
     const activeOperators = new Set(filteredData.map(e => e.operator)).size;
 
-    // Machine Grouping
+    // Machine Grouping for "Projects"
     const machineGroups = {};
     filteredData.forEach(item => {
         if (!machineGroups[item.machine]) {
-            machineGroups[item.machine] = { weight: 0, trays: [] };
+            machineGroups[item.machine] = { weight: 0, trays: 0 };
         }
         machineGroups[item.machine].weight += item.weight;
-        machineGroups[item.machine].trays.push(item);
+        machineGroups[item.machine].trays += 1;
     });
 
+    const machines = Object.keys(machineGroups).length > 0
+        ? Object.keys(machineGroups).map(k => ({ id: k, ...machineGroups[k] }))
+        : [
+            { id: 'M1', weight: 0, trays: 0, status: 'Idle' },
+            { id: 'M2', weight: 0, trays: 0, status: 'Idle' },
+            { id: 'M3', weight: 0, trays: 0, status: 'Idle' }
+        ];
+
     return (
-        <div className="dashboard-content">
-            <div className="dashboard-controls">
-                <div className="date-filter">
-                    <span className="label">View Date:</span>
-                    <input
-                        type="date"
-                        value={viewDate}
-                        onChange={(e) => setViewDate(e.target.value)}
-                        className="date-input"
-                    />
-                </div>
+        <div className="dashboard-container">
+            <div className="dashboard-layout">
+                {/* Left Column */}
+                <div className="left-column">
+                    {/* Profile Card */}
+                    <div className="card profile-card">
+                        <div className="profile-header">
+                            <ArrowRight size={20} />
+                            <div style={{ fontWeight: 600 }}>My Profile</div>
+                            <div className="icon-btn"><MoreVertical size={16} /></div>
+                        </div>
 
-                <button className="btn btn-danger" onClick={handleClearData}>
-                    <Lock size={14} style={{ marginRight: '6px' }} /> Reset System
-                </button>
-            </div>
-
-            <div className="dashboard-grid">
-                {/* Left Column - Data Entry */}
-                <div className="grid-column-left">
-                    <motion.div
-                        className="card"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                    >
-                        <div className="card-header">
-                            <div className="card-title">
-                                <Plus size={20} /> New Entry
+                        <div className="profile-pic-container">
+                            <div className="profile-pic" style={{ background: '#ddd', overflow: 'hidden' }}>
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Robert" alt="Profile" style={{ width: '100%', height: '100%' }} />
                             </div>
                         </div>
 
-                        <div className="form-group">
-                            <label>Date</label>
-                            <input type="date" value={entryDate} readOnly style={{ backgroundColor: 'var(--bg-color)', cursor: 'not-allowed' }} />
+                        <div className="profile-name">Robert Smith</div>
+                        <div className="profile-role">Production Manager</div>
+
+                        <div className="profile-actions">
+                            <button className="action-circle"><Mail size={18} /></button>
+                            <button className="action-circle" style={{ background: 'white', border: '1px solid #eee', color: '#333' }}><Phone size={18} /></button>
+                            <button className="action-circle" style={{ background: 'white', border: '1px solid #eee', color: '#333' }}><Video size={18} /></button>
                         </div>
 
-                        <div className="form-group">
-                            <label>Product Item</label>
-                            <select
-                                value={selectedItem}
-                                onChange={e => setSelectedItem(e.target.value)}
-                                disabled={!isToday}
-                                style={!isToday ? { backgroundColor: 'var(--bg-color)', cursor: 'not-allowed' } : {}}
-                            >
-                                <option value="">-- Select Product --</option>
-                                {itemsList.map(item => (
-                                    <option key={item.id} value={item.name}>{item.name}</option>
-                                ))}
-                            </select>
+                        <div className="time-slot" style={{ marginTop: '1.5rem' }}>
+                            <div style={{ textAlign: 'left' }}>
+                                <div style={{ fontSize: '0.8rem', color: '#888' }}>Today's Date</div>
+                                <div style={{ fontWeight: 600 }}>{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>
+                            </div>
+                            <CalendarIcon size={20} color="#666" />
                         </div>
+                    </div>
 
-                        <div className="form-group">
-                            <label>Operator Name</label>
-                            <input
-                                type="text"
-                                placeholder="e.g. Ramesh"
-                                value={operatorName}
-                                onChange={(e) => setOperatorName(e.target.value)}
-                                readOnly={!isToday}
-                                style={!isToday ? { backgroundColor: 'var(--bg-color)', cursor: 'not-allowed' } : {}}
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Machine ID</label>
-                            <select
-                                value={machineId}
-                                onChange={(e) => setMachineId(e.target.value)}
-                                disabled={!isToday}
-                                style={!isToday ? { opacity: 0.6, cursor: 'not-allowed' } : {}}
-                            >
-                                {['M1', 'M2', 'M3', 'M4', 'M5', 'M6'].map(m => <option key={m} value={m}>Machine {m.replace('M', '')}</option>)}
-                            </select>
-                        </div>
-
-                        <div className="form-group">
-                            <label>Tray ID (Auto)</label>
-                            <input
-                                type="text"
-                                value={trayId}
-                                readOnly
-                                style={{ backgroundColor: 'var(--bg-color)', cursor: 'not-allowed', color: 'var(--text-secondary)' }}
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Wet Weight (KG)</label>
-                            <input
-                                type="number"
-                                step="0.01"
-                                placeholder="0.00"
-                                value={wetWeight}
-                                onChange={(e) => setWetWeight(e.target.value)}
-                                readOnly={!isToday}
-                                style={!isToday ? { backgroundColor: 'var(--bg-color)', cursor: 'not-allowed' } : {}}
-                            />
-                        </div>
-
-                        <div className="button-group">
-                            <button
-                                className="btn btn-primary"
-                                onClick={handleAddEntry}
-                                disabled={!isToday}
-                            >
-                                <Plus size={18} /> Save Entry
-                            </button>
-                            <button
-                                className={`btn btn-upload ${selectedFileName ? 'has-file' : ''}`}
-                                title={selectedFileName ? `Selected: ${selectedFileName}` : "Upload supportive documents"}
-                                onClick={() => fileInputRef.current.click()}
-                            >
-                                <Upload size={18} /> {selectedFileName ? 'File Selected' : 'Upload Docs'}
-                            </button>
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                style={{ display: 'none' }}
-                                onChange={(e) => {
-                                    if (e.target.files.length > 0) {
-                                        setSelectedFileName(e.target.files[0].name);
-                                    }
-                                }}
-                            />
-                        </div>
-                    </motion.div>
-
-                    <motion.div
-                        className="card"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                    >
+                    {/* Detailed Info */}
+                    <div className="card">
                         <div className="card-header">
-                            <div className="card-title">Recent Activity</div>
+                            <div className="card-title">Detailed Information</div>
                         </div>
-                        <div className="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Time</th>
-                                        <th>Details</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredData.slice().reverse().slice(0, 8).map(item => (
-                                        <tr key={item.id}>
-                                            <td style={{ fontSize: '0.8em', color: 'var(--text-secondary)' }}>{item.timestamp}</td>
-                                            <td>
-                                                <div style={{ fontWeight: 500 }}>{item.operator}</div>
-                                                <div style={{ fontSize: '0.8em', color: 'var(--text-secondary)' }}>
-                                                    {item.machine} • {item.tray} • {item.weight}kg <br />
-                                                    {item.item && <span style={{ fontSize: '0.9em', color: 'var(--primary-color)' }}>{item.item}</span>}
-                                                </div>
-                                                {item.document && (
-                                                    <span className="file-badge" style={{ marginTop: '4px' }} title={item.document}>
-                                                        {item.document.length > 15 ? item.document.substring(0, 12) + '...' : item.document}
-                                                    </span>
-                                                )}
-                                            </td>
-                                            <td>
-                                                {item.date === todayStr ? (
-                                                    <button className="btn-danger" onClick={() => handleDeleteEntry(item.id, item.date)}>✕</button>
-                                                ) : (
-                                                    <span style={{ color: '#ccc', fontSize: '0.8em' }}><Lock size={14} /></span>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {filteredData.length === 0 && (
-                                        <tr><td colSpan="3" style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>No entries yet</td></tr>
-                                    )}
-                                </tbody>
-                            </table>
+                        <div className="info-list">
+                            <div className="info-item">
+                                <div className="info-icon"><User size={18} /></div>
+                                <div className="info-content">
+                                    <div className="info-label">Active Operators</div>
+                                    <div className="info-value">{activeOperators} Online</div>
+                                </div>
+                                <div style={{ color: '#10B981', fontSize: '0.8rem' }}>Online</div>
+                            </div>
+                            <div className="info-item">
+                                <div className="info-icon"><Clock size={18} /></div>
+                                <div className="info-content">
+                                    <div className="info-label">Total Production</div>
+                                    <div className="info-value">{totalWeight.toFixed(2)} KG</div>
+                                </div>
+                            </div>
+                            <div className="info-item">
+                                <div className="info-icon"><MapPin size={18} /></div>
+                                <div className="info-content">
+                                    <div className="info-label">Location</div>
+                                    <div className="info-value">Factory Unit 1</div>
+                                </div>
+                            </div>
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
 
                 {/* Right Column */}
-                <div className="grid-column-right">
-                    <motion.div
-                        className="stats-grid"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                    >
-                        <div className="stat-card">
-                            <div className="stat-label">Total Weight ({isToday ? 'Today' : viewDate})</div>
-                            <div className="stat-value">{totalWeight.toFixed(2)} <span style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>kg</span></div>
+                <div className="right-column">
+                    {/* Projects Section */}
+                    <div className="projects-section">
+                        <div className="section-header">
+                            <div className="header-title">Ongoing Production</div>
+                            <div className="icon-btn"><ChevronDown size={20} /></div>
                         </div>
-                        <div className="stat-card">
-                            <div className="stat-label">Trays Produced</div>
-                            <div className="stat-value">{totalTrays}</div>
-                        </div>
-                        <div className="stat-card">
-                            <div className="stat-label">Active Operators</div>
-                            <div className="stat-value">{activeOperators}</div>
-                        </div>
-                    </motion.div>
 
-                    <motion.div
-                        className="card"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                    >
-                        <div className="card-header">
-                            <div className="card-title">
-                                <Activity size={20} /> Machine Insights
+                        <div className="projects-grid">
+                            {machines.map((m, idx) => (
+                                <div key={m.id} className={`project-card ${idx % 3 === 0 ? 'card-pastel-yellow' : idx % 3 === 1 ? 'card-pastel-blue' : 'card-pastel-pink'}`}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <span className="project-date">{todayStr}</span>
+                                        <MoreVertical size={16} />
+                                    </div>
+                                    <div>
+                                        <div className="project-name">Machine {m.id}</div>
+                                        <div className="project-sub">{m.weight ? `${m.weight.toFixed(1)}kg produced` : 'Idle'}</div>
+                                    </div>
+                                    <div className="project-sub" style={{ marginTop: '0.5rem' }}>
+                                        {m.trays ? `${m.trays} Trays` : 'No Activity'}
+                                    </div>
+
+                                    <div className="progress-section">
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
+                                            <span>Progress</span>
+                                            <span>{m.weight ? Math.min(100, (m.weight / 100) * 100).toFixed(0) : 0}%</span>
+                                        </div>
+                                        <div className="progress-bar">
+                                            <div className="progress-fill" style={{ width: `${m.weight ? Math.min(100, m.weight) : 0}%` }}></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Bottom Row: Calendar & Inbox */}
+                    <div className="bottom-row">
+                        {/* Calendar Widget (Visual) */}
+                        <div className="card">
+                            <div className="card-header">
+                                <div className="card-title">Calendar</div>
+                                <div className="icon-btn"><MoreVertical size={16} /></div>
                             </div>
-                            <button className="btn btn-secondary" onClick={() => exportCSV('machineTable', 'machine_details.csv')}>Export CSV</button>
-                        </div>
-                        <div className="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Machine</th>
-                                        <th>Tray Breakdown</th>
-                                        <th>Total Weight</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {Object.keys(machineGroups).sort().map(mach => {
-                                        const data = machineGroups[mach];
-                                        return (
-                                            <tr key={mach}>
-                                                <td style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{viewDate}</td>
-                                                <td><span className="badge badge-machine">{mach}</span></td>
-                                                <td>
-                                                    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                                                        {data.trays.map((t, idx) => (
-                                                            <span key={idx} className="tray-tag">
-                                                                <span className="tray-id">{t.tray}</span>
-                                                                <span className="tray-val">{t.weight}kg</span>
-                                                                <span className="tray-op">{t.operator}</span>
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                </td>
-                                                <td style={{ fontWeight: 'bold', color: 'var(--accent-success)' }}>{data.weight.toFixed(2)}</td>
-                                            </tr>
-                                        );
-                                    })}
-                                    {Object.keys(machineGroups).length === 0 && (
-                                        <tr><td colSpan="4" style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>No production data found for {viewDate}</td></tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    </motion.div>
-
-                    <motion.div
-                        className="card"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4 }}
-                    >
-                        <div className="card-header">
-                            <div className="card-title">
-                                <TrendingUp size={20} /> Daily Performance
+                            <div style={{ textAlign: 'center' }}>
+                                <h3 style={{ marginBottom: '1rem' }}>March</h3>
+                                {/* Simple Grid Representation */}
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.5rem', fontSize: '0.8rem', color: '#888' }}>
+                                    <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+                                    {Array.from({ length: 30 }).map((_, i) => (
+                                        <span key={i} style={{
+                                            padding: '0.5rem',
+                                            background: i === 11 ? '#FFB7B2' : i === 19 ? '#333' : 'transparent',
+                                            color: i === 19 ? 'white' : 'inherit',
+                                            borderRadius: '8px'
+                                        }}>
+                                            {i + 1}
+                                        </span>
+                                    ))}
+                                </div>
                             </div>
-                            <button className="btn btn-secondary" onClick={() => exportCSV('summaryTable', 'daily_summary.csv')}>Export CSV</button>
                         </div>
-                        <div className="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Total Wet (KG)</th>
-                                        <th>Trays</th>
-                                        <th>Active Machines</th>
-                                        <th>Avg/Mach</th>
-                                        <th>Top Operator</th>
-                                        <th>Op. Weight</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredData.length > 0 ? (() => {
-                                        const totalMachines = Object.keys(machineGroups).length;
-                                        const avgWet = totalMachines > 0 ? (totalWeight / totalMachines).toFixed(2) : 0;
 
-                                        const opStats = {};
-                                        filteredData.forEach(item => {
-                                            opStats[item.operator] = (opStats[item.operator] || 0) + item.weight;
-                                        });
-                                        let bestOp = "-", bestWt = 0;
-                                        for (let [op, wt] of Object.entries(opStats)) {
-                                            if (wt > bestWt) { bestWt = wt; bestOp = op; }
-                                        }
-
-                                        return (
-                                            <tr>
-                                                <td style={{ fontWeight: 500 }}>{viewDate}</td>
-                                                <td style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>{totalWeight.toFixed(2)}</td>
-                                                <td>{totalTrays}</td>
-                                                <td>{totalMachines}</td>
-                                                <td>{avgWet}</td>
-                                                <td><span className="badge" style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24' }}>{bestOp}</span></td>
-                                                <td>{bestWt.toFixed(2)}</td>
-                                            </tr>
-                                        );
-                                    })() : (
-                                        <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>No summary available</td></tr>
-                                    )}
-                                </tbody>
-                            </table>
+                        {/* Inbox Widget */}
+                        <div className="card">
+                            <div className="card-header">
+                                <div className="card-title">Recent Activity</div>
+                                <div className="icon-btn"><Search size={16} /></div>
+                            </div>
+                            <div className="inbox-list">
+                                {productionData.slice().reverse().slice(0, 3).length > 0 ? (
+                                    productionData.slice().reverse().slice(0, 3).map((item) => (
+                                        <div className="msg-item" key={item.id}>
+                                            <div className="msg-avatar" style={{ background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                {item.operator.charAt(0)}
+                                            </div>
+                                            <div className="msg-content">
+                                                <h4>{item.operator}</h4>
+                                                <p>Produced {item.weight}kg on {item.machine}</p>
+                                            </div>
+                                            <div style={{ marginLeft: 'auto', fontSize: '0.8rem', color: '#aaa' }}>
+                                                {item.timestamp || 'Now'}
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div style={{ color: '#999', textAlign: 'center' }}>No recent activity</div>
+                                )}
+                            </div>
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
             </div>
         </div>
