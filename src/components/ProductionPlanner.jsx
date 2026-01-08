@@ -43,7 +43,9 @@ const ProductionPlanner = () => {
         const realInventory = products.map(p => {
             const pName = norm(p.name);
             const inQty = grn.filter(d => norm(d.item) === pName).reduce((sum, d) => sum + (parseFloat(d.totalKg) || 0), 0);
-            const outQty = dsu.filter(d => norm(d.item) === pName).reduce((sum, d) => sum + (parseFloat(d.totalKg) || 0), 0)
+            const outQty = dsu
+                .filter(d => norm(d.item) === pName && d.type !== 'GRN_IN' && d.type !== 'PRODUCTION_IN')
+                .reduce((sum, d) => sum + (parseFloat(d.totalKg) || 0), 0)
                 + spu.filter(d => norm(d.item) === pName).reduce((sum, d) => sum + (parseFloat(d.quantity) || 0), 0);
             return {
                 id: p.id,

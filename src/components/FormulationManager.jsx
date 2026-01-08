@@ -32,14 +32,16 @@ const FormulationManager = () => {
         if (selectedFormulation) {
             const current = formulations.find(f => f.id === selectedFormulation.id);
             if (current && current.ingredients) {
-                setIngredients(current.ingredients);
+                // Deep copy to prevent mutation of the global state
+                setIngredients(JSON.parse(JSON.stringify(current.ingredients)));
             } else {
                 setIngredients([]);
             }
         } else {
             setIngredients([]);
         }
-    }, [selectedFormulation, formulations]);
+    }, [selectedFormulation]);
+
 
     const fetchRawMaterials = () => {
         const savedItems = localStorage.getItem('productItems');
@@ -81,7 +83,8 @@ const FormulationManager = () => {
 
     const handleIngredientChange = (index, field, value) => {
         const newIngredients = [...ingredients];
-        newIngredients[index][field] = value;
+        // Create a copy of the item to avoid mutating the object reference directly
+        newIngredients[index] = { ...newIngredients[index], [field]: value };
         setIngredients(newIngredients);
     };
 
@@ -222,8 +225,11 @@ const FormulationManager = () => {
                                                         type="number"
                                                         step="0.0001"
                                                         className="table-input"
-                                                        value={ing.quantity_per_unit}
-                                                        onChange={e => handleIngredientChange(index, 'quantity_per_unit', parseFloat(e.target.value))}
+                                                        value={ing.quantity_per_unit || ''}
+                                                        onChange={e => {
+                                                            const val = e.target.value;
+                                                            handleIngredientChange(index, 'quantity_per_unit', val === '' ? '' : parseFloat(val));
+                                                        }}
                                                     />
                                                 </td>
                                                 <td>KG</td>
