@@ -8,6 +8,9 @@ import {
     Factory,
     FlaskConical,
     Calculator,
+    TrendingUp,
+    Calendar,
+    FileText,
     Bell,
     Search,
     HelpCircle,
@@ -33,6 +36,9 @@ const Layout = () => {
 
     const getPageHeader = () => {
         const path = location.pathname;
+        if (path.includes('/analytics')) return { title: 'Advanced Analytics', subtitle: 'Real-time insights and predictions' };
+        if (path.includes('/scheduler')) return { title: 'Production Scheduler', subtitle: 'Advanced scheduling with capacity planning' };
+        if (path.includes('/reports')) return { title: 'Custom Reports', subtitle: 'Build and export custom reports' };
         if (path.includes('/dashboard')) return { title: 'Analytics', subtitle: 'Detailed overview of your production performance' };
         if (path.includes('/plan')) return { title: 'Production Planner', subtitle: 'Manage batches and calculate requirements' };
         if (path.includes('/inventory')) return { title: 'Inventory Workflow', subtitle: 'Track raw materials and finished goods' };
@@ -62,7 +68,10 @@ const Layout = () => {
                 <nav className="sidebar-nav">
                     <div className="nav-group">
                         <SidebarItem to="/dashboard" icon={LayoutDashboard} label={!collapsed ? "Dashboard" : ""} />
+                        <SidebarItem to="/analytics" icon={TrendingUp} label={!collapsed ? "Analytics" : ""} />
                         <SidebarItem to="/plan" icon={Calculator} label={!collapsed ? "Planner" : ""} />
+                        <SidebarItem to="/scheduler" icon={Calendar} label={!collapsed ? "Scheduler" : ""} />
+                        <SidebarItem to="/reports" icon={FileText} label={!collapsed ? "Reports" : ""} />
                         <SidebarItem to="/inventory" icon={Package} label={!collapsed ? "Inventory" : ""} />
                         <SidebarItem to="/formulations" icon={FlaskConical} label={!collapsed ? "Formulations" : ""} />
                         <SidebarItem to="/todo" icon={ClipboardList} label={!collapsed ? "Tasks" : ""} />

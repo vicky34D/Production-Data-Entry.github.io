@@ -94,10 +94,21 @@ const DailyStoreUpdate = () => {
 
     const exportCSV = () => {
         const headers = ["S. No.", "Date", "Item", "Bags", "Qty Per Bag", "Total Kg", "Type"];
+
+        // Helper to escape CSV fields
+        const escapeCsv = (field) => {
+            if (field == null) return "";
+            const stringField = String(field);
+            if (stringField.includes(",") || stringField.includes('"') || stringField.includes("\n")) {
+                return `"${stringField.replace(/"/g, '""')}"`;
+            }
+            return stringField;
+        };
+
         const rows = storeData.map(item => [
-            item.sNo,
-            item.date,
-            item.item,
+            escapeCsv(item.sNo),
+            escapeCsv(item.date),
+            escapeCsv(item.item),
             item.totalBags || 0,
             item.qtyPerBag || 0,
             item.totalKg.toFixed(2),
@@ -105,16 +116,21 @@ const DailyStoreUpdate = () => {
                 item.type === 'GRN_IN' ? 'Purchase IN' : 'Usage OUT'
         ]);
 
-        let csvContent = "data:text/csv;charset=utf-8,"
-            + headers.join(",") + "\n"
-            + rows.map(e => e.join(",")).join("\n");
-        const encodedUri = encodeURI(csvContent);
+        const csvContent = [
+            headers.join(","),
+            ...rows.map(e => e.join(","))
+        ].join("\n");
+
+        const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
+        const url = URL.createObjectURL(blob);
+
+        link.setAttribute("href", url);
         link.setAttribute("download", "daily_store_update.csv");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        URL.revokeObjectURL(url);
     };
 
     // Derived Data for View

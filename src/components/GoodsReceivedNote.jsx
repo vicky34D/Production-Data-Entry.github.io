@@ -138,30 +138,45 @@ const GoodsReceivedNote = () => {
 
     const exportCSV = () => {
         const headers = ["S. No.", "Date", "JJW PO Number", "Supplier Invoice Number", "Supplier Name", "Item", "Total Bags/Boxes", "Qty/Bag", "Total Kg", "Unloading Cost"];
+
+        // Helper to escape CSV fields
+        const escapeCsv = (field) => {
+            if (field == null) return "";
+            const stringField = String(field);
+            if (stringField.includes(",") || stringField.includes('"') || stringField.includes("\n")) {
+                return `"${stringField.replace(/"/g, '""')}"`;
+            }
+            return stringField;
+        };
+
         const rows = inventoryData.map(item => [
-            item.sNo,
-            item.date,
-            item.poNumber,
-            item.supplierInvoice,
-            item.supplierName,
-            item.item,
+            escapeCsv(item.sNo),
+            escapeCsv(item.date),
+            escapeCsv(item.poNumber),
+            escapeCsv(item.supplierInvoice),
+            escapeCsv(item.supplierName),
+            escapeCsv(item.item),
             item.totalBags,
             item.qtyPerBag,
-            item.totalKg,
-            item.unloadingCost
+            item.totalKg.toFixed(2),
+            item.unloadingCost.toFixed(2)
         ]);
 
-        let csvContent = "data:text/csv;charset=utf-8,"
-            + headers.join(",") + "\n"
-            + rows.map(e => e.join(",")).join("\n");
+        const csvContent = [
+            headers.join(","),
+            ...rows.map(e => e.join(","))
+        ].join("\n");
 
-        const encodedUri = encodeURI(csvContent);
+        const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
+        const url = URL.createObjectURL(blob);
+
+        link.setAttribute("href", url);
         link.setAttribute("download", "inventory_grn.csv");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        URL.revokeObjectURL(url);
     };
 
     // Derived Data for View

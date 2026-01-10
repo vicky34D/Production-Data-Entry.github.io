@@ -201,28 +201,43 @@ const FinishedGoodsInventory = () => {
 
     const exportCSV = () => {
         const headers = ["S. No.", "Date", "Customer Name", "Item", "Total Bags", "Kg/Bag", "Total Packed (Kg)", "Batch ID"];
+
+        // Helper to escape CSV fields
+        const escapeCsv = (field) => {
+            if (field == null) return "";
+            const stringField = String(field);
+            if (stringField.includes(",") || stringField.includes('"') || stringField.includes("\n")) {
+                return `"${stringField.replace(/"/g, '""')}"`;
+            }
+            return stringField;
+        };
+
         const rows = finishedGoodsData.map(item => [
-            item.sNo,
-            item.date,
-            item.customerName,
-            item.item,
+            escapeCsv(item.sNo),
+            escapeCsv(item.date),
+            escapeCsv(item.customerName),
+            escapeCsv(item.item),
             item.totalBags,
             item.kgPerBag,
-            item.totalPackedKg,
-            item.batchId
+            item.totalPackedKg.toFixed(2),
+            escapeCsv(item.batchId)
         ]);
 
-        let csvContent = "data:text/csv;charset=utf-8,"
-            + headers.join(",") + "\n"
-            + rows.map(e => e.join(",")).join("\n");
+        const csvContent = [
+            headers.join(","),
+            ...rows.map(e => e.join(","))
+        ].join("\n");
 
-        const encodedUri = encodeURI(csvContent);
+        const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
+        const url = URL.createObjectURL(blob);
+
+        link.setAttribute("href", url);
         link.setAttribute("download", "finished_goods_inventory.csv");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        URL.revokeObjectURL(url);
     };
 
     // Derived Data for View

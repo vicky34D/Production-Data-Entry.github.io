@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, RefreshCw, Download, Search, Package, TrendingUp, TrendingDown, Box, Upload } from 'lucide-react';
+
 import './InventorySummary.css';
 
 const InventorySummary = () => {
@@ -76,28 +77,58 @@ const InventorySummary = () => {
         deadItems: stockData.filter(item => item.isDead).length
     };
 
+
+
     const exportCSV = () => {
-        const headers = ["Item Name", "Category", "Stock IN", "Stock OUT", "Current Balance", "Status"];
-        const rows = stockData.map(item => [
-            item.name,
-            item.category,
-            item.totalIn.toFixed(2),
-            item.totalOut.toFixed(2),
-            item.currentStock.toFixed(2),
-            item.isDead ? "Dead Stock" : "Active"
-        ]);
+        if (!stockData || stockData.length === 0) {
+            alert("No stock data available to export.");
+            return;
+        }
 
-        let csvContent = "data:text/csv;charset=utf-8,"
-            + headers.join(",") + "\n"
-            + rows.map(e => e.join(",")).join("\n");
+        try {
+            const headers = ["Item Name", "Category", "Stock IN", "Stock OUT", "Current Balance", "Status"];
 
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `stock_summary_${new Date().toISOString().split('T')[0]}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+            // Helper to escape CSV fields
+            const escapeCsv = (field) => {
+                if (field == null) return "";
+                const stringField = String(field);
+                if (stringField.includes(",") || stringField.includes('"') || stringField.includes("\n")) {
+                    return `"${stringField.replace(/"/g, '""')}"`;
+                }
+                return stringField;
+            };
+
+            const rows = stockData.map(item => [
+                escapeCsv(item.name),
+                escapeCsv(item.category),
+                item.totalIn.toFixed(2),
+                item.totalOut.toFixed(2),
+                item.currentStock.toFixed(2),
+                item.isDead ? "Dead Stock" : "Active"
+            ]);
+
+            const csvContent = [
+                headers.join(","),
+                ...rows.map(e => e.join(","))
+            ].join("\n");
+
+            // Add Byte Order Mark (BOM) for Excel compatibility with UTF-8
+            const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+
+            link.setAttribute("href", url);
+            link.setAttribute("download", `stock_summary_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            console.log("CSV Export initiated successfully");
+        } catch (error) {
+            console.error("Export failed:", error);
+            alert("Failed to export CSV. Check console for details.");
+        }
     };
 
     return (
@@ -117,8 +148,9 @@ const InventorySummary = () => {
                         <RefreshCw size={18} /> Refresh
                     </button>
                     <button className="action-btn btn-primary" onClick={exportCSV}>
-                        <Download size={18} /> Export CSV
+                        <Download size={18} /> Download CSV
                     </button>
+
                     <button className="action-btn btn-secondary" title="Upload supportive documents" onClick={() => fileInputRef.current.click()}>
                         <Upload size={18} /> Upload Docs
                     </button>

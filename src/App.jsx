@@ -16,6 +16,9 @@ import InventorySummary from './components/InventorySummary';
 import ItemsPage from './components/ItemsPage';
 import FormulationManager from './components/FormulationManager';
 import ProductionPlanner from './components/ProductionPlanner';
+import AdvancedAnalytics from './components/AdvancedAnalytics';
+import ProductionScheduler from './components/ProductionScheduler';
+import CustomReportBuilder from './components/CustomReportBuilder';
 import Login from './components/Login';
 
 function App() {
@@ -45,6 +48,9 @@ function App() {
           <Route path="/items" element={<ItemsPage />} />
           <Route path="/formulations" element={<FormulationManager />} />
           <Route path="/plan" element={<ProductionPlanner />} />
+          <Route path="/analytics" element={<AdvancedAnalytics />} />
+          <Route path="/scheduler" element={<ProductionScheduler />} />
+          <Route path="/reports" element={<CustomReportBuilder />} />
         </Route>
 
         {/* Fallback */}

@@ -1,0 +1,323 @@
+/* Dark Mode Support for All Components */
+
+/* Analytics Components */
+[data-theme='dark'] .advanced-analytics-page,
+[data-theme='dark'] .production-scheduler-page,
+[data-theme='dark'] .custom-report-builder-page {
+    background: var(--bg-page);
+}
+
+[data-theme='dark'] .analytics-header,
+[data-theme='dark'] .scheduler-header,
+[data-theme='dark'] .report-header,
+[data-theme='dark'] .metric-card,
+[data-theme='dark'] .capacity-card,
+[data-theme='dark'] .weekly-stats,
+[data-theme='dark'] .calendar-view,
+[data-theme='dark'] .saved-reports-section,
+[data-theme='dark'] .builder-sidebar,
+[data-theme='dark'] .builder-preview,
+[data-theme='dark'] .alerts-section,
+[data-theme='dark'] .chart-card,
+[data-theme='dark'] .cost-analysis-section {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+}
+
+[data-theme='dark'] h1,
+[data-theme='dark'] h2,
+[data-theme='dark'] h3,
+[data-theme='dark'] h4 {
+    color: var(--text-primary);
+}
+
+[data-theme='dark'] p,
+[data-theme='dark'] span,
+[data-theme='dark'] label {
+    color: var(--text-secondary);
+}
+
+/* Buttons */
+[data-theme='dark'] .time-range-select,
+[data-theme='dark'] .form-group input,
+[data-theme='dark'] .form-group select,
+[data-theme='dark'] .form-group textarea {
+    background: var(--bg-input);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme='dark'] .back-btn,
+[data-theme='dark'] .icon-btn {
+    background: var(--bg-input);
+    color: var(--text-primary);
+}
+
+[data-theme='dark'] .back-btn:hover,
+[data-theme='dark'] .icon-btn:hover {
+    background: var(--border-color);
+}
+
+/* Calendar & Schedule Items */
+[data-theme='dark'] .calendar-day {
+    background: var(--bg-input);
+    border-color: var(--border-color);
+}
+
+[data-theme='dark'] .calendar-day.over-capacity {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+}
+
+[data-theme='dark'] .schedule-item {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+}
+
+[data-theme='dark'] .day-header {
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme='dark'] .day-name {
+    color: var(--text-secondary);
+}
+
+[data-theme='dark'] .day-date {
+    color: var(--text-primary);
+}
+
+[data-theme='dark'] .utilization-text,
+[data-theme='dark'] .schedule-item-meta {
+    color: var(--text-secondary);
+}
+
+[data-theme='dark'] .schedule-item-name {
+    color: var(--text-primary);
+}
+
+/* Report Cards */
+[data-theme='dark'] .report-card {
+    background: var(--bg-input);
+    border-color: var(--border-color);
+}
+
+[data-theme='dark'] .report-card:hover {
+    border-color: var(--primary-color);
+}
+
+[data-theme='dark'] .report-card-header h3 {
+    color: var(--text-primary);
+}
+
+[data-theme='dark'] .report-card-meta,
+[data-theme='dark'] .report-card-footer {
+    color: var(--text-secondary);
+    border-top-color: var(--border-color);
+}
+
+/* Tables */
+[data-theme='dark'] .preview-table {
+    color: var(--text-primary);
+}
+
+[data-theme='dark'] .preview-table thead {
+    background: var(--bg-input);
+}
+
+[data-theme='dark'] .preview-table th {
+    color: var(--text-primary);
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme='dark'] .preview-table td {
+    border-bottom-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+[data-theme='dark'] .preview-table tbody tr:hover {
+    background: var(--bg-input);
+}
+
+/* Modals */
+[data-theme='dark'] .modal-content {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+}
+
+[data-theme='dark'] .modal-header,
+[data-theme='dark'] .modal-footer {
+    border-color: var(--border-color);
+}
+
+[data-theme='dark'] .modal-header h2 {
+    color: var(--text-primary);
+}
+
+/* Alerts */
+[data-theme='dark'] .alert-card {
+    background: var(--bg-input);
+}
+
+[data-theme='dark'] .alert-card.critical {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+[data-theme='dark'] .alert-card.warning {
+    background: rgba(245, 158, 11, 0.1);
+}
+
+[data-theme='dark'] .alert-card.info {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+[data-theme='dark'] .alert-item {
+    color: var(--text-primary);
+}
+
+[data-theme='dark'] .alert-message {
+    color: var(--text-secondary);
+}
+
+/* Metrics */
+[data-theme='dark'] .metric-label,
+[data-theme='dark'] .capacity-label,
+[data-theme='dark'] .stat-label,
+[data-theme='dark'] .cost-label {
+    color: var(--text-secondary);
+}
+
+[data-theme='dark'] .metric-value,
+[data-theme='dark'] .capacity-value,
+[data-theme='dark'] .stat-value,
+[data-theme='dark'] .cost-value {
+    color: var(--text-primary);
+}
+
+/* Cost Cards */
+[data-theme='dark'] .cost-card {
+    background: var(--bg-input);
+    border-color: var(--border-color);
+}
+
+/* Empty State */
+[data-theme='dark'] .empty-state {
+    color: var(--text-secondary);
+}
+
+/* Utilization Bar */
+[data-theme='dark'] .utilization-bar {
+    background: var(--border-color);
+}
+
+/* Filter Rows */
+[data-theme='dark'] .filter-row select,
+[data-theme='dark'] .filter-row input {
+    background: var(--bg-input);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Checkbox Labels */
+[data-theme='dark'] .checkbox-label:hover {
+    background: var(--bg-input);
+}
+
+[data-theme='dark'] .checkbox-label span {
+    color: var(--text-primary);
+}
+
+/* Stats Grid */
+[data-theme='dark'] .weekly-stats h2,
+[data-theme='dark'] .saved-reports-section h2,
+[data-theme='dark'] .preview-header h3 {
+    color: var(--text-primary);
+}
+
+/* Calendar Header */
+[data-theme='dark'] .calendar-header button {
+    background: var(--bg-input);
+    color: var(--text-primary);
+}
+
+[data-theme='dark'] .calendar-header button:hover {
+    background: var(--border-color);
+}
+
+[data-theme='dark'] .calendar-header h3 {
+    color: var(--text-primary);
+}
+
+/* Builder Section */
+[data-theme='dark'] .builder-section {
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme='dark'] .builder-section h3 {
+    color: var(--text-primary);
+}
+
+/* Report Actions */
+[data-theme='dark'] .report-actions button {
+    background: var(--bg-input);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme='dark'] .report-actions button:hover {
+    background: var(--bg-surface);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+/* Schedule Shift/Workers */
+[data-theme='dark'] .schedule-shift,
+[data-theme='dark'] .schedule-workers {
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+}
+
+/* Scrollbar for dark mode */
+[data-theme='dark'] ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-track {
+    background: var(--bg-input);
+}
+
+/* Ensure all text inputs are visible */
+[data-theme='dark'] input::placeholder,
+[data-theme='dark'] textarea::placeholder {
+    color: var(--text-muted);
+}
+
+/* Focus states */
+[data-theme='dark'] .form-group input:focus,
+[data-theme='dark'] .form-group select:focus,
+[data-theme='dark'] .form-group textarea:focus {
+    border-color: var(--primary-color);
+    background: var(--bg-surface);
+}
+
+/* Secondary buttons in dark mode */
+[data-theme='dark'] .btn-secondary {
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme='dark'] .btn-secondary:hover {
+    background: var(--border-color);
+}
+
+/* Action buttons secondary variant */
+[data-theme='dark'] .action-btn.secondary {
+    background: var(--bg-surface);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+[data-theme='dark'] .action-btn.secondary:hover {
+    background: var(--primary-color);
+    color: white;
+}
