@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 
@@ -21,18 +21,50 @@ import ProductionScheduler from './components/ProductionScheduler';
 import CustomReportBuilder from './components/CustomReportBuilder';
 import Login from './components/Login';
 
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  return isLoggedIn ? children : <Navigate to="/login" replace />;
+};
+
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check authentication status on mount
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    setIsAuthenticated(isLoggedIn);
+  }, []);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userEmail');
+    setIsAuthenticated(false);
+  };
+
   return (
     <Router>
       <Routes>
-        {/* Landing Page separate from App Layout */}
-        {/* Redirect root to dashboard, users can go to /landing if they want */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        {/* Public Routes */}
         <Route path="/landing" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
 
-        {/* App Layout Routes */}
-        <Route element={<Layout />}>
+        {/* Protected Routes */}
+        <Route path="/" element={
+          <ProtectedRoute>
+            <Navigate to="/dashboard" replace />
+          </ProtectedRoute>
+        } />
+
+        <Route element={
+          <ProtectedRoute>
+            <Layout onLogout={handleLogout} />
+          </ProtectedRoute>
+        }>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/todo" element={<TodoList />} />
 

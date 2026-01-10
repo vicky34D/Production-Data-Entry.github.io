@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, NavLink, useLocation } from 'react-router-dom';
+import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard,
     ClipboardList,
@@ -30,7 +30,8 @@ const SidebarItem = ({ to, icon: Icon, label }) => (
     </NavLink>
 );
 
-const Layout = () => {
+const Layout = ({ onLogout }) => {
+    const navigate = useNavigate();
     const location = useLocation();
     const [collapsed, setCollapsed] = useState(false);
 
@@ -86,7 +87,10 @@ const Layout = () => {
                     </div>
                     <div className="sidebar-item" onClick={() => {
                         if (window.confirm("Are you sure you want to log out?")) {
-                            alert("Logged out successfully.");
+                            if (onLogout) {
+                                onLogout();
+                            }
+                            navigate('/login');
                         }
                     }} style={{ cursor: 'pointer', justifyContent: collapsed ? 'center' : 'flex-start' }}>
                         <LogOut size={20} />
