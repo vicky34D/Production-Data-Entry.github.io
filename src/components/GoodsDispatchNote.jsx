@@ -341,9 +341,20 @@ const GoodsDispatchNote = () => {
                                             <td>{entry.loadingCost.toFixed(2)}</td>
                                             <td>
                                                 {entry.document && (
-                                                    <span className="file-badge" title={entry.document}>
-                                                        {entry.document.length > 15 ? entry.document.substring(0, 12) + '...' : entry.document}
-                                                    </span>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                                        <span className="file-badge" title={entry.document}>
+                                                            {entry.document.length > 15 ? entry.document.substring(0, 12) + '...' : entry.document}
+                                                        </span>
+                                                        <button
+                                                            onClick={(e) => { e.stopPropagation(); alert(`Downloading: ${entry.document}`); }}
+                                                            style={{
+                                                                background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--accent-primary)', padding: '2px'
+                                                            }}
+                                                            title="Download"
+                                                        >
+                                                            <Download size={14} />
+                                                        </button>
+                                                    </div>
                                                 )}
                                             </td>
                                             <td>

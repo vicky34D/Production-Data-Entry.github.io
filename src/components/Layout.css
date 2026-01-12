@@ -404,8 +404,41 @@
     }
 
     /* Adjust Charts */
+    /* Adjust Charts */
     .chart-card {
         padding: 0;
-        /* Remove internal padding if needed or adjust */
+    }
+
+    /* Improve Mobile Header Space */
+    .user-info {
+        display: none;
+    }
+
+    .header-actions {
+        gap: 0.5rem;
+    }
+
+    .action-icon-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .user-profile-pill {
+        padding: 0.25rem;
+        margin-left: 0.25rem;
+    }
+
+    .u-avatar {
+        width: 32px;
+        height: 32px;
+    }
+
+    /* Table Fixes */
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        display: block;
+        /* Ensure block for scroll */
+        width: 100%;
     }
 }
