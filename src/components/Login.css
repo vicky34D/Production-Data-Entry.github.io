@@ -20,6 +20,7 @@
 }
 
 /* Left Side - Illustration - Premium Purple Gradient */
+/* Left Side - Illustration - Premium Purple Gradient */
 .login-left {
     flex: 1.2;
     background: var(--gradient-purple);
@@ -27,7 +28,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 4rem;
+    padding: 0;
+    /* Removed Padding for Edge-to-Edge */
     position: relative;
     overflow: hidden;
 }
@@ -42,6 +44,7 @@
     bottom: 0;
     background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
     pointer-events: none;
+    z-index: 2;
 }
 
 .illustration-container {
@@ -50,15 +53,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    max-width: 800px;
+    max-width: none;
+    /* Removed Max Width */
     z-index: 1;
 }
 
 .login-illustration {
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.2));
+    object-fit: cover;
+    /* Fill the space */
+    object-position: center;
 }
 
 /* Right Side - Form */
