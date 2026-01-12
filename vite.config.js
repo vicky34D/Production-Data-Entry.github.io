@@ -16,8 +16,8 @@ export default defineConfig({
         theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
-        scope: '/Production-Data-Entry.github.io/',
-        start_url: '/Production-Data-Entry.github.io/',
+        scope: '/',
+        start_url: '/',
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -33,5 +33,5 @@ export default defineConfig({
       }
     })
   ],
-  base: '/Production-Data-Entry.github.io/',
+  base: '/',
 })
