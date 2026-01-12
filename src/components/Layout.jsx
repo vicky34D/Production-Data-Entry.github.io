@@ -55,15 +55,17 @@ const Layout = ({ onLogout }) => {
         <div className={`layout-container ${collapsed ? 'collapsed' : ''}`}>
             <aside className="sidebar">
                 <div className="sidebar-header">
-                    <div className="logo-brand-group">
+                    <div
+                        className="logo-brand-group"
+                        onClick={() => setCollapsed(!collapsed)}
+                        style={{ cursor: 'pointer' }}
+                        title="Toggle Sidebar"
+                    >
                         <div className="logo-circle">
-                            <Factory size={18} color="white" />
+                            <Factory size={18} color="#FFD56B" />
                         </div>
                         {!collapsed && <span className="brand-name">DHARS</span>}
                     </div>
-                    <button className="collapse-btn" onClick={() => setCollapsed(!collapsed)}>
-                        {collapsed ? <ChevronDown size={18} style={{ transform: 'rotate(-90deg)' }} /> : <ChevronDown size={18} style={{ transform: 'rotate(90deg)' }} />}
-                    </button>
                 </div>
 
                 <nav className="sidebar-nav">
