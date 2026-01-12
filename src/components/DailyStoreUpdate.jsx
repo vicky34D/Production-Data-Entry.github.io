@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Plus, ClipboardList, Trash2, Download, Lock, Upload } from 'lucide-react';
+import { uploadDocument } from '../utils/fileUpload';
 import './DailyStoreUpdate.css';
 
 const DailyStoreUpdate = () => {
@@ -22,6 +23,7 @@ const DailyStoreUpdate = () => {
     const [totalBags, setTotalBags] = useState('');
     const [qtyPerBag, setQtyPerBag] = useState('');
     const [selectedFileName, setSelectedFileName] = useState('');
+    const [selectedFile, setSelectedFile] = useState(null);
 
     const [itemsList, setItemsList] = useState([]);
 
@@ -41,7 +43,7 @@ const DailyStoreUpdate = () => {
         localStorage.setItem('storeUpdateData', JSON.stringify(storeData));
     }, [storeData]);
 
-    const handleAddEntry = () => {
+    const handleAddEntry = async () => {
         if (date !== todayStr) {
             alert(`Error: You can only add entries for the current date (${todayStr}).`);
             return;
@@ -50,6 +52,11 @@ const DailyStoreUpdate = () => {
         if (!item || !totalBags || !qtyPerBag) {
             alert("Please fill all required fields.");
             return;
+        }
+
+        let documentUrl = null;
+        if (selectedFile) {
+            documentUrl = await uploadDocument(selectedFile, 'daily_store');
         }
 
         const entry = {
@@ -61,6 +68,7 @@ const DailyStoreUpdate = () => {
             qtyPerBag: parseFloat(qtyPerBag),
             totalKg,
             document: selectedFileName,
+            documentUrl: documentUrl,
             timestamp: new Date().toLocaleTimeString()
         };
 
@@ -71,6 +79,7 @@ const DailyStoreUpdate = () => {
         setTotalBags('');
         setQtyPerBag('');
         setSelectedFileName('');
+        setSelectedFile(null);
     };
 
     const handleDeleteEntry = (id, entryDate) => {
@@ -256,6 +265,7 @@ const DailyStoreUpdate = () => {
                                 onChange={(e) => {
                                     if (e.target.files.length > 0) {
                                         setSelectedFileName(e.target.files[0].name);
+                                        setSelectedFile(e.target.files[0]);
                                     }
                                 }}
                             />
@@ -327,7 +337,14 @@ const DailyStoreUpdate = () => {
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
                                                     {entry.document && (
                                                         <button
-                                                            onClick={() => alert(`Downloading: ${entry.document}`)}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                if (entry.documentUrl) {
+                                                                    window.open(entry.documentUrl, '_blank');
+                                                                } else {
+                                                                    alert(`Document "${entry.document}" is not available on server (legacy record).`);
+                                                                }
+                                                            }}
                                                             style={{
                                                                 background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent-primary)', display: 'flex'
                                                             }}

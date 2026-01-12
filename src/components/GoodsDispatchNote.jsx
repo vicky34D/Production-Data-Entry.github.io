@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Plus, ClipboardList, Trash2, Download, Lock, Upload } from 'lucide-react';
+import { uploadDocument } from '../utils/fileUpload';
 import './GoodsDispatchNote.css';
 
 const GoodsDispatchNote = () => {
@@ -25,6 +26,7 @@ const GoodsDispatchNote = () => {
     const [kgPerBag, setKgPerBag] = useState('');
     const [loadingCost, setLoadingCost] = useState('');
     const [selectedFileName, setSelectedFileName] = useState('');
+    const [selectedFile, setSelectedFile] = useState(null);
 
     const [itemsList, setItemsList] = useState([]);
 
@@ -44,7 +46,7 @@ const GoodsDispatchNote = () => {
         localStorage.setItem('goodsDispatchData', JSON.stringify(dispatchData));
     }, [dispatchData]);
 
-    const handleAddEntry = () => {
+    const handleAddEntry = async () => {
         if (date !== todayStr) {
             alert(`Error: You can only add entries for the current date (${todayStr}).`);
             return;
@@ -53,6 +55,11 @@ const GoodsDispatchNote = () => {
         if (!invoiceNumber || !customerName || !item || !totalBags || !kgPerBag) {
             alert("Please fill all required fields.");
             return;
+        }
+
+        let documentUrl = null;
+        if (selectedFile) {
+            documentUrl = await uploadDocument(selectedFile, 'goods_dispatch');
         }
 
         const entry = {
@@ -67,6 +74,7 @@ const GoodsDispatchNote = () => {
             totalKg,
             loadingCost: parseFloat(loadingCost) || 0,
             document: selectedFileName,
+            documentUrl: documentUrl,
             timestamp: new Date().toLocaleTimeString()
         };
 
@@ -80,6 +88,7 @@ const GoodsDispatchNote = () => {
         setKgPerBag('');
         setLoadingCost('');
         setSelectedFileName('');
+        setSelectedFile(null);
     };
 
     const handleDeleteEntry = (id, entryDate) => {
@@ -287,6 +296,7 @@ const GoodsDispatchNote = () => {
                                 onChange={(e) => {
                                     if (e.target.files.length > 0) {
                                         setSelectedFileName(e.target.files[0].name);
+                                        setSelectedFile(e.target.files[0]);
                                     }
                                 }}
                             />
@@ -350,7 +360,14 @@ const GoodsDispatchNote = () => {
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
                                                     {entry.document && (
                                                         <button
-                                                            onClick={() => alert(`Downloading: ${entry.document}`)}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                if (entry.documentUrl) {
+                                                                    window.open(entry.documentUrl, '_blank');
+                                                                } else {
+                                                                    alert(`Document "${entry.document}" is not available on server (legacy record).`);
+                                                                }
+                                                            }}
                                                             style={{
                                                                 background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent-primary)', display: 'flex'
                                                             }}

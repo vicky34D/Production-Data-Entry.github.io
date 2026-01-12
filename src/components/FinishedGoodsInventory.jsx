@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Plus, ClipboardList, Trash2, Download, Lock, Upload, Factory } from 'lucide-react';
+import { uploadDocument } from '../utils/fileUpload';
 import { safeGet, safeSet } from '../utils/storage';
 import './FinishedGoodsInventory.css';
 
@@ -25,6 +26,7 @@ const FinishedGoodsInventory = () => {
     const [totalBags, setTotalBags] = useState('');
     const [kgPerBag, setKgPerBag] = useState('');
     const [selectedFileName, setSelectedFileName] = useState('');
+    const [selectedFile, setSelectedFile] = useState(null);
 
     const [itemsList, setItemsList] = useState([]);
 
@@ -50,7 +52,7 @@ const FinishedGoodsInventory = () => {
         safeSet('finishedGoodsData', finishedGoodsData);
     }, [finishedGoodsData]);
 
-    const handleAddEntry = () => {
+    const handleAddEntry = async () => {
         if (date !== todayStr) {
             alert(`Error: You can only add entries for the current date (${todayStr}).`);
             return;
@@ -86,6 +88,11 @@ const FinishedGoodsInventory = () => {
         }
         // ------------------------------
 
+        let documentUrl = null;
+        if (selectedFile) {
+            documentUrl = await uploadDocument(selectedFile, 'finished_goods');
+        }
+
         const transactionId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random());
 
         const entry = {
@@ -99,6 +106,7 @@ const FinishedGoodsInventory = () => {
             totalPackedKg,
             batchId: selectedBatchId || 'General Stock',
             document: selectedFileName,
+            documentUrl: documentUrl,
             transactionId: transactionId, // Link for rollback
             timestamp: new Date().toLocaleTimeString()
         };
@@ -163,6 +171,7 @@ const FinishedGoodsInventory = () => {
         setTotalBags('');
         setKgPerBag('');
         setSelectedFileName('');
+        setSelectedFile(null);
     };
 
     const handleDeleteEntry = (id, entryDate) => {
@@ -407,6 +416,7 @@ const FinishedGoodsInventory = () => {
                                 onChange={(e) => {
                                     if (e.target.files.length > 0) {
                                         setSelectedFileName(e.target.files[0].name);
+                                        setSelectedFile(e.target.files[0]);
                                     }
                                 }}
                             />
@@ -471,7 +481,14 @@ const FinishedGoodsInventory = () => {
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
                                                     {entry.document && (
                                                         <button
-                                                            onClick={() => alert(`Downloading: ${entry.document}`)}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                if (entry.documentUrl) {
+                                                                    window.open(entry.documentUrl, '_blank');
+                                                                } else {
+                                                                    alert(`Document "${entry.document}" is not available on server (legacy record).`);
+                                                                }
+                                                            }}
                                                             style={{
                                                                 background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent-primary)', display: 'flex'
                                                             }}
