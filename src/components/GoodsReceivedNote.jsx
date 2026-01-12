@@ -407,9 +407,25 @@ const GoodsReceivedNote = () => {
                                             <td>{entry.unloadingCost.toFixed(2)}</td>
                                             <td>
                                                 {entry.document && (
-                                                    <span className="file-badge" title={entry.document}>
-                                                        {entry.document.length > 15 ? entry.document.substring(0, 12) + '...' : entry.document}
-                                                    </span>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                        <span className="file-badge" title={entry.document}>
+                                                            {entry.document.length > 15 ? entry.document.substring(0, 12) + '...' : entry.document}
+                                                        </span>
+                                                        <button
+                                                            onClick={() => alert(`Downloading document: ${entry.document}\n(File storage not connected)`)}
+                                                            style={{
+                                                                background: 'none',
+                                                                border: 'none',
+                                                                cursor: 'pointer',
+                                                                padding: '4px',
+                                                                color: 'var(--accent-primary)',
+                                                                display: 'flex', alignItems: 'center'
+                                                            }}
+                                                            title="Download Document"
+                                                        >
+                                                            <Download size={16} />
+                                                        </button>
+                                                    </div>
                                                 )}
                                             </td>
                                             <td>

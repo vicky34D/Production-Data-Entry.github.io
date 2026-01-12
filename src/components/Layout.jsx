@@ -16,7 +16,8 @@ import {
     HelpCircle,
     LogOut,
     Moon,
-    ChevronDown
+    ChevronDown,
+    Menu // Import Menu
 } from 'lucide-react';
 import './Layout.css';
 
@@ -34,8 +35,10 @@ const Layout = ({ onLogout }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [collapsed, setCollapsed] = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false); // New Mobile State
 
     const getPageHeader = () => {
+        // ... (keep existing)
         const path = location.pathname;
         if (path.includes('/analytics')) return { title: 'Advanced Analytics', subtitle: 'Real-time insights and predictions' };
         if (path.includes('/scheduler')) return { title: 'Production Scheduler', subtitle: 'Advanced scheduling with capacity planning' };
@@ -54,10 +57,10 @@ const Layout = ({ onLogout }) => {
     const userEmail = localStorage.getItem('userEmail') || '';
 
     return (
-        <div className={`layout-container ${collapsed ? 'collapsed' : ''}`}>
+        <div className={`layout-container ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
             {/* ... Sidebar ... */}
             <aside className="sidebar">
-                {/* ... (sidebar content remains roughly same, I will target the rendering part below) ... */}
+                {/* ... existing sidebar content ... */}
                 <div className="sidebar-header">
                     <div
                         className="logo-brand-group"
@@ -70,23 +73,28 @@ const Layout = ({ onLogout }) => {
                         </div>
                         {!collapsed && <span className="brand-name">DHARS</span>}
                     </div>
+                    {/* Mobile Close Button */}
+                    <button className="mobile-close-btn" onClick={() => setMobileOpen(false)}>
+                        <ChevronDown size={24} style={{ transform: 'rotate(90deg)' }} />
+                    </button>
                 </div>
 
                 <nav className="sidebar-nav">
                     <div className="nav-group">
                         <SidebarItem to="/dashboard" icon={LayoutDashboard} label={!collapsed ? "Dashboard" : ""} />
                         <SidebarItem to="/analytics" icon={TrendingUp} label={!collapsed ? "Analytics" : ""} />
-                        <SidebarItem to="/plan" icon={Calculator} label={!collapsed ? "Planner" : ""} />
-                        <SidebarItem to="/scheduler" icon={Calendar} label={!collapsed ? "Scheduler" : ""} />
-                        <SidebarItem to="/reports" icon={FileText} label={!collapsed ? "Reports" : ""} />
                         <SidebarItem to="/inventory" icon={Package} label={!collapsed ? "Inventory" : ""} />
                         <SidebarItem to="/formulations" icon={FlaskConical} label={!collapsed ? "Formulations" : ""} />
+                        <SidebarItem to="/scheduler" icon={Calendar} label={!collapsed ? "Scheduler" : ""} />
+                        <SidebarItem to="/reports" icon={FileText} label={!collapsed ? "Reports" : ""} />
+                        <SidebarItem to="/plan" icon={Calculator} label={!collapsed ? "Planner" : ""} />
                         <SidebarItem to="/todo" icon={ClipboardList} label={!collapsed ? "Tasks" : ""} />
                         <SidebarItem to="/items" icon={Settings} label={!collapsed ? "Settings" : ""} />
                     </div>
                 </nav>
 
                 <div className="sidebar-footer">
+                    {/* ... keep footer ... */}
                     <div className="sidebar-item" onClick={() => alert("Help Center specific to DHARS coming soon!")} style={{ cursor: 'pointer', justifyContent: collapsed ? 'center' : 'flex-start' }}>
                         <HelpCircle size={20} />
                         {!collapsed && <span className="item-label">Help</span>}
@@ -122,9 +130,14 @@ const Layout = ({ onLogout }) => {
 
             <main className="main-content">
                 <header className="top-bar">
-                    <div className="page-title">
-                        <h1>{headerInfo.title}</h1>
-                        <p className="page-subtitle">{headerInfo.subtitle}</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <button className="mobile-menu-btn" onClick={() => setMobileOpen(true)}>
+                            <Menu size={24} />
+                        </button>
+                        <div className="page-title">
+                            <h1>{headerInfo.title}</h1>
+                            <p className="page-subtitle">{headerInfo.subtitle}</p>
+                        </div>
                     </div>
 
                     <div className="header-actions">

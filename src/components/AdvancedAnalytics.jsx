@@ -274,9 +274,8 @@ const AdvancedAnalytics = () => {
             ['Growth Rate (%)', analytics.predictions.growthRate?.toFixed(2) || 0],
             [''],
             ['Cost Analysis', ''],
-            ['Total Purchase Cost (₹)', analytics.costAnalysis.totalPurchaseCost?.toFixed(2) || 0],
-            ['Cost per Kg (₹)', analytics.costAnalysis.costPerKg?.toFixed(2) || 0],
-            ['Estimated Value (₹)', analytics.costAnalysis.estimatedValue?.toFixed(2) || 0]
+            ['Total Unloading Cost (₹)', analytics.costAnalysis.totalPurchaseCost?.toFixed(2) || 0],
+            ['Unloading Cost per Kg (₹)', analytics.costAnalysis.costPerKg?.toFixed(2) || 0]
         ];
         const ws1 = XLSX.utils.aoa_to_sheet(summaryData);
         XLSX.utils.book_append_sheet(wb, ws1, 'Summary');
@@ -611,22 +610,15 @@ const AdvancedAnalytics = () => {
                     <div className="cost-card">
                         <DollarSign size={24} />
                         <div>
-                            <span className="cost-label">Total Purchase Cost</span>
+                            <span className="cost-label">Total Unloading Cost</span>
                             <span className="cost-value">₹{analytics.costAnalysis.totalPurchaseCost?.toFixed(2)}</span>
                         </div>
                     </div>
                     <div className="cost-card">
                         <Package size={24} />
                         <div>
-                            <span className="cost-label">Cost per Kg</span>
+                            <span className="cost-label">Unloading Cost / Kg</span>
                             <span className="cost-value">₹{analytics.costAnalysis.costPerKg?.toFixed(2)}</span>
-                        </div>
-                    </div>
-                    <div className="cost-card">
-                        <TrendingUp size={24} />
-                        <div>
-                            <span className="cost-label">Estimated Value</span>
-                            <span className="cost-value">₹{analytics.costAnalysis.estimatedValue?.toFixed(2)}</span>
                         </div>
                     </div>
                 </div>
