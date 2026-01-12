@@ -1,10 +1,10 @@
 import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBISAfWfBTZLgfREmCPzm-WgCweZwMlH3s",
+    apiKey: "AIzaSyBISAfWFbTZLgfREmCPzm-WgCwEzwMlH3s",
     authDomain: "production-db-15a9e.firebaseapp.com",
     projectId: "production-db-15a9e",
     storageBucket: "production-db-15a9e.firebasestorage.app",
@@ -15,6 +15,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+export const analytics = getAnalytics(app);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const analytics = getAnalytics(app);
