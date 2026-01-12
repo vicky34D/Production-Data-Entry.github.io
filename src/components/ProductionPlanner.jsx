@@ -172,13 +172,16 @@ const ProductionPlanner = () => {
                             onChange={e => setTargetQuantity(e.target.value)}
                         />
                     </div>
+                </div>
 
+                <div className="planner-actions" style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
                     <button
                         className="btn-calculate"
                         onClick={handleCalculate}
                         disabled={!selectedFormulationId || !targetQuantity}
+                        style={{ width: 'auto', padding: '0.6rem 1.5rem', marginTop: 0 }}
                     >
-                        <Play size={18} fill="currentColor" /> Calculate Requirements
+                        <Play size={16} fill="currentColor" /> Calculate
                     </button>
                 </div>
             </div>

@@ -71,9 +71,19 @@
 
 .input-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 2rem;
     align-items: start;
+}
+
+@media (max-width: 1024px) {
+    .input-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .form-group[style*="span 2"] {
+        grid-column: span 2;
+    }
 }
 
 .form-group label {
