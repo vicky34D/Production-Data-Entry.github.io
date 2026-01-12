@@ -38,7 +38,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: #F4F4F5;
+    background: var(--bg-hover);
     padding: 0.5rem 1.25rem;
     border-radius: var(--radius-full);
     font-size: 0.9rem;
@@ -51,18 +51,19 @@
 .widget-actions {
     display: flex;
     gap: 1rem;
+    align-items: center;
+    flex-wrap: nowrap;
 }
 
-/* Metrics Grid (Top Cards) - The colorful cards in reference */
-.metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+.widget-actions .btn {
+    white-space: nowrap;
 }
+
+/* ... (omitting unchanged lines) ... */
 
 .metric-card {
-    background: #F4F4F5;
-    /* Default Light Grey */
+    background: var(--bg-surface);
+    /* Default Light Grey/Surface */
     border-radius: var(--radius-xl);
     /* Big curves */
     padding: 1.75rem;
@@ -76,32 +77,49 @@
 }
 
 .metric-card:nth-child(1) {
-    background: #F4F4F5;
-    /* Light Grey Card */
+    background: var(--bg-surface);
 }
 
+/* Card 2: Black in Light, Surface in Dark */
 .metric-card:nth-child(2) {
     background: #18181B;
-    /* Dark Black Card */
     color: white;
 }
 
-.metric-card:nth-child(2) .metric-title,
 .metric-card:nth-child(2) .metric-value,
 .metric-card:nth-child(2) .metric-label {
     color: white;
 }
 
+[data-theme='dark'] .metric-card:nth-child(2) {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+}
+
+[data-theme='dark'] .metric-card:nth-child(2) .metric-value,
+[data-theme='dark'] .metric-card:nth-child(2) .metric-label {
+    color: var(--text-primary);
+}
+
+/* Card 3: Blue in Light, Surface in Dark */
 .metric-card:nth-child(3) {
     background: var(--accent-blue);
-    /* Blue Card */
     color: white;
 }
 
-.metric-card:nth-child(3) .metric-title,
 .metric-card:nth-child(3) .metric-value,
 .metric-card:nth-child(3) .metric-label {
     color: white;
+}
+
+[data-theme='dark'] .metric-card:nth-child(3) {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+}
+
+[data-theme='dark'] .metric-card:nth-child(3) .metric-value,
+[data-theme='dark'] .metric-card:nth-child(3) .metric-label {
+    color: var(--text-primary);
 }
 
 .metric-header {
@@ -124,6 +142,26 @@
     color: black;
 }
 
+.metric-card:nth-child(2) .metric-icon-circle {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+[data-theme='dark'] .metric-card:nth-child(2) .metric-icon-circle {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.metric-card:nth-child(3) .metric-icon-circle {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+[data-theme='dark'] .metric-card:nth-child(3) .metric-icon-circle {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
 .metric-value {
     font-size: 2rem;
     font-weight: 800;
@@ -133,31 +171,22 @@
 .metric-label {
     font-size: 0.9rem;
     font-weight: 500;
-    opacity: 0.7;
+    opacity: 0.9;
 }
+
+/* ... */
 
 /* Main Charts Section - "Expenses" & "Subscriptions" */
 .chart-card {
-    background: white;
-    /* Clean white */
+    background: var(--bg-surface);
+    /* Surface */
     border-radius: var(--radius-xl);
     padding: 0;
     /* Minimal padding */
     min-height: 300px;
 }
 
-.chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-}
-
-.chart-title {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--text-primary);
-}
+/* ... */
 
 /* Visual Mock for Chart Area - SVG Waves */
 .chart-visual {
@@ -168,54 +197,16 @@
     align-items: flex-end;
     gap: 3%;
     padding: 1rem;
-    background: #FAFAFA;
+    background: var(--bg-hover);
     /* Subtle background for chart area */
     border-radius: var(--radius-lg);
 }
 
-.chart-bar-visual {
-    flex: 1;
-    background: var(--bg-hover);
-    border-radius: 12px 12px 12px 12px;
-    /* Totally rounded bars */
-    position: relative;
-    transition: height 0.5s ease;
-}
-
-.chart-bar-visual::after {
-    /* The colored fill */
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--accent-teal);
-    /* Default teal */
-    border-radius: 12px;
-}
-
-.chart-bar-visual:nth-child(2n)::after {
-    background: var(--accent-purple);
-}
-
-.chart-bar-visual:nth-child(3n)::after {
-    background: var(--accent-blue);
-}
-
-.chart-bar-visual:nth-child(5n)::after {
-    background: var(--accent-yellow);
-}
-
-.chart-legend {
-    margin-top: 1rem;
-    display: flex;
-    gap: 1.5rem;
-}
+/* ... */
 
 /* Right Sidebar Stats - The Transaction List style */
 .stats-card {
-    background: white;
+    background: var(--bg-surface);
     border-radius: var(--radius-xl);
     padding: 0;
     display: flex;
@@ -223,34 +214,27 @@
     gap: 1.5rem;
 }
 
-.stats-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-}
+/* ... */
 
 .stat-item-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 1rem;
-    background: white;
+    background: var(--bg-surface);
     border-radius: var(--radius-lg);
     transition: transform 0.2s;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     /* Soft float */
 }
 
-.stat-item-row:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
-}
+/* ... */
 
 .stat-icon {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: #F4F4F5;
+    background: var(--bg-hover);
     display: flex;
     align-items: center;
     justify-content: center;
