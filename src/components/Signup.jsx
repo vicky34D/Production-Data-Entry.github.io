@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import './Login.css'; // Reuse the Login CSS for consistent theme
 import loginIllustration from './login_illustration_1768196804821.png'; // Reuse illustration or use a new one
 
-const Signup = () => {
+const Signup = ({ onLogin }) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -37,13 +37,17 @@ const Signup = () => {
         await new Promise(resolve => setTimeout(resolve, 1500));
 
         // Simulate successful signup
-        setSuccess('Account created successfully! Redirecting to login...');
+        // Auto-login logic
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', email);
 
-        // In a real app, you'd save the user/token here
-        // For demo, we'll just redirect to login after a delay
+        if (onLogin) onLogin();
+
+        setSuccess('Account created! Logging in...');
+
         setTimeout(() => {
-            navigate('/login');
-        }, 1500);
+            navigate('/');
+        }, 1000);
     };
 
     return (

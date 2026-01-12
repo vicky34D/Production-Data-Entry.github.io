@@ -53,7 +53,7 @@ function App() {
         {/* Public Routes */}
         <Route path="/landing" element={<LandingPage />} />
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/signup" element={<Signup onLogin={handleLogin} />} />
 
         {/* Protected Routes */}
         <Route path="/" element={
