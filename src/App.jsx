@@ -20,6 +20,7 @@ import AdvancedAnalytics from './components/AdvancedAnalytics';
 import ProductionScheduler from './components/ProductionScheduler';
 import CustomReportBuilder from './components/CustomReportBuilder';
 import Login from './components/Login';
+import Signup from './components/Signup';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -52,6 +53,7 @@ function App() {
         {/* Public Routes */}
         <Route path="/landing" element={<LandingPage />} />
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
+        <Route path="/signup" element={<Signup />} />
 
         {/* Protected Routes */}
         <Route path="/" element={
