@@ -36,11 +36,27 @@ const Signup = ({ onLogin }) => {
         // Simulate API call delay
         await new Promise(resolve => setTimeout(resolve, 1500));
 
-        // Simulate successful signup
+        // --- MOCK DATABASE LOGIC ---
+        // 1. Get existing users
+        const existingUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+
+        // 2. Check if user exists
+        if (existingUsers.find(u => u.email === email)) {
+            setError('User already exists with this email');
+            setIsLoading(false);
+            return;
+        }
+
+        // 3. Add new user
+        const newUser = { name, email, password }; // Note: In real app, never store passwords locally!
+        existingUsers.push(newUser);
+        localStorage.setItem('registeredUsers', JSON.stringify(existingUsers));
+
+        // --- SESSION LOGIC ---
         // Auto-login logic
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('userEmail', email);
-        localStorage.setItem('userName', name); // Save Name
+        localStorage.setItem('userName', name);
 
         if (onLogin) onLogin();
 

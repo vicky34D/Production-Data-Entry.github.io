@@ -38,13 +38,22 @@ const Login = ({ onLogin }) => {
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // Validate credentials
-        if (email === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password) {
+        const isDemo = email === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password;
+
+        // Check "Mock Database"
+        const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+        const userFound = registeredUsers.find(u => u.email === email && u.password === password);
+
+        if (isDemo || userFound) {
             setSuccess('Login successful! Redirecting...');
 
             // Save login state
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('userEmail', email);
-            localStorage.setItem('userName', 'Adaline Lively'); // Match demo screenshot
+
+            // Set Name (Use registered name or default Demo name)
+            const nameToSave = userFound ? userFound.name : 'Adaline Lively';
+            localStorage.setItem('userName', nameToSave);
 
             // Call onLogin callback
             if (onLogin) {
