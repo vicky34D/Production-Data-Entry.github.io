@@ -50,10 +50,14 @@ const Layout = ({ onLogout }) => {
     };
 
     const headerInfo = getPageHeader();
+    const userName = localStorage.getItem('userName') || 'User';
+    const userEmail = localStorage.getItem('userEmail') || '';
 
     return (
         <div className={`layout-container ${collapsed ? 'collapsed' : ''}`}>
+            {/* ... Sidebar ... */}
             <aside className="sidebar">
+                {/* ... (sidebar content remains roughly same, I will target the rendering part below) ... */}
                 <div className="sidebar-header">
                     <div
                         className="logo-brand-group"
@@ -132,10 +136,10 @@ const Layout = ({ onLogout }) => {
                             <span className="notif-dot"></span>
                         </button>
                         <div className="user-profile-pill">
-                            <img src="https://ui-avatars.com/api/?name=Adaline+Lively&background=random" alt="Profile" className="u-avatar" />
+                            <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=random`} alt="Profile" className="u-avatar" />
                             <div className="user-info">
-                                <div className="u-name">Adaline Lively</div>
-                                <div className="u-role">adalively@gmail.com</div>
+                                <div className="u-name">{userName}</div>
+                                <div className="u-role">{userEmail}</div>
                             </div>
                             <ChevronDown size={14} color="var(--text-secondary)" />
                         </div>

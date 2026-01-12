@@ -40,6 +40,7 @@ const Signup = ({ onLogin }) => {
         // Auto-login logic
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('userEmail', email);
+        localStorage.setItem('userName', name); // Save Name
 
         if (onLogin) onLogin();
 

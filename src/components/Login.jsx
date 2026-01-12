@@ -44,6 +44,7 @@ const Login = ({ onLogin }) => {
             // Save login state
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('userEmail', email);
+            localStorage.setItem('userName', 'Adaline Lively'); // Match demo screenshot
 
             // Call onLogin callback
             if (onLogin) {
