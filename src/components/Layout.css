@@ -404,12 +404,11 @@
     }
 
     /* Adjust Charts */
-    /* Adjust Charts */
     .chart-card {
         padding: 0;
     }
 
-    /* Improve Mobile Header Space */
+    /* Mobile Header Cleanup */
     .user-info {
         display: none;
     }
@@ -418,14 +417,9 @@
         gap: 0.5rem;
     }
 
-    .action-icon-btn {
-        width: 36px;
-        height: 36px;
-    }
-
     .user-profile-pill {
-        padding: 0.25rem;
-        margin-left: 0.25rem;
+        padding: 4px;
+        margin-left: 0;
     }
 
     .u-avatar {
@@ -433,12 +427,24 @@
         height: 32px;
     }
 
-    /* Table Fixes */
+    .action-icon-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* Table Mobile Fixes */
     .table-container {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         display: block;
-        /* Ensure block for scroll */
         width: 100%;
+    }
+
+    /* Prevent Action buttons from wrapping */
+    .table-container table td:last-child,
+    .table-container table th:last-child {
+        white-space: nowrap;
+        text-align: center;
+        min-width: 80px;
     }
 }

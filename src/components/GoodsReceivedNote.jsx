@@ -407,35 +407,32 @@ const GoodsReceivedNote = () => {
                                             <td>{entry.unloadingCost.toFixed(2)}</td>
                                             <td>
                                                 {entry.document && (
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                                        <span className="file-badge" title={entry.document}>
-                                                            {entry.document.length > 15 ? entry.document.substring(0, 12) + '...' : entry.document}
-                                                        </span>
-                                                        <button
-                                                            onClick={() => alert(`Downloading document: ${entry.document}\n(File storage not connected)`)}
-                                                            style={{
-                                                                background: 'none',
-                                                                border: 'none',
-                                                                cursor: 'pointer',
-                                                                padding: '4px',
-                                                                color: 'var(--accent-primary)',
-                                                                display: 'flex', alignItems: 'center'
-                                                            }}
-                                                            title="Download Document"
-                                                        >
-                                                            <Download size={16} />
-                                                        </button>
-                                                    </div>
+                                                    <span className="file-badge" title={entry.document}>
+                                                        {entry.document.length > 15 ? entry.document.substring(0, 12) + '...' : entry.document}
+                                                    </span>
                                                 )}
                                             </td>
                                             <td>
-                                                {entry.date === todayStr ? (
-                                                    <button className="btn-danger" onClick={() => handleDeleteEntry(entry.id)}>
-                                                        <Trash2 size={16} />
-                                                    </button>
-                                                ) : (
-                                                    <span style={{ color: '#ccc', fontSize: '0.8em' }}><Lock size={14} /></span>
-                                                )}
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center' }}>
+                                                    {entry.document && (
+                                                        <button
+                                                            onClick={() => alert(`Downloading: ${entry.document}`)}
+                                                            style={{
+                                                                background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent-primary)', display: 'flex'
+                                                            }}
+                                                            title="Download"
+                                                        >
+                                                            <Download size={16} />
+                                                        </button>
+                                                    )}
+                                                    {entry.date === todayStr ? (
+                                                        <button className="btn-danger" onClick={() => handleDeleteEntry(entry.id, entry.date)}>
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    ) : (
+                                                        <span style={{ color: '#ccc', fontSize: '0.8em' }}><Lock size={14} /></span>
+                                                    )}
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

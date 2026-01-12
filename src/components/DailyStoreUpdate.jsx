@@ -317,33 +317,33 @@ const DailyStoreUpdate = () => {
                                                         <span className="badge" style={{ background: '#e0f2fe', color: '#0369a1' }}>Purchase IN</span> :
                                                         <span className="badge" style={{ background: '#fee2e2', color: '#991b1b' }}>Usage OUT</span>
                                                 }
+                                                {entry.document && (
+                                                    <span className="file-badge" title={entry.document}>
+                                                        {entry.document.length > 15 ? entry.document.substring(0, 12) + '...' : entry.document}
+                                                    </span>
+                                                )}
                                             </td>
                                             <td>
-                                                {entry.document && (
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                                        <span className="file-badge" title={entry.document}>
-                                                            {entry.document.length > 15 ? entry.document.substring(0, 12) + '...' : entry.document}
-                                                        </span>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+                                                    {entry.document && (
                                                         <button
-                                                            onClick={(e) => { e.stopPropagation(); alert(`Downloading: ${entry.document}`); }}
+                                                            onClick={() => alert(`Downloading: ${entry.document}`)}
                                                             style={{
-                                                                background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--accent-primary)', padding: '2px'
+                                                                background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent-primary)', display: 'flex'
                                                             }}
                                                             title="Download"
                                                         >
-                                                            <Download size={14} />
+                                                            <Download size={16} />
                                                         </button>
-                                                    </div>
-                                                )}
-                                            </td>
-                                            <td>
-                                                {entry.date === todayStr ? (
-                                                    <button className="btn-danger" onClick={() => handleDeleteEntry(entry.id, entry.date)}>
-                                                        <Trash2 size={16} />
-                                                    </button>
-                                                ) : (
-                                                    <span style={{ color: '#ccc', fontSize: '0.8em' }}><Lock size={14} /></span>
-                                                )}
+                                                    )}
+                                                    {entry.date === todayStr ? (
+                                                        <button className="btn-danger" onClick={() => handleDeleteEntry(entry.id, entry.date)}>
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    ) : (
+                                                        <span style={{ color: '#ccc', fontSize: '0.8em' }}><Lock size={14} /></span>
+                                                    )}
+                                                </div>
                                             </td>
                                         </tr >
                                     ))}
