@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff, AlertCircle, CheckCircle, Factory } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { auth } from '../firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import './Login.css';
 import loginIllustration from './login_illustration_1768196804821.png';
 
@@ -34,38 +36,34 @@ const Login = ({ onLogin }) => {
         setSuccess('');
         setIsLoading(true);
 
-        // Simulate API call delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        try {
+            // 1. Check Demo Credentials (Hardcoded override)
+            if (email === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password) {
+                setSuccess('Login successful! Redirecting...');
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userName', 'Adaline Lively');
 
-        // Validate credentials
-        const isDemo = email === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password;
-
-        // Check "Mock Database"
-        const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-        const userFound = registeredUsers.find(u => u.email === email && u.password === password);
-
-        if (isDemo || userFound) {
-            setSuccess('Login successful! Redirecting...');
-
-            // Save login state
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userEmail', email);
-
-            // Set Name (Use registered name or default Demo name)
-            const nameToSave = userFound ? userFound.name : 'Adaline Lively';
-            localStorage.setItem('userName', nameToSave);
-
-            // Call onLogin callback
-            if (onLogin) {
-                onLogin();
+                if (onLogin) onLogin();
+                setTimeout(() => navigate('/'), 1000);
+                return;
             }
 
-            // Redirect after short delay
-            setTimeout(() => {
-                navigate('/');
-            }, 1000);
-        } else {
-            setError('Invalid email or password. Please try again.');
+            // 2. Firebase Login
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            setSuccess('Login successful! Redirecting...');
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userEmail', user.email);
+            localStorage.setItem('userName', user.displayName || 'User');
+
+            if (onLogin) onLogin();
+            setTimeout(() => navigate('/'), 1000);
+
+        } catch (error) {
+            console.error(error);
+            setError('Invalid email or password.');
             setIsLoading(false);
         }
     };

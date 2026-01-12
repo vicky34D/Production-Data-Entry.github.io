@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff, AlertCircle, CheckCircle, Factory, User, Mail, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { auth } from '../firebase';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import './Login.css'; // Reuse the Login CSS for consistent theme
 import loginIllustration from './login_illustration_1768196804821.png'; // Reuse illustration or use a new one
 
@@ -33,38 +35,38 @@ const Signup = ({ onLogin }) => {
 
         setIsLoading(true);
 
-        // Simulate API call delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        try {
+            // Create User in Firebase
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
 
-        // --- MOCK DATABASE LOGIC ---
-        // 1. Get existing users
-        const existingUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            // Update Profile with Name
+            await updateProfile(user, {
+                displayName: name
+            });
 
-        // 2. Check if user exists
-        if (existingUsers.find(u => u.email === email)) {
-            setError('User already exists with this email');
+            // --- SESSION LOGIC (Sync with existing App logic) ---
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userEmail', user.email);
+            localStorage.setItem('userName', name);
+
+            if (onLogin) onLogin();
+
+            setSuccess('Account created! Logging in...');
+
+            setTimeout(() => {
+                navigate('/');
+            }, 1000);
+
+        } catch (err) {
+            console.error(err);
+            if (err.code === 'auth/email-already-in-use') {
+                setError('User already exists with this email');
+            } else {
+                setError(err.message || 'Failed to create account');
+            }
             setIsLoading(false);
-            return;
         }
-
-        // 3. Add new user
-        const newUser = { name, email, password }; // Note: In real app, never store passwords locally!
-        existingUsers.push(newUser);
-        localStorage.setItem('registeredUsers', JSON.stringify(existingUsers));
-
-        // --- SESSION LOGIC ---
-        // Auto-login logic
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('userEmail', email);
-        localStorage.setItem('userName', name);
-
-        if (onLogin) onLogin();
-
-        setSuccess('Account created! Logging in...');
-
-        setTimeout(() => {
-            navigate('/');
-        }, 1000);
     };
 
     return (
