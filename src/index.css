@@ -1,73 +1,136 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
 :root {
-    /* Theme Colors - FinSet Light Theme */
-    --bg-page: #FFFFFF;
-    --bg-sidebar: #F9FAFC;
-    /* Very light grey for sidebar */
+    /* Modern Production Theme - Light Mode */
+    --bg-page: #F7F9FB;
+    /* Soft blue-gray background */
+    --bg-sidebar: #FFFFFF;
+    /* Pure white sidebar */
     --bg-surface: #FFFFFF;
+    /* White cards */
+    --bg-hover: #F0F4F8;
+    /* Subtle hover state */
 
-    --primary-color: #6366F1;
-    /* Indigo/Violet Brand Color */
-    --accent-yellow: #FEF3C7;
-    --accent-blue: #E0E7FF;
-    --accent-pink: #FAE8FF;
-    --accent-active: #6366F1;
-    /* Violet for active pills */
+    --primary-color: #0D9488;
+    /* Teal - growth, production, sustainability */
+    --primary-hover: #0F766E;
+    /* Darker teal */
+    --primary-light: #CCFBF1;
+    /* Light teal background */
 
-    --text-primary: #111827;
-    /* Dark text */
-    --text-secondary: #9CA3AF;
-    /* Grey text */
-    --text-muted: #D1D5DB;
+    --secondary-color: #F97316;
+    /* Vibrant orange - energy and action */
+    --secondary-light: #FFEDD5;
 
-    --border-color: #F3F4F6;
+    --accent-blue: #3B82F6;
+    /* Bright blue - trust */
+    --accent-blue-light: #DBEAFE;
+
+    --accent-purple: #8B5CF6;
+    /* Purple - analytics */
+    --accent-purple-light: #EDE9FE;
+
+    --accent-green: #10B981;
+    /* Success green */
+    --accent-green-light: #D1FAE5;
+
+    --accent-yellow: #F59E0B;
+    /* Warning amber */
+    --accent-yellow-light: #FEF3C7;
+
+    --accent-red: #EF4444;
+    /* Error red */
+    --accent-red-light: #FEE2E2;
+
+    --text-primary: #0F172A;
+    /* Deep slate */
+    --text-secondary: #64748B;
+    /* Medium slate */
+    --text-muted: #94A3B8;
+    /* Light slate */
+    --text-inverse: #FFFFFF;
+
+    --border-color: #E2E8F0;
+    /* Subtle borders */
+    --border-strong: #CBD5E1;
+    /* Stronger borders */
 
     --radius-sm: 0.5rem;
-    --radius-md: 1rem;
-    --radius-lg: 1.5rem;
-    --radius-xl: 1.5rem;
-    /* Standard rounded, not super bubbly */
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.25rem;
     --radius-full: 9999px;
 
-    --shadow-soft: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
-    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.05);
-    --bg-input: #F9FAFB;
-    /* Light input bg */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-soft: 0 4px 20px -5px rgba(0, 0, 0, 0.08);
+
+    --bg-input: #F8FAFC;
+
+    /* Gradients for premium feel */
+    --gradient-primary: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
+    --gradient-secondary: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+    --gradient-blue: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
 }
 
 [data-theme='dark'] {
-    /* Dark Theme Colors */
-    --bg-page: #0B1120;
-    /* Very Dark Blue/Black */
-    --bg-sidebar: #111827;
-    /* Dark Gray for sidebar */
-    --bg-surface: #1F2937;
-    /* Slightly lighter for cards */
-    --bg-input: #374151;
-    /* Dark input bg */
+    /* Modern Production Theme - Dark Mode */
+    --bg-page: #0F172A;
+    /* Deep slate */
+    --bg-sidebar: #1E293B;
+    /* Lighter slate sidebar */
+    --bg-surface: #1E293B;
+    /* Card background */
+    --bg-hover: #334155;
+    /* Hover state */
+    --bg-input: #334155;
 
-    --primary-color: #818CF8;
-    /* Lighter Indigo for dark mode contrast */
-    --accent-yellow: #78350f;
-    /* Darker yellow bg */
-    --accent-blue: #1e3a8a;
-    /* Darker blue bg */
-    --accent-pink: #831843;
-    /* Darker pink bg */
-    --accent-active: #818CF8;
+    --primary-color: #14B8A6;
+    /* Brighter teal for dark mode */
+    --primary-hover: #2DD4BF;
+    --primary-light: #134E4A;
 
-    --text-primary: #F9FAFB;
-    /* White/Off-white */
-    --text-secondary: #9CA3AF;
-    /* Light Gray */
-    --text-muted: #6B7280;
+    --secondary-color: #FB923C;
+    /* Brighter orange */
+    --secondary-light: #7C2D12;
 
-    --border-color: #374151;
-    /* Dark border */
+    --accent-blue: #60A5FA;
+    --accent-blue-light: #1E3A8A;
 
+    --accent-purple: #A78BFA;
+    --accent-purple-light: #4C1D95;
+
+    --accent-green: #34D399;
+    --accent-green-light: #064E3B;
+
+    --accent-yellow: #FBBF24;
+    --accent-yellow-light: #78350F;
+
+    --accent-red: #F87171;
+    --accent-red-light: #7F1D1D;
+
+    --text-primary: #F8FAFC;
+    /* Almost white */
+    --text-secondary: #94A3B8;
+    /* Medium slate */
+    --text-muted: #64748B;
+    /* Darker slate */
+    --text-inverse: #0F172A;
+
+    --border-color: #334155;
+    --border-strong: #475569;
+
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
     --shadow-soft: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
-    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+
+    --gradient-primary: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%);
+    --gradient-secondary: linear-gradient(135deg, #FB923C 0%, #F97316 100%);
+    --gradient-blue: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%);
 }
 
 * {
@@ -122,18 +185,46 @@ button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.6rem 1.2rem;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
     border-radius: var(--radius-md);
-    font-weight: 500;
-    transition: all 0.2s;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    border: none;
 }
 
 .btn-primary {
-    background: var(--primary-color);
+    background: var(--gradient-primary);
     color: white;
+    box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:hover {
-    opacity: 0.9;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+    opacity: 0.95;
+}
+
+.btn-secondary {
+    background: var(--gradient-secondary);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+    opacity: 0.95;
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--primary-color);
+    border: 1.5px solid var(--primary-color);
+}
+
+.btn-outline:hover {
+    background: var(--primary-light);
     transform: translateY(-1px);
 }

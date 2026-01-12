@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, CheckCircle, Factory } from 'lucide-react';
 import { motion } from 'framer-motion';
 import './Login.css';
-import loginIllustration from './login_illustration_1768040265294.png';
+import loginIllustration from './login_illustration_1768196804821.png';
 
 const Login = ({ onLogin }) => {
     const [email, setEmail] = useState('');
@@ -89,7 +89,9 @@ const Login = ({ onLogin }) => {
                 >
                     <div className="login-form-container">
                         <div className="login-brand">
-                            <div className="brand-logo">🏭</div>
+                            <div className="brand-logo-circle">
+                                <Factory size={20} strokeWidth={2.5} />
+                            </div>
                             <span className="brand-name">DHARS</span>
                         </div>
 
@@ -165,7 +167,7 @@ const Login = ({ onLogin }) => {
                                         Signing in...
                                     </>
                                 ) : (
-                                    'Sign in'
+                                    'Sign in to account'
                                 )}
                             </button>
 
@@ -196,7 +198,7 @@ const Login = ({ onLogin }) => {
 
                             <div className="form-footer">
                                 <p className="demo-hint">
-                                    💡 Click the Google icon to use demo credentials
+                                    💡 Click Google to use demo login
                                 </p>
                                 <p className="signup-link">
                                     Have an account? <a href="#" onClick={(e) => e.preventDefault()}>Log in</a>

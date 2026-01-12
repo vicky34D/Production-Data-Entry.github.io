@@ -58,9 +58,15 @@
 }
 
 .btn-fill {
-    background: var(--primary-color);
+    background: var(--gradient-primary);
     color: white;
-    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 12px -2px rgba(13, 148, 136, 0.3);
+    font-weight: 600;
+}
+
+.btn-fill:hover {
+    box-shadow: 0 6px 16px -2px rgba(13, 148, 136, 0.4);
+    transform: translateY(-1px);
 }
 
 /* Metrics Grid (Top Cards) */
@@ -73,11 +79,19 @@
 .metric-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-xl);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    box-shadow: var(--shadow-card);
+    transition: all 0.2s ease;
+}
+
+.metric-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
 }
 
 .metric-header {
@@ -146,9 +160,10 @@
 .chart-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-xl);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
     min-height: 300px;
+    box-shadow: var(--shadow-card);
 }
 
 .chart-header {
@@ -193,7 +208,7 @@
 
 .chart-bar-visual {
     flex: 1;
-    background: #E0E7FF;
+    background: var(--primary-light);
     border-radius: 8px 8px 0 0;
     position: relative;
     transition: height 0.5s ease;
@@ -206,27 +221,28 @@
     left: 0;
     width: 100%;
     height: 60%;
-    background: var(--primary-color);
+    background: var(--gradient-primary);
     border-radius: 8px 8px 0 0;
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
 /* Right Sidebar Stats */
 .stats-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-xl);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
+    box-shadow: var(--shadow-card);
 }
 
 .donut-chart-mock {
     width: 180px;
     height: 180px;
     border-radius: 50%;
-    border: 20px solid #E0E7FF;
+    border: 20px solid var(--primary-light);
     border-top-color: var(--primary-color);
     border-right-color: var(--primary-color);
     margin: 2rem 0;
